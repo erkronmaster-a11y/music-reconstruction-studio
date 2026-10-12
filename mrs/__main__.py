@@ -70,7 +70,8 @@ def main(argv=None):
         idx = nistem.traktor_index()
         nml = nistem.traktor_collections()
         print(f"{len(files)} stem files in {args.dir}; library: {nml[0] if nml else 'collection.nml not found'}")
-        print(f"titles matched from library: {sum(1 for f in files if f.name[:-9] in idx)}")
+        titled = [f for f in files if nistem.display_title(f) != f.name[:-9]]
+        print(f"titles found (library code or unique length match): {len(titled)} of {len(files)}")
         for f in files:
             print(f"{time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))}  {nistem.display_title(f):60.60}  {f}")
     elif args.cmd == "click":

@@ -176,3 +176,22 @@ def test_traktor_title_from_collection(tmp_path):
     f.write_bytes(b"")
     assert nistem.display_title(f, nml=nml) == "SMV - Night Drive"
     assert nistem.display_title(tmp_path / "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.stem.mp4", nml=nml) == "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+
+
+def test_traktor_title_by_length(tmp_path, song):
+    """No code in the NML (as on the real Mac): match on track length, unique only."""
+    from mrs import nistem
+    aligned = tmp_path / "a"
+    testsong.make(aligned, bars=4)
+    f = tmp_path / "QQQQQQQQQQQQQQQQQQQQQQQQQQQQ.stem.mp4"
+    _make_stem_mp4(aligned, f, with_meta=False)
+    d = nistem.duration_s(f)
+    nml = tmp_path / "collection.nml"
+    nml.write_text(f'''<?xml version="1.0"?><NML><COLLECTION>
+<ENTRY ARTIST="SMV" TITLE="Night Drive"><LOCATION FILE="nd.wav"/><INFO PLAYTIME="9" PLAYTIME_FLOAT="{d - 0.02:.3f}"/></ENTRY>
+<ENTRY TITLE="Long One"><LOCATION FILE="x.wav"/><INFO PLAYTIME_FLOAT="{d + 30:.3f}"/></ENTRY></COLLECTION></NML>''')
+    nistem._index_cache = None
+    assert nistem.display_title(f, nml=nml) == "SMV - Night Drive"
+    # two songs with the same length -> no guess
+    nml.write_text(nml.read_text().replace(f"{d + 30:.3f}", f"{d:.3f}"))
+    assert nistem.display_title(f, nml=nml) == "QQQQQQQQQQQQQQQQQQQQQQQQQQQQ"

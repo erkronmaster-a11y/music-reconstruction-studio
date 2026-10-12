@@ -75,7 +75,22 @@ rhythmic stems it locked one beat off (a 0.5 s error), so it now
 cross-correlates the waveforms. The beat tracker also started counting a bar
 late; the first downbeat now steps back to the first bar of music.
 
-**Not yet verified on a real song or on the Mac.**
+### On the Mac (2026-10-12, M1 Pro, macOS 13.6.1, Python 3.11.16, ffmpeg 8.1.1)
+- `pytest`: **18 passed** in 90 s.
+- Basic Pitch 0.4.0 runs through **CoreML** (coremltools 9.0). The probe
+  scores match Linux exactly (bass F1 0.50, melody F1 1.00); peak memory is
+  about 270 MB.
+- Install fixes on the way:
+  - Homebrew can't install `uv` on macOS 13 ("Tier 3"), so the install now
+    uses `python3.11 -m venv` + pip.
+  - The first pip run failed silently; pip errors now go into the report.
+  - `onnxruntime` is Linux-only now.
+- Traktor 4 keeps **184 `.stem.mp4` files (9.4 GB)** in `~/Music/Traktor/Stems/`.
+  They carry **no title tags**, and **0 of 184 codes** appear in
+  `collection.nml`. Titles therefore come from a **unique track-length match**
+  against the NML (`PLAYTIME_FLOAT`). Ambiguous matches are not guessed.
+
+**Not yet verified on a real song.**
 
 ## Sprint 0 — unit tests
 `pytest tests/` → 3 passed. Covers the .amxd container structure, that the

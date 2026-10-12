@@ -131,6 +131,13 @@ def traktor_index(nml: Path | None = None) -> dict[str, dict]:
                         "file": loc.get("FILE", "") if loc is not None else ""}
                 for code in set(re.findall(r"\b[A-Z0-9]{28}\b", blob)):
                     out[code] = info
+                inf = el.find("INFO")
+                pt = inf.get("PLAYTIME_FLOAT") or inf.get("PLAYTIME") if inf is not None else None
+                if pt:
+                    try:
+                        out.setdefault("__by_length__", []).append((float(pt), info))
+                    except ValueError:
+                        pass
                 el.clear()
         except (ET.ParseError, OSError):
             continue
@@ -139,12 +146,33 @@ def traktor_index(nml: Path | None = None) -> dict[str, dict]:
     return out
 
 
+def duration_s(path: str | Path) -> float | None:
+    ff = ffmpeg_path()
+    if not ff:
+        return None
+    err = subprocess.run([ff, "-hide_banner", "-i", str(path)], capture_output=True, text=True).stderr
+    m = re.search(r"Duration: (\d+):(\d+):([\d.]+)", err)
+    return int(m.group(1)) * 3600 + int(m.group(2)) * 60 + float(m.group(3)) if m else None
+
+
+def match_by_length(path: str | Path, nml: Path | None = None, tol: float = 0.08) -> dict:
+    """Traktor 4's cache files carry no title, and collection.nml does not name
+    them (checked on the owner's Mac: 0 of 184 codes appear). But the NML stores
+    each track's length to the millisecond, so a unique length match identifies
+    the song. Ambiguous or missing matches return {} — never a guess."""
+    d = duration_s(path)
+    if d is None:
+        return {}
+    hits = [info for length, info in traktor_index(nml).get("__by_length__", []) if abs(length - d) <= tol]
+    return hits[0] if len(hits) == 1 else {}
+
+
 def display_title(path: str | Path, nml: Path | None = None) -> str:
     """'Artist - Title' from the file's tags, else from Traktor's collection, else the file name."""
     stem = re.sub(r"\.stem\.(mp4|m4a)$", "", Path(path).name, flags=re.I)
     t = tags(path)
     if not t.get("title"):
-        t = traktor_index(nml).get(stem, {})
+        t = traktor_index(nml).get(stem, {}) or match_by_length(path, nml)
         if not t.get("title") and t.get("file"):
             t = {"title": Path(t["file"]).stem}
     if t.get("title"):
