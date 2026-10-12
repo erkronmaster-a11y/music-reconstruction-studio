@@ -20,7 +20,7 @@ def detect(y: np.ndarray, sr: int = SR, beats_per_bar: int = 4) -> dict:
     tempo, beat_frames = librosa.beat.beat_track(onset_envelope=env, sr=sr, hop_length=HOP, units="frames")
     tempo = float(np.atleast_1d(tempo)[0])
     beats = librosa.frames_to_time(beat_frames, sr=sr, hop_length=HOP)
-    out = {"method": f"librosa {librosa.__version__} beat_track + downbeat phase (low-band onsets + chroma change)",
+    out = {"method": f"librosa {librosa.__version__} beat_track (rough) + onset-comb tempo fit + downbeat phase (low-band onsets + chroma change)",
            "tempo_bpm": round(tempo, 3), "beats_s": [round(float(b), 4) for b in beats],
            "beats_per_bar": beats_per_bar, "first_downbeat_s": None, "downbeat_confidence": 0.0,
            "tempo_stability": None}
@@ -30,8 +30,29 @@ def detect(y: np.ndarray, sr: int = SR, beats_per_bar: int = 4) -> dict:
     ibi = np.diff(beats)
     # Spread of beat intervals relative to their median: ~0 for a steady grid.
     out["tempo_stability"] = round(float(np.std(ibi) / np.median(ibi)), 4)
-    # Tempo from the median interval is more robust than the tracker's prior-weighted estimate.
-    out["tempo_bpm"] = round(60.0 / float(np.median(ibi)), 3)
+
+    # Precise global tempo + phase. The tracker's own beats are frame-quantised
+    # and drift (on a Mac test song: 132.51 instead of ~132.0 → the click drifted
+    # ~0.4 s by the end). Instead, test every tempo near the tracker's estimate
+    # against the whole onset curve and keep the one whose grid lines up best.
+    rough = 60.0 / float(np.median(ibi))
+    bpm, phase = fit_grid(y, sr, rough)
+    period = 60.0 / bpm
+    out["tempo_bpm"] = round(bpm, 3)
+    out["tracker_tempo_bpm"] = round(rough, 3)
+    out["tracker_beats_s"] = out["beats_s"]
+    grid_beats = np.arange(phase, len(y) / sr, period)
+    # How far the tracker's beats sit from the straight grid, early vs late in
+    # the song: a growing gap means the song's tempo really changes.
+    def gap(bs):
+        d = (bs - phase) / period
+        return float(np.median(np.abs(d - np.round(d))) * period * 1000) if len(bs) else None
+    third = len(beats) // 3
+    out["grid_gap_ms"] = {"first_third": round(gap(beats[:third]), 1), "last_third": round(gap(beats[-third:]), 1)}
+    beats = grid_beats
+    beat_frames = librosa.time_to_frames(beats, sr=sr, hop_length=HOP)
+    out["beats_s"] = [round(float(b), 4) for b in beats]
+    ibi = np.full(max(1, len(beats) - 1), period)
 
     S = np.abs(librosa.stft(y, n_fft=2048, hop_length=HOP))
     freqs = librosa.fft_frequencies(sr=sr, n_fft=2048)
@@ -66,6 +87,30 @@ def detect(y: np.ndarray, sr: int = SR, beats_per_bar: int = 4) -> dict:
     out["first_downbeat_s"] = round(max(0.0, first), 4)
     out["downbeat_confidence"] = round(float((srt[-1] - srt[-2]) / (srt[-1] + 1e-12)), 3)
     return out
+
+
+def fit_grid(y: np.ndarray, sr: int, rough_bpm: float, span: float = 0.03) -> tuple[float, float]:
+    """Best constant-tempo grid for the whole song: the tempo (±span around
+    rough_bpm) whose beat comb lines up best with the onset curve, coarse then
+    fine (0.001 BPM). Returns (bpm, phase of the first beat in seconds)."""
+    import librosa
+    hop = 64  # 2.9 ms resolution
+    env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=hop)
+    env = np.maximum(0.0, env - np.median(env))
+    t = np.arange(len(env)) * hop / sr
+
+    def score(bpms):
+        return np.array([np.exp(-2j * np.pi * (b / 60.0) * t) @ env for b in bpms])
+    coarse = np.arange(rough_bpm * (1 - span), rough_bpm * (1 + span), 0.05)
+    c = score(coarse)
+    b0 = coarse[int(np.argmax(np.abs(c)))]
+    fine = np.arange(b0 - 0.06, b0 + 0.06, 0.001)
+    f = score(fine)
+    k = int(np.argmax(np.abs(f)))
+    bpm = float(fine[k])
+    period = 60.0 / bpm
+    phase = float((-np.angle(f[k]) / (2 * np.pi)) % 1.0) * period
+    return bpm, phase
 
 
 def grid(tempo_bpm: float, first_downbeat_s: float, duration_s: float, beats_per_bar: int = 4) -> list[dict]:

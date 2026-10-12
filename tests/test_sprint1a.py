@@ -195,3 +195,14 @@ def test_traktor_title_by_length(tmp_path, song):
     # two songs with the same length -> no guess
     nml.write_text(nml.read_text().replace(f"{d + 30:.3f}", f"{d:.3f}"))
     assert nistem.display_title(f, nml=nml) == "QQQQQQQQQQQQQQQQQQQQQQQQQQQQ"
+
+
+@pytest.mark.parametrize("bpm", [132.0, 97.3])
+def test_tempo_precise_enough_not_to_drift(tmp_path, bpm):
+    """Mac report: the click drifted. The grid must stay within 20 ms over a 2.5 min song."""
+    testsong.make(tmp_path, bpm=bpm, bars=int(150 / (240 / bpm)))
+    y, sr = audio.load(tmp_path / "Test Song MIX.wav", sr=22050)
+    d = tempo.detect(y, sr)
+    drift_ms = abs(60 / d["tempo_bpm"] - 60 / bpm) * len(d["beats_s"]) * 1000
+    assert drift_ms < 20, (d["tempo_bpm"], drift_ms)
+    assert abs(d["first_downbeat_s"] - 0.37) < 0.02

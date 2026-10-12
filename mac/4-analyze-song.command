@@ -33,6 +33,7 @@ if .venv/bin/python -W ignore -m mrs analyze "$SRC" --out-parent "$HOME/Music/MR
   echo
   echo "Opening the click check: high click = bar start, low click = beat."
   echo "Does the high click land on each bar's first beat? Tell Claude yes/no."
+  echo "If it drifts, also play click-follow.wav (clicks on the detected beats) and say which one stays tight."
   open "$OUT/click-check.wav"
   "$(dirname "$0")/_send-results.sh" "Sprint 1a: analysis summary for $(basename "$OUT")"
 else

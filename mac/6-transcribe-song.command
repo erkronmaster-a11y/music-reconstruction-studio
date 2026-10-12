@@ -26,6 +26,7 @@ START=$(date +%s)
 {
 if [ -f "$SRC/project.json" ]; then
   OUT="$SRC"
+  $PY tempo "$OUT/project.json" --redetect | tail -8   # older projects: pick up the precise tempo fit
 else
   $PY analyze "$SRC" --out-parent "$HOME/Music/MRS Projects" | tee "$LOG" || exit 1
   OUT="$(grep '^PROJECT_DIR=' "$LOG" | tail -1 | cut -d= -f2-)"

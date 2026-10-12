@@ -85,8 +85,10 @@ def build(folder: str | Path | None = None, mix_path: str | Path | None = None,
     t = m["timing"]["detected"]
     if t.get("downbeat_confidence", 0) < 0.15:
         warnings.append("first downbeat is uncertain — check it by ear (click track) and correct if needed")
-    if t.get("tempo_stability") and t["tempo_stability"] > 0.03:
-        warnings.append(f"beat spacing varies ({t['tempo_stability']:.1%}) — tempo may drift or the tracker struggled")
+    g = t.get("grid_gap_ms") or {}
+    if g and g["last_third"] > 40 and g["last_third"] > 2 * g["first_third"]:
+        warnings.append(f"beats drift away from a constant grid later in the song ({g['first_third']} → "
+                        f"{g['last_third']} ms): the tempo itself may change — compare click-check.wav with click-follow.wav")
     m["warnings"] = warnings
     return m, warnings
 
@@ -104,19 +106,27 @@ def summary(m: dict) -> str:
         L.append(f"  {k:17} {eff[k]['value']}  · {eff[k]['source']}")
     L.append(f"  detected beats    {len(d.get('beats_s', []))}, downbeat confidence {d.get('downbeat_confidence')}, "
              f"beat spacing spread {d.get('tempo_stability')}")
+    if d.get("grid_gap_ms"):
+        L.append(f"  grid fit          tracker said {d.get('tracker_tempo_bpm')} BPM; grid-to-beat gap "
+                 f"{d['grid_gap_ms']['first_third']} ms early → {d['grid_gap_ms']['last_third']} ms late")
     if m.get("warnings"):
         L += ["", "Check:"] + [f"  - {w}" for w in m["warnings"]]
     return "\n".join(L)
 
 
-def render_click(m: dict, out: str | Path, click_gain: float = 0.5) -> Path:
-    """Mix + click on the effective grid (accent on the downbeat) — listen to check timing."""
+def render_click(m: dict, out: str | Path, click_gain: float = 0.5, follow: bool = False) -> Path:
+    """Mix + click on the effective grid (accent on the downbeat) — listen to check timing.
+    follow=True clicks on the beat tracker's own beats instead (no accents): if
+    that one stays tight while the grid drifts, the song's tempo really varies."""
     import soundfile as sf
     src = manifest.mix(m)
     y, sr = audio.load(src["path"], sr=None, mono=True)
     eff = manifest.effective_timing(m)
     g = tempo.grid(eff["tempo_bpm"]["value"], eff["first_downbeat_s"]["value"], len(y) / sr,
                    eff["beats_per_bar"]["value"])
+    if follow:
+        d = m["timing"]["detected"]
+        g = [{"time_s": b, "bar": 0, "beat": 2} for b in d.get("tracker_beats_s", d["beats_s"])]
     n = int(0.03 * sr)
     t = np.arange(n) / sr
     env = np.exp(-t * 150)
@@ -170,3 +180,12 @@ def transcribe(m: dict, parts: list[str] | None = None) -> list[str]:
         msgs.append(f"{part}: {len(raw['notes'])} notes from '{src['id']}' via {raw['method']} "
                     f"({time.time() - t0:.1f}s)")
     return msgs
+
+
+def redetect_timing(m: dict) -> dict:
+    """Re-run timing detection on the mix (e.g. after a tempo-method upgrade).
+    The user's correction, if any, is kept untouched."""
+    src = manifest.mix(m)
+    y, _ = audio.load(src["path"], sr=sync.SR)
+    m["timing"]["detected"] = tempo.detect(y, sr=sync.SR)
+    return m
