@@ -29,6 +29,8 @@ def main(argv=None):
     t.add_argument("--redetect", action="store_true", help="re-run tempo detection (keeps your correction)")
     c = sub.add_parser("click"); c.add_argument("project")
     tr = sub.add_parser("transcribe"); tr.add_argument("project"); tr.add_argument("--parts", default="bass,melody")
+    rn = sub.add_parser("rename"); rn.add_argument("project"); rn.add_argument("name")
+    ns = sub.add_parser("names", help="suggest names from tags / Traktor / file names"); ns.add_argument("project")
     pl = sub.add_parser("pipeline", help="transcribe + export + click checks"); pl.add_argument("project")
     ex = sub.add_parser("export"); ex.add_argument("project"); ex.add_argument("--no-review", action="store_true")
     tl = sub.add_parser("traktor-list", help="list Traktor's cached stem files with song titles")
@@ -73,6 +75,14 @@ def main(argv=None):
             manifest.correct_timing(m, args.bpm, args.downbeat, args.bar, args.note)
         manifest.save(m, args.project)
         print(project.summary(m))
+    elif args.cmd == "rename":
+        from . import naming
+        new = naming.rename(Path(args.project).parent, args.name)
+        print(f"Renamed to '{args.name}'\nPROJECT_DIR={new}")
+    elif args.cmd == "names":
+        from . import naming
+        for c in naming.suggest(Path(args.project).parent):
+            print(f"{c['name']}   ({c['source']})")
     elif args.cmd == "pipeline":
         for step in (["transcribe", args.project], ["export", args.project], ["click", args.project]):
             print(f"== {step[0]}", flush=True)

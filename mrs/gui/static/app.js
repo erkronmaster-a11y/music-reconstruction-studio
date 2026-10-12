@@ -113,6 +113,41 @@ $("#btnClear").onclick = async () => { await runJob({ action: "clear", dir: S.di
 $("#btnFinder").onclick = () => post("/api/open", { path: S.dir });
 $("#logClear").onclick = () => $("#log").textContent = "";
 
+// ---------- rename / auto-name ----------
+function startRename(value) {
+  const inp = $("#nameIn");
+  $("#projName").hidden = true; inp.hidden = false;
+  inp.value = value ?? S.data.project.name; inp.focus(); inp.select();
+}
+async function doRename(name) {
+  $("#nameIn").hidden = true; $("#projName").hidden = false; $("#nameList").hidden = true;
+  name = name.trim();
+  if (!name || name === S.data.project.name) return;
+  const j = await runJob({ action: "rename", dir: S.dir, name }, "Renaming");
+  if (j.state === "done" && j.result) openProject(j.result);
+}
+$("#projName").onclick = () => S.dir && startRename();
+$("#btnRename").onclick = () => startRename();
+$("#nameIn").onkeydown = (e) => {
+  if (e.key === "Enter") doRename(e.target.value);
+  if (e.key === "Escape") { e.target.hidden = true; $("#projName").hidden = false; }
+};
+$("#nameIn").onblur = (e) => setTimeout(() => { if (!e.target.hidden) doRename(e.target.value); }, 150);
+$("#btnAutoname").onclick = async () => {
+  const ul = $("#nameList");
+  if (!ul.hidden) { ul.hidden = true; return; }
+  ul.hidden = false; ul.innerHTML = `<li class="empty">Reading the song's files…</li>`;
+  const names = await api("/api/names?dir=" + encodeURIComponent(S.dir));
+  ul.innerHTML = names.length ? "" : `<li class="empty">No name found in tags, Traktor or file names — use ✎ to type one.</li>`;
+  for (const c of names) {
+    const li = document.createElement("li");
+    li.innerHTML = `<b></b><small></small>`;
+    li.querySelector("b").textContent = c.name; li.querySelector("small").textContent = "from " + c.source;
+    li.onclick = () => { ul.hidden = true; startRename(c.name); };   // confirm with Enter
+    ul.append(li);
+  }
+};
+
 // ---------- project ----------
 async function openProject(dir) {
   stop();
@@ -124,7 +159,7 @@ async function openProject(dir) {
   $("#projName").textContent = m.name;
   $("#projMeta").textContent = `${fmt(S.duration)} · ${m.sources.length - 1} stems · ${m.tracks.length ? m.tracks.map((t) => t.id).join(" + ") + " MIDI" : "no MIDI yet"}`;
   $("#emptyStage").hidden = true;
-  ["#btnPlay", "#btnStop", "#btnFinder"].forEach((s) => $(s).disabled = false);
+  ["#btnPlay", "#btnStop", "#btnFinder", "#btnRename", "#btnAutoname"].forEach((s) => $(s).disabled = false);
   setBusy(false);
   renderTiming(); renderParts(); buildMixer();
   loadProjects();

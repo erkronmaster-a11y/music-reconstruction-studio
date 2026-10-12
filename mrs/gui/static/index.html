@@ -14,7 +14,16 @@
       <span class="brand-mark"><img src="smv-logo.png" alt=""></span>
       <span class="brand-copy"><strong>SHAREDMINDVISUALS</strong><small>LOOMBACK</small></span>
     </div>
-    <div class="project-title"><span id="projName">No project open</span><em id="projMeta"></em></div>
+    <div class="project-title">
+      <div class="name-row">
+        <span id="projName" title="Click to rename">No project open</span>
+        <input id="nameIn" hidden>
+        <button id="btnRename" class="mini" title="Rename" disabled>✎</button>
+        <button id="btnAutoname" class="mini" title="Suggest a name from the song's files" disabled>Auto-name</button>
+      </div>
+      <em id="projMeta"></em>
+      <ul class="names" id="nameList" hidden></ul>
+    </div>
     <div class="header-actions">
       <span class="job-pill" id="jobPill" hidden><i></i><span id="jobText">working…</span></span>
       <button id="btnFinder" title="Show project folder in Finder" disabled>Open folder</button>

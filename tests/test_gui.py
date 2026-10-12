@@ -50,3 +50,31 @@ def test_audio_only_for_project_sources(server, tmp_path):
     assert e.value.code == 403
     with pytest.raises(urllib.error.HTTPError):
         get(base + "/../../etc/passwd")
+
+
+def test_rename_and_suggest(tmp_path):
+    import subprocess
+    from mrs import naming, testsong, project, manifest
+    src = tmp_path / "src" / "night_drive_v2"
+    testsong.make(src, bars=2)
+    # give the mix a title tag, like a real export would
+    mix = src / "Test Song MIX.wav"
+    tagged = src / "Night Drive MIX.wav"
+    subprocess.run(["ffmpeg", "-v", "error", "-i", str(mix), "-metadata", "title=Night Drive", "-metadata", "artist=SMV",
+                    "-c", "copy", str(tagged)], check=True)
+    mix.unlink()
+    m, _ = project.build(folder=src)
+    pdir = tmp_path / "projects" / "AWQQL5A0V0WGRCBYNBHNCS0WHQFC"
+    (pdir / "stems").mkdir(parents=True)
+    manifest.save(m, pdir / "project.json")
+    names = [c["name"] for c in naming.suggest(pdir)]
+    assert names[0] == "SMV - Night Drive" and "night drive v2" in names
+    assert not any(n == "AWQQL5A0V0WGRCBYNBHNCS0WHQFC" for n in names)   # codes never suggested
+    new = naming.rename(pdir, "SMV - Night Drive")
+    assert new.name == "SMV - Night Drive" and not pdir.exists()
+    assert manifest.load(new / "project.json")["name"] == "SMV - Night Drive"
+    other = tmp_path / "projects" / "Other"
+    other.mkdir()
+    manifest.save(m, other / "project.json")
+    with pytest.raises(FileExistsError):
+        naming.rename(other, "SMV - Night Drive")

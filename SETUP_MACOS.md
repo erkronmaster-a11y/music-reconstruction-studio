@@ -77,6 +77,11 @@ few minutes, and nothing in it changes your system or your Ableton settings.
    switch on a stem together with its MIDI, or the click, and press Space to
    play.
 
+5. **Naming:** click the song title at the top (or ✎) to rename it.
+   **Auto-name** suggests names found in the song's own tags, your Traktor
+   library and the original file or folder name, each labelled with where it
+   came from. Pick one, then press Enter.
+
 The numbered scripts below still work. Loomback runs the same steps.
 
 ## 6. Song → MIDI (Sprint 1b, a few minutes per song)

@@ -156,6 +156,11 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(200, load_project(q["dir"]))
             if u.path == "/api/traktor":
                 return self.send(200, traktor_list(q.get("refresh") == "1"))
+            if u.path == "/api/names":
+                if not allowed(Path(q["dir"]) / "project.json"):
+                    return self.send(403, {"error": "not allowed"})
+                from mrs import naming
+                return self.send(200, naming.suggest(q["dir"]))
             if u.path == "/api/job":
                 j = JOBS.get(q["id"])
                 return self.send(200 if j else 404, j or {"error": "no such job"})
@@ -207,6 +212,8 @@ class Handler(BaseHTTPRequestHandler):
                     for k, flag in (("bpm", "--bpm"), ("downbeat", "--downbeat")):
                         if body.get(k) not in (None, ""):
                             args += [flag, str(float(body[k]))]
+                if a == "rename":
+                    args = ["rename", pj, str(body["name"])]
                 if a == "all":
                     args = ["pipeline", pj]
                 if not args:
