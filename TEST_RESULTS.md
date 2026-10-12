@@ -116,6 +116,47 @@ The test now requires < 20 ms drift over 2.5 minutes. A `click-follow.wav`
 now show when a song's tempo **really** changes, which a single tempo can't
 follow (a tempo map is on the roadmap).
 
+## Sprint 2 — drums → GM MIDI (2026-10-12, Linux, synthetic ground truth)
+**Method:** band-wise SuperFlux onsets on the drums stem (DSP, no model) → kick
+/ snare / closed hat / open hat / unclassified. **Test kit:** pitch-drop kick,
+190 Hz-body + band-passed-noise snare, high-passed hats (open = 0.4 s ring),
+and a 900 Hz woodblock that should come out "unclassified".
+
+40-bar song, onset tolerance 30 ms:
+
+| Class | Ref | Found | Precision | Recall | F1 |
+|---|---|---|---|---|---|
+| Kick | 80 | 76 | 1.00 | 0.95 | 0.97 |
+| Snare | 80 | 80 | 1.00 | 1.00 | 1.00 |
+| Closed hat | 300 | 288 | 1.00 | 0.96 | 0.98 |
+| Open hat | 20 | 21 | 0.95 | 1.00 | 0.98 |
+| Unclassified | 10 | 8 | 1.00 | 0.80 | 0.89 |
+
+**How it got there**
+- Summed band energy hid hats inside snare tails, so the onset curve is
+  computed per frequency bin.
+- Per-bin flux then fired on noise flicker, so it uses SuperFlux (max filter
+  + 3-frame lag).
+- An open hat's ring re-triggered hats, so inside the ring a hit must be
+  1.2× louder.
+- Decays re-triggered 50–80 ms later at < 0.1 strength, so those echoes are
+  dropped.
+- False kicks on snares are removed by a song-relative low-energy check.
+- The woodblock read as a snare, so a snare must be noise-dominant above
+  1.2 kHz.
+
+**Pipeline:** drum hits are notes with `class` and GM pitch (36/38/42/46,
+unclassified → 39 + flag), on channel 10. The stem offset is removed (median
+kick error < 10 ms); nothing is quantised.
+
+**Stem sync fix found by this sprint:** plain waveform correlation locked one
+pitch period off on a held vocal note (−4.54 ms = one cycle of 220 Hz). It
+was replaced by **GCC-PHAT**, and all sync tests pass. **`pytest` → 40 passed.**
+
+**Not yet run on a real song.** Real kits have toms, cymbals, claps and
+reverb. Toms and cymbals have no class yet (they will show as
+kick/snare/unclassified).
+
 ## Sprint 1c — beat map for drifting songs (2026-10-12, Linux)
 **From the Mac:** on the owner's song the beats wander about ±100 ms around
 **any** constant grid, early and late. The tempo isn't steady, so one BPM

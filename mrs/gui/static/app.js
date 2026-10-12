@@ -11,7 +11,8 @@ const post = (path, body) => api(path, { method: "POST", headers: { "Content-Typ
 const fmt = (t) => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, "0")}`;
 const log = (line) => { const el = $("#log"); el.textContent += line + "\n"; el.scrollTop = el.scrollHeight; };
 
-const COLORS = { mix: "#edf0f4", bass: "#2aa8ff", melody: "#ff3fbd", click: "#efff36", stem: "#48ff91" };
+const COLORS = { mix: "#edf0f4", bass: "#2aa8ff", melody: "#ff3fbd", drums: "#48ff91", click: "#efff36", stem: "#8fd3c9" };
+const DRUM_ROWS = { 46: "OPEN HAT", 42: "HAT", 39: "OTHER", 38: "SNARE", 36: "KICK" };
 const S = {
   dir: null, data: null, duration: 0,
   ctx: null, buffers: {}, channels: [], playing: false, t0: 0, offset: 0, sched: new Set(), timer: null,
@@ -283,9 +284,10 @@ function schedule() {
     if (ch.kind === "midi") {
       ch.track.notes_view.forEach((n, i) => {
         const key = ch.id + i;
-        if (n.flags?.length || S.sched.has(key) || n.start_s < t - 0.01 || n.start_s >= until) return;
+        if ((n.flags?.length && ch.track.id !== "drums") || S.sched.has(key) || n.start_s < t - 0.01 || n.start_s >= until) return;
         S.sched.add(key);
         const at = S.t0 + (n.start_s - S.offset), dur = Math.max(0.03, n.end_s - n.start_s);
+        if (ch.track.id === "drums") { drumHit(ctx, ch.gain, at, n); return; }
         const o = ctx.createOscillator(), g = ctx.createGain();
         o.type = ch.track.id === "bass" ? "triangle" : "square";
         o.frequency.value = 440 * 2 ** ((n.pitch - 69) / 12);
@@ -307,6 +309,23 @@ function schedule() {
       });
     }
   }
+}
+let NOISE = null;
+function drumHit(ctx, out, at, n) {
+  const v = n.velocity / 127, g = ctx.createGain();
+  if (n.pitch === 36) {               // kick: falling sine
+    const o = ctx.createOscillator(); o.frequency.setValueAtTime(120, at); o.frequency.exponentialRampToValueAtTime(45, at + 0.12);
+    g.gain.setValueAtTime(v, at); g.gain.exponentialRampToValueAtTime(0.001, at + 0.25);
+    o.connect(g).connect(out); o.start(at); o.stop(at + 0.26); return;
+  }
+  if (!NOISE) { NOISE = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const d = NOISE.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  const src = ctx.createBufferSource(), f = ctx.createBiquadFilter();
+  src.buffer = NOISE;
+  f.type = n.pitch === 38 ? "bandpass" : n.pitch === 39 ? "bandpass" : "highpass";
+  f.frequency.value = n.pitch === 38 ? 2500 : n.pitch === 39 ? 900 : 7000;
+  const len = n.pitch === 46 ? 0.35 : n.pitch === 38 ? 0.15 : 0.05;
+  g.gain.setValueAtTime(v * 0.6, at); g.gain.exponentialRampToValueAtTime(0.001, at + len);
+  src.connect(f).connect(g).connect(out); src.start(at); src.stop(at + len + 0.01);
 }
 function stop(keep) {
   if (S.playing) S.offset = now();
@@ -374,11 +393,14 @@ function draw() {
   tracks.forEach((t, li) => {
     const y0 = waveH + li * laneH, col = COLORS[t.id] || COLORS.melody;
     g.fillStyle = "rgba(13,16,20,.85)"; g.fillRect(0, y0, W, 1);
-    const ps = t.notes_view.map((n) => n.pitch), lo = Math.min(...ps) - 1, hi = Math.max(...ps) + 1, rowH = (laneH - 14) / Math.max(1, hi - lo);
+    const isDrum = t.id === "drums", order = [46, 42, 39, 38, 36];
+    const ps = t.notes_view.map((n) => n.pitch), lo = isDrum ? 0 : Math.min(...ps) - 1, hi = isDrum ? order.length : Math.max(...ps) + 1, rowH = (laneH - 14) / Math.max(1, hi - lo);
+    const rowOf = (p) => isDrum ? order.indexOf(p) + 0.5 : hi - p;
+    if (isDrum && rowH > 9) { g.fillStyle = "#3d6b52"; g.font = "8px ui-monospace"; order.forEach((p, k) => g.fillText(DRUM_ROWS[p], W - 52, y0 + 12 + (k + 0.5) * rowH + 3)); }
     for (const n of t.notes_view) {
       if (n.end_s < S.scroll || n.start_s > t1) continue;
-      const nx = x(n.start_s), w = Math.max(2, (n.end_s - n.start_s) * S.pxPerSec), ny = y0 + 12 + (hi - n.pitch) * rowH;
-      if (n.flags?.length) { g.strokeStyle = "rgba(128,137,149,.8)"; g.setLineDash([3, 2]); g.strokeRect(nx, ny, w, Math.max(2, rowH - 1)); g.setLineDash([]); continue; }
+      const nx = x(n.start_s), w = isDrum ? 3 : Math.max(2, (n.end_s - n.start_s) * S.pxPerSec), ny = y0 + 12 + rowOf(n.pitch) * rowH - (isDrum ? rowH / 2 : 0);
+      if (n.flags?.length && !isDrum) { g.strokeStyle = "rgba(128,137,149,.8)"; g.setLineDash([3, 2]); g.strokeRect(nx, ny, w, Math.max(2, rowH - 1)); g.setLineDash([]); continue; }
       g.globalAlpha = 0.25 + 0.75 * Math.min(1, n.confidence / 0.6);
       g.fillStyle = col; g.fillRect(nx, ny, w, Math.max(2, rowH - 1));
       g.globalAlpha = 1;

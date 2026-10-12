@@ -175,6 +175,8 @@ def pick_sources(m: dict) -> dict[str, dict]:
     out = {}
     if by_role.get("bass"):
         out["bass"] = by_role["bass"][0]
+    if by_role.get("drums"):
+        out["drums"] = by_role["drums"][0]
     for role in ("melody", "other"):
         if by_role.get(role):
             out["melody"] = by_role[role][0]
@@ -188,7 +190,7 @@ def transcribe(m: dict, parts: list[str] | None = None) -> list[str]:
     from . import manifest, transcribe as tr
     msgs = []
     chosen = pick_sources(m)
-    for part in parts or ["bass", "melody"]:
+    for part in parts or ["bass", "melody", "drums"]:
         src = chosen.get(part)
         if not src:
             msgs.append(f"{part}: skipped — no {part} stem in this project "

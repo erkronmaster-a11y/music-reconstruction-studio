@@ -72,6 +72,20 @@ The warp markers use the documented `Clip.add_warp_marker`. Audio files are
 never altered. A user timing correction switches the export back to
 constant mode.
 
+## Drums (Sprint 2)
+`mrs/drums.py`: SuperFlux onsets per band on the drums stem.
+
+| Class | Band rule | GM note |
+|---|---|---|
+| Kick | 30–150 Hz | 36 (C1) |
+| Snare | 1.2–5 kHz noise + 150–400 Hz body | 38 (D1) |
+| Closed hat | > 7 kHz, short | 42 (F#1) |
+| Open hat | > 7 kHz, rings > 150 ms | 46 (A#1) |
+| Unclassified | anything else | 39 (D#1) + `flags: ["unclassified"]` |
+
+The export writes the MIDI on channel 10 (`is_drum`). Notes are 60 ms
+one-shots at the detected times.
+
 ## MIDI export
 `mrs/export.py`. MIDI time = audio time + `pad_s`, where `pad_s` puts the
 first downbeat on a bar line. `export.json` records the tempo, `pad_s` and the

@@ -94,7 +94,7 @@ code { font-family: var(--mono); font-size: 11px; color: #c3ccd6; }
 .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 10.5px; color: var(--muted); }
 .sw { display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
 .sw.beat { background: #2a313a; } .sw.down { background: var(--neon-yellow); }
-.sw.bass { background: var(--neon-blue); } .sw.mel { background: var(--neon-pink); }
+.sw.bass { background: var(--neon-blue); } .sw.mel { background: var(--neon-pink); } .sw.drum { background: var(--neon-green); }
 .sw.ghost { border: 1px dashed var(--muted); }
 .log { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); padding: 8px 10px; min-height: 0; display: flex; flex-direction: column; }
 .log pre { margin: 0; overflow: auto; font: 11px/1.45 var(--mono); color: #aab4bf; white-space: pre-wrap; flex: 1; }

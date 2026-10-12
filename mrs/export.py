@@ -15,7 +15,7 @@ import numpy as np
 
 from . import audio, manifest
 
-GM_PROGRAM = {"bass": 33, "melody": 81, "other": 0}  # Fingered Bass, Saw Lead, Piano
+GM_PROGRAM = {"bass": 33, "melody": 81, "other": 0, "drums": 0}  # Fingered Bass, Saw Lead, Piano; drums use channel 10
 
 
 def timeline(m: dict) -> dict:
@@ -63,7 +63,8 @@ def write_midi(m: dict, out_dir: str | Path) -> dict:
         for t in m["tracks"]:
             pm = pretty_midi.PrettyMIDI(initial_tempo=tl["tempo_bpm"], resolution=960)
             pm.time_signature_changes.append(pretty_midi.TimeSignature(tl["beats_per_bar"], 4, 0))
-            inst = pretty_midi.Instrument(program=GM_PROGRAM.get(t["role"], 0), name=f"{t['id']} ({view} transcription)")
+            inst = pretty_midi.Instrument(program=GM_PROGRAM.get(t["role"], 0), name=f"{t['id']} ({view} transcription)",
+                                          is_drum=t["role"] == "drums")  # GM drums: channel 10
             for n in manifest.effective_notes(t, view):
                 s, e = place(m, tl, n["start_s"]), place(m, tl, n["end_s"])
                 if e <= max(0.0, s):
@@ -106,7 +107,17 @@ def audio_placement(m: dict, tl: dict) -> dict:
 def synth(notes: list[dict], dur_s: float, sr: int = 22050) -> np.ndarray:
     """Plain additive tones — for checking pitch and timing by ear, not for beauty."""
     y = np.zeros(int(dur_s * sr) + sr)
+    rng = np.random.default_rng(0)
     for n in notes:
+        if "class" in n:  # drum hit: short noise/thump so it can be judged by ear
+            L = int(0.08 * sr); t = np.arange(L) / sr
+            hit = (np.sin(2 * np.pi * 60 * t) * np.exp(-t * 30) if n["pitch"] == 36
+                   else rng.normal(0, 0.5, L) * np.exp(-t * (25 if n["pitch"] in (38, 46) else 80)))
+            i = int(n["start_s"] * sr)
+            if 0 <= i < len(y):
+                seg = hit[: len(y) - i] * n["velocity"] / 127
+                y[i:i + len(seg)] += seg
+            continue
         f0 = 440.0 * 2 ** ((n["pitch"] - 69) / 12)
         L = int((n["end_s"] - n["start_s"]) * sr)
         if L <= 0:

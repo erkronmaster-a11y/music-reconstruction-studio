@@ -28,7 +28,7 @@ def main(argv=None):
     t.add_argument("--bar", type=int); t.add_argument("--note"); t.add_argument("--clear", action="store_true")
     t.add_argument("--redetect", action="store_true", help="re-run tempo detection (keeps your correction)")
     c = sub.add_parser("click"); c.add_argument("project")
-    tr = sub.add_parser("transcribe"); tr.add_argument("project"); tr.add_argument("--parts", default="bass,melody")
+    tr = sub.add_parser("transcribe"); tr.add_argument("project"); tr.add_argument("--parts", default="bass,melody,drums")
     rn = sub.add_parser("rename"); rn.add_argument("project"); rn.add_argument("name")
     ns = sub.add_parser("names", help="suggest names from tags / Traktor / file names"); ns.add_argument("project")
     pl = sub.add_parser("pipeline", help="transcribe + export + click checks"); pl.add_argument("project")

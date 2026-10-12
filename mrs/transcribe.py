@@ -19,7 +19,7 @@ from . import audio
 
 SR = 22050
 HOP = 256
-RANGES = {"bass": (28, 64), "melody": (48, 96), "other": (36, 96)}   # MIDI note ranges searched
+RANGES = {"bass": (28, 64), "melody": (48, 96), "other": (36, 96), "drums": (35, 81)}   # MIDI note ranges searched
 
 
 def _hz(midi):
@@ -98,7 +98,13 @@ def transcribe_source(src: dict, role: str) -> dict:
     import librosa
     lo, hi = RANGES.get(role, RANGES["other"])
     offset = (src.get("sync") or {}).get("offset_s", 0.0)
-    if role == "bass":
+    if role == "drums":
+        from . import drums
+        y, sr = audio.load(src["path"], sr=drums.SR)
+        notes = drums.to_notes(drums.detect(y, sr))
+        method = "mrs band-onset drums v1 (SuperFlux per band; kick/snare/closed+open hat/unclassified)"
+        meaning = "onset strength above the adaptive threshold, 0-1 (hat under a snare ×0.7, unclassified ×0.6)"
+    elif role == "bass":
         y, sr = audio.load(src["path"], sr=SR)
         notes = pyin_notes(y, sr, lo, hi)
         method = f"librosa {librosa.__version__} pyin + onset split"

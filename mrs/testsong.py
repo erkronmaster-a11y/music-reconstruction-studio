@@ -41,9 +41,30 @@ def make(out: str | Path, bpm=123.0, first_downbeat=0.37, bars=16, stem_offsets=
     parts = {k: np.zeros(n) for k in ("drums", "bass", "melody", "vocals")}
     truth = {"bpm": bpm, "first_downbeat_s": first_downbeat, "beats_per_bar": 4, "bars": bars,
              "sample_rate": SR, "stem_offsets_s": stem_offsets, "notes": {"bass": [], "melody": []}}
-    kick = lambda: _tone(55, 0.25, SR, (1,), decay=18) * 1.6
-    snare = lambda: rng.normal(0, 0.4, int(0.15 * SR)) * np.exp(-np.arange(int(0.15 * SR)) / SR * 30)
-    hat = lambda: rng.normal(0, 0.12, int(0.05 * SR)) * np.exp(-np.arange(int(0.05 * SR)) / SR * 90)
+    from scipy.signal import butter, sosfilt
+    hp = butter(4, 7000, "highpass", fs=SR, output="sos")
+    bp = butter(2, [1200, 6000], "bandpass", fs=SR, output="sos")
+
+    def env(n, rate):
+        return np.exp(-np.arange(n) / SR * rate)
+
+    def kick():  # pitch drop 120 → 50 Hz
+        n = int(0.25 * SR); t = np.arange(n) / SR
+        f = 50 + 70 * np.exp(-t * 30)
+        return np.sin(2 * np.pi * np.cumsum(f) / SR) * env(n, 14) * 1.6
+
+    def snare():  # 190 Hz body + band-passed noise
+        n = int(0.18 * SR); t = np.arange(n) / SR
+        return (0.5 * np.sin(2 * np.pi * 190 * t) * env(n, 35) + sosfilt(bp, rng.normal(0, 1.2, n)) * env(n, 22)) * 0.6
+
+    def hat(open_=False):  # high-passed noise; open = long ring
+        n = int((0.4 if open_ else 0.05) * SR)
+        return sosfilt(hp, rng.normal(0, 0.5, n)) * env(n, 7 if open_ else 90)
+
+    def perc():  # woodblock-like click: should come out "unclassified"
+        n = int(0.06 * SR); t = np.arange(n) / SR
+        return np.sin(2 * np.pi * 900 * t) * env(n, 60) * 0.5
+    truth["notes"]["drums"] = []
     roots = [40, 40, 43, 45, 38, 38, 43, 47]
     scale = [0, 2, 4, 7, 9, 12]
     for bar in range(bars):
@@ -51,8 +72,16 @@ def make(out: str | Path, bpm=123.0, first_downbeat=0.37, bars=16, stem_offsets=
         for k in range(4):
             t = b0 + k * beat
             _add(parts["drums"], kick() if k in (0, 2) else snare(), t, SR)
+            truth["notes"]["drums"].append([round(t, 5), "kick" if k in (0, 2) else "snare"])
         for k in range(8):
-            _add(parts["drums"], hat(), b0 + k * beat / 2, SR)
+            open_ = (k == 7 and bar % 2 == 1)
+            t = b0 + k * beat / 2
+            _add(parts["drums"], hat(open_), t, SR)
+            truth["notes"]["drums"].append([round(t, 5), "open_hat" if open_ else "closed_hat"])
+        if bar % 4 == 2:
+            t = b0 + 2.75 * beat
+            _add(parts["drums"], perc(), t, SR)
+            truth["notes"]["drums"].append([round(t, 5), "unclassified"])
         root = roots[bar % len(roots)]
         for k, (st, ln) in enumerate([(0, 1.5), (2, 1.0), (3, 0.75)]):
             p = root if k == 0 else root + (7 if k == 1 else 12)
