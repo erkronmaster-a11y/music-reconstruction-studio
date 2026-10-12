@@ -92,6 +92,30 @@ late; the first downbeat now steps back to the first bar of music.
 
 **Not yet verified on a real song.**
 
+## Sprint 1a fix — click drifted on a real song (2026-10-12)
+**Report from the Mac:** the click started on the one, then drifted. The song
+measured 132.512 BPM with a 10% beat-spacing spread.
+
+**Cause:** the tempo came from the median beat interval of librosa's tracker.
+Its beats are quantised to 11.6 ms frames and drift on their own. On test
+songs it was off by up to 1.2 BPM (129.2 against a true 128). At 132 BPM, a
+0.5 BPM error is about 0.4 s of drift over 2.5 minutes.
+
+**Fix:** an onset-comb fit. Every tempo within ±3% of the tracker's (coarse
+0.05, then fine 0.001 BPM) is scored against the whole onset curve, and the
+best one wins.
+
+| True BPM | Old | New |
+|---|---|---|
+| 132.0 | 132.512 | 132.007 |
+| 128.0 | 129.199 | 128.007 |
+| 97.3 | 97.509 | 97.306 |
+
+The test now requires < 20 ms drift over 2.5 minutes. A `click-follow.wav`
+(clicks on the tracker's own beats) and a grid-gap figure (early against late)
+now show when a song's tempo **really** changes, which a single tempo can't
+follow (a tempo map is on the roadmap).
+
 ## Sprint 1b — bass + melody → MIDI (2026-10-12, Linux, synthetic ground truth)
 `pytest tests/` → **28 passed**. Scored with `mir_eval` (onset ±50 ms, pitch exact).
 

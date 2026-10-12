@@ -26,6 +26,7 @@ def main(argv=None):
     t = sub.add_parser("tempo"); t.add_argument("project")
     t.add_argument("--bpm", type=float); t.add_argument("--downbeat", type=float)
     t.add_argument("--bar", type=int); t.add_argument("--note"); t.add_argument("--clear", action="store_true")
+    t.add_argument("--redetect", action="store_true", help="re-run tempo detection (keeps your correction)")
     c = sub.add_parser("click"); c.add_argument("project")
     tr = sub.add_parser("transcribe"); tr.add_argument("project"); tr.add_argument("--parts", default="bass,melody")
     ex = sub.add_parser("export"); ex.add_argument("project"); ex.add_argument("--no-review", action="store_true")
@@ -63,9 +64,11 @@ def main(argv=None):
         print(project.summary(manifest.load(args.project)))
     elif args.cmd == "tempo":
         m = manifest.load(args.project)
+        if args.redetect:
+            project.redetect_timing(m)
         if args.clear:
             manifest.clear_timing_correction(m)
-        else:
+        elif any(v is not None for v in (args.bpm, args.downbeat, args.bar, args.note)):
             manifest.correct_timing(m, args.bpm, args.downbeat, args.bar, args.note)
         manifest.save(m, args.project)
         print(project.summary(m))
@@ -100,7 +103,9 @@ def main(argv=None):
     elif args.cmd == "click":
         m = manifest.load(args.project)
         out = project.render_click(m, Path(args.project).with_name("click-check.wav"))
+        fol = project.render_click(m, Path(args.project).with_name("click-follow.wav"), follow=True)
         print(f"Wrote {out} — listen: high click = bar start, low click = beat.")
+        print(f"Wrote {fol} — clicks follow the detected beats (for comparison if the grid drifts).")
 
 
 if __name__ == "__main__":
