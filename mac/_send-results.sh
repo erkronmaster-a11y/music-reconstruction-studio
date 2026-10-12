@@ -18,6 +18,8 @@ else
   fi
 fi
 
+# Claude may have pushed updates meanwhile: bring them in first, or the push is refused.
+git pull -q --rebase 2>/dev/null || git pull -q --no-rebase 2>/dev/null
 if git push -q 2>/dev/null; then
   echo "Sent to GitHub. Tell Claude: \"results pushed\"."
 else
