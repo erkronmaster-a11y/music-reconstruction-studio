@@ -39,4 +39,29 @@ Four independent parts, connected only through files:
 | Tempo | `Song.tempo` | — |
 | **Save the Set** | **not in the LOM — user presses ⌘S** | — |
 
-The manifest schema itself is defined in Sprint 1.
+## Project manifest (`project.json`, v1)
+Defined and documented in `mrs/manifest.py`. In short:
+- `sources[]`: each file with its role (mix, vocals, bass, drums, melody,
+  other), format, sample rate, length, sha256, and `sync` (offset against the
+  mix, plus confidence).
+- `timing.detected` is written only by analysis. `timing.correction` is
+  written only by the user. `effective_timing()` merges them and labels every
+  value `detected` or `manual`.
+- `tracks[]` is reserved for transcription layers (Sprint 1b).
+
+## Input: NI Stems (`.stem.mp4`, e.g. Traktor)
+An open format: one MP4 with 5 audio streams (the mix plus 4 stems) on one
+timeline. Stem names come from the `moov/udta/stem` JSON box. `mrs/nistem.py`
+unpacks it to 24-bit WAV with ffmpeg, so the stems are sample-aligned by
+construction (measured: 0.0 ms).
+
+## Python modules
+| module | job |
+|---|---|
+| `mrs/audio.py` | decode (libsndfile, with ffmpeg as fallback) + inspect |
+| `mrs/nistem.py` | NI Stems unpacking |
+| `mrs/sync.py` | stem offset vs mix (waveform cross-correlation) |
+| `mrs/tempo.py` | tempo, beats, first downbeat, beat grid |
+| `mrs/project.py` | song folder → manifest; summary; click-check render |
+| `mrs/manifest.py` | the file format |
+| `mrs/testsong.py` | synthetic song with exact ground truth |

@@ -6,7 +6,7 @@
 additive synth and scored with `mir_eval` (onset tolerance 50 ms, offset ratio
 0.2). This is synthetic audio, so real mixes **will score lower**. The numbers
 rank the methods; they don't predict accuracy on your songs.
-Raw data: `reports/sprint0/transcription-probe.json`.
+Raw data: `reports/sprint0/transcription-probe-linux.json`.
 
 | Case | Method | Precision | Recall | Onset F1 | Onset+offset F1 | Mean onset error | Time |
 |---|---|---|---|---|---|---|---|
@@ -53,6 +53,29 @@ raw data: `reports/sprint0/live-create.json`, `live-verify.json`, `mac-env.txt`.
 - `File.isopen` was true while nothing was written. Saves are now read back to confirm them.
 - The device path was not `<repo>/live/<file>`. The repo is now found by
   cutting the path at the `/live` folder.
+
+## Sprint 1a — import, sync, timing (2026-10-12, Linux, synthetic ground truth)
+`pytest tests/` → **17 passed**. The test song is rendered at 123 BPM, first
+downbeat 0.37 s, with drums, bass, melody and vocals stems.
+
+| Check | Result |
+|---|---|
+| Decode WAV / AIFF / FLAC / MP3 (libsndfile 1.2.2) | ✅ all four |
+| Stem roles from file names (the song title appears in every name) | ✅ after a fix: "Song" in a title was read as "mix" |
+| Bass stem padded by 20 ms → measured offset | ✅ 20.0 ms (tolerance 1 ms); the other stems read 0.0 ms |
+| Tempo | ✅ within 1% (123.05 against 123) |
+| Beats on the true grid | ✅ median error < 30 ms |
+| First downbeat | ✅ within 30 ms. ⚠️ Confidence is low (0.07) because the kick hits on both 1 and 3, and the tool says so |
+| Corrections never change the detected values; save → load → clear works | ✅ |
+| NI `.stem.mp4` (5 AAC streams + `stem` metadata) → WAVs → analysis | ✅ stems aligned 0.0 ms; names read from the metadata; default order used when the metadata is missing |
+| 64 s song, full analysis (cloud CPU) | 7.4 s |
+
+**Fixed along the way:** stem sync originally compared onset envelopes. On
+rhythmic stems it locked one beat off (a 0.5 s error), so it now
+cross-correlates the waveforms. The beat tracker also started counting a bar
+late; the first downbeat now steps back to the first bar of music.
+
+**Not yet verified on a real song or on the Mac.**
 
 ## Sprint 0 — unit tests
 `pytest tests/` → 3 passed. Covers the .amxd container structure, that the

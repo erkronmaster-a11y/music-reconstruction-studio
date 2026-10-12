@@ -11,7 +11,8 @@ uncertain, never passed off as exact, and missing notes are never invented.
 | Sprint | Contents | State |
 |---|---|---|
 | 0 | Environment check, Live API test, transcription probe | ✅ done — Live API create/save/reopen verified |
-| 1 | Audio to MIDI (bass, melody) | not started |
+| 1a | Audio import, Traktor stems, stem sync, tempo/downbeat | 🟡 Mac run pending |
+| 1b | Bass + melody to MIDI | not started |
 
 ## Start here
 - **On the Mac:** [SETUP_MACOS.md](SETUP_MACOS.md)
@@ -19,6 +20,14 @@ uncertain, never passed off as exact, and missing notes are never invented.
 - **Plan:** [ROADMAP.md](ROADMAP.md)
 - **What has been measured:** [TEST_RESULTS.md](TEST_RESULTS.md)
 - **Rules for contributors and AI agents:** [AGENTS.md](AGENTS.md)
+
+## Analyse a song
+```bash
+.venv/bin/python -m mrs analyze "<song folder or file.stem.mp4>" --out <project folder>
+.venv/bin/python -m mrs click <project folder>/project.json        # listen-check the grid
+.venv/bin/python -m mrs tempo <project folder>/project.json --bpm 120 --downbeat 0.52
+```
+On the Mac: double-click `mac/4-analyze-song.command` and drag the song in.
 
 ## Developer quick start
 ```bash

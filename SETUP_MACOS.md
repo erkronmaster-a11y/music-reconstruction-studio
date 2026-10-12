@@ -42,6 +42,28 @@ few minutes, and nothing in it changes your system or your Ableton settings.
 > If something fails, that is a valid result. Don't fix it: send the results
 > anyway. Claude reads exactly which step failed.
 
+## 4. Sprint 1a — install + test + Traktor scan (≈10 min, mostly downloading)
+
+1. In GitHub Desktop: **Fetch origin** → **Pull origin**.
+2. Double-click **`mac/3-install.command`**.
+   - It installs `uv` and a current `ffmpeg` with Homebrew, builds the Python
+     environment and runs all the tests on your Mac.
+   - It tries Basic Pitch.
+   - It looks for Traktor stem files. It only reads; it never moves, changes
+     or uploads anything.
+3. When it says "Sent to GitHub", tell Claude **"install pushed"**.
+
+## 5. Analyse a song (≈1 min per song)
+
+1. Double-click **`mac/4-analyze-song.command`**.
+2. Drag a **song folder** (the full mix plus stems) **or a Traktor `.stem.mp4`
+   file** into the window, then press Enter.
+   - In a folder, the mix's file name must contain `mix`, `master` or `full`.
+3. A click track plays over your song: a high click marks each bar start, a
+   low click each beat. Tell Claude whether the high click lands on "the one".
+4. Results go to `~/Music/MRS Projects/<song>/`. Only a short text summary is
+   sent to GitHub, never your audio.
+
 ## Fallback: build the device by hand (if Live won't load the .amxd)
 
 This takes about 2 minutes, and only needs doing if step 3.2 fails, or if

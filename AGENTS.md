@@ -42,6 +42,7 @@ steps, don't assume.
 ```
 live/          Max for Live bridge (mrs_bridge.js + MRS Bridge.amxd)
 mac/           double-clickable scripts for the Mac
+mrs/           Python package (analysis, manifest, CLI: python -m mrs)
 tools/         dev / probe scripts (build_amxd.py, probe_transcription.py)
 assets/        small fixed test files
 reports/       results pushed back from the Mac and from probes

@@ -6,7 +6,7 @@ to go over **10%** is split up, or confirmed with Erick before it starts.
 | Sprint | Contents | Estimate | State |
 |---|---|---|---|
 | 0 | Mac check, Live API test (create → save → reopen → verify), Basic Pitch vs alternative | 5–8% | ✅ done |
-| 1a | Load WAV/AIFF/FLAC/MP3, inspect, sync stems, tempo + beats + first downbeat (user-correctable), manifest v1 | 8–10% | — |
+| 1a | Load WAV/AIFF/FLAC/MP3 + **Traktor/NI `.stem.mp4`**, inspect, sync stems, tempo + beats + first downbeat (user-correctable), click check, manifest v1 | 8–10% | 🟡 built + tested in cloud; Mac run pending |
 | 1b | Bass (pYIN-led) + melody (Basic Pitch-led) transcription, MIDI export, review + A/B render | 10–12% | — |
 | 2 | Drums: kick / snare / closed hat / open hat / unclassified, GM mapping, groove kept | 10–14% | — |
 | 3 | Live arrangement builder + fallback export package | 10–14% | — |
@@ -17,6 +17,14 @@ to go over **10%** is split up, or confirmed with Erick before it starts.
 - On synthetic tones, Basic Pitch is strong on **melody** but weak on **low bass**.
   pYIN is the reverse. Sprint 1 therefore plans: pYIN-led bass, Basic Pitch-led
   melody, with both outputs kept and compared.
+
+## Known weak spots to revisit
+- **Downbeat:** a heuristic (low-band onsets + chroma change). Its confidence is low
+  when the kick lands on both 1 and 3. Candidate upgrade: the `beat_this` model
+  (CPJKU, 2024) for beats and downbeats. Until then, the click check plus a
+  manual correction covers it.
+- **Tempo:** a single global value. Songs with tempo changes need a tempo map
+  (later).
 
 ## Not now
 Elaborate UI, preset matching, mastering, licensing.

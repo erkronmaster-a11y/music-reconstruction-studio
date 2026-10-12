@@ -131,7 +131,7 @@ def main():
             results["cases"][name][method] = r
             print(name, method, r)
     results["peak_rss_mb"] = round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024, 0)
-    (REPORT / "transcription-probe.json").write_text(json.dumps(results, indent=2))
+    (REPORT / f"transcription-probe-{platform.system().lower()}.json").write_text(json.dumps(results, indent=2))
     print("peak RSS MB", results["peak_rss_mb"])
 
 
