@@ -6,8 +6,8 @@ to go over **10%** is split up, or confirmed with Erick before it starts.
 | Sprint | Contents | Estimate | State |
 |---|---|---|---|
 | 0 | Mac check, Live API test (create → save → reopen → verify), Basic Pitch vs alternative | 5–8% | ✅ done |
-| 1a | Load WAV/AIFF/FLAC/MP3 + **Traktor/NI `.stem.mp4`**, inspect, sync stems, tempo + beats + first downbeat (user-correctable), click check, manifest v1 | 8–10% | 🟡 built + tested in cloud; Mac run pending |
-| 1b | Bass (pYIN-led) + melody (Basic Pitch-led) transcription, MIDI export, review + A/B render | 10–12% | — |
+| 1a | Load WAV/AIFF/FLAC/MP3 + **Traktor/NI `.stem.mp4`**, inspect, sync stems, tempo + beats + first downbeat (user-correctable), click check, manifest v1 | 8–10% (actual ≈ 12%) | ✅ Mac install verified; real-song click check pending |
+| 1b | Bass (pYIN) + melody (Basic Pitch) transcription, octave-ghost flags, MIDI export aligned to bar lines, A/B review | 10–12% | 🟡 built + tested in cloud; real song pending |
 | 2 | Drums: kick / snare / closed hat / open hat / unclassified, GM mapping, groove kept | 10–14% | — |
 | 3 | Live arrangement builder + fallback export package | 10–14% | — |
 | 4a | Editor: pitch / length / onset / delete / add, beat grid | 8–10% | — |

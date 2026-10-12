@@ -1,9 +1,11 @@
-"""Command line.
+"""Command line (see README for the Mac double-click scripts).
 
   python -m mrs analyze <song folder | file.stem.mp4> [--out <project folder>]
   python -m mrs info    <project.json>
   python -m mrs tempo   <project.json> [--bpm 120] [--downbeat 0.52] [--bar 4] [--clear]
   python -m mrs click   <project.json>           # writes click-check.wav next to it
+  python -m mrs transcribe <project.json> [--parts bass,melody]
+  python -m mrs export  <project.json>           # midi/ + review/ next to it
 """
 import argparse
 import sys
@@ -25,6 +27,8 @@ def main(argv=None):
     t.add_argument("--bpm", type=float); t.add_argument("--downbeat", type=float)
     t.add_argument("--bar", type=int); t.add_argument("--note"); t.add_argument("--clear", action="store_true")
     c = sub.add_parser("click"); c.add_argument("project")
+    tr = sub.add_parser("transcribe"); tr.add_argument("project"); tr.add_argument("--parts", default="bass,melody")
+    ex = sub.add_parser("export"); ex.add_argument("project"); ex.add_argument("--no-review", action="store_true")
     tl = sub.add_parser("traktor-list", help="list Traktor's cached stem files with song titles")
     tl.add_argument("--dir", default=str(Path.home() / "Music" / "Traktor" / "Stems"))
     args = ap.parse_args(argv)
@@ -65,6 +69,25 @@ def main(argv=None):
             manifest.correct_timing(m, args.bpm, args.downbeat, args.bar, args.note)
         manifest.save(m, args.project)
         print(project.summary(m))
+    elif args.cmd == "transcribe":
+        m = manifest.load(args.project)
+        for msg in project.transcribe(m, args.parts.split(",")):
+            print(msg)
+        manifest.save(m, args.project)
+    elif args.cmd == "export":
+        from . import export
+        m = manifest.load(args.project)
+        base = Path(args.project).parent
+        info = export.write_midi(m, base / "midi")
+        tl = info["timeline"]
+        print(f"MIDI → {base / 'midi'}  ({', '.join(info['midi_files'].values())})")
+        print(f"Tempo {tl['tempo_bpm']} BPM · audio and MIDI shifted by {tl['pad_s']:.3f}s so the first downbeat "
+              f"falls on bar {tl['first_downbeat_bar']}")
+        if not args.no_review:
+            stats = export.review(m, base / "review")
+            print(f"Review audio → {base / 'review'}")
+            for k, v in stats.items():
+                print(f"  {k}: {v}")
     elif args.cmd == "traktor-list":
         files = sorted(Path(args.dir).rglob("*.stem.mp4"), key=lambda p: p.stat().st_mtime, reverse=True)
         idx = nistem.traktor_index()

@@ -47,7 +47,21 @@ Defined and documented in `mrs/manifest.py`. In short:
 - `timing.detected` is written only by analysis. `timing.correction` is
   written only by the user. `effective_timing()` merges them and labels every
   value `detected` or `manual`.
-- `tracks[]` is reserved for transcription layers (Sprint 1b).
+- `tracks[]`: one per part (`bass`, `melody`), each with:
+  - `raw`: method, pitch range, source, applied sync offset, what
+    "confidence" means for this method, and notes as `{start_s, end_s, pitch,
+    velocity, confidence, flags?}` on the mix timeline.
+  - `corrections[]`: written only by the editor (Sprint 4).
+  - `effective_notes(view)`: `clean` leaves out flagged notes, `raw` keeps all.
+- Sources per part: bass ← bass stem; melody ← melody stem, else the `other`
+  stem. If there is no stem, the part is **skipped and reported**, never
+  guessed from the full mix.
+
+## MIDI export
+`mrs/export.py`. MIDI time = audio time + `pad_s`, where `pad_s` puts the
+first downbeat on a bar line. `export.json` records the tempo, `pad_s` and the
+start time for each audio file, which the Live builder and manual import both
+use. There is no quantising.
 
 ## Input: NI Stems (`.stem.mp4`, e.g. Traktor)
 An open format: one MP4 with 5 audio streams (the mix plus 4 stems) on one

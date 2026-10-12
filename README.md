@@ -12,7 +12,7 @@ uncertain, never passed off as exact, and missing notes are never invented.
 |---|---|---|
 | 0 | Environment check, Live API test, transcription probe | ✅ done — Live API create/save/reopen verified |
 | 1a | Audio import, Traktor stems, stem sync, tempo/downbeat | 🟡 Mac run pending |
-| 1b | Bass + melody to MIDI | not started |
+| 1b | Bass + melody to MIDI, A/B review | 🟡 real song pending |
 
 ## Start here
 - **On the Mac:** [SETUP_MACOS.md](SETUP_MACOS.md)
@@ -28,6 +28,11 @@ uncertain, never passed off as exact, and missing notes are never invented.
 .venv/bin/python -m mrs tempo <project folder>/project.json --bpm 120 --downbeat 0.52
 ```
 On the Mac: double-click `mac/4-analyze-song.command` and drag the song in.
+For MIDI: `mac/6-transcribe-song.command` (does analysis too if needed).
+```bash
+.venv/bin/python -m mrs transcribe <project>/project.json      # bass + melody raw layers
+.venv/bin/python -m mrs export <project>/project.json          # midi/, midi/raw/, review/, export.json
+```
 
 ## Developer quick start
 ```bash

@@ -92,6 +92,36 @@ late; the first downbeat now steps back to the first bar of music.
 
 **Not yet verified on a real song.**
 
+## Sprint 1b — bass + melody → MIDI (2026-10-12, Linux, synthetic ground truth)
+`pytest tests/` → **28 passed**. Scored with `mir_eval` (onset ±50 ms, pitch exact).
+
+| Part | Method | Precision | Recall | F1 |
+|---|---|---|---|---|
+| Bass stem (padded 15 ms) | pYIN + onset split + sliver merge | 1.00 | 1.00 | **1.00** |
+| Melody stem | Basic Pitch, clean view | 1.00 | 1.00 | **1.00** |
+| Melody stem | Basic Pitch, raw view | 0.55 | 1.00 | 0.71 |
+
+**What changed along the way**
+- **Raw melody:** Basic Pitch hears a strong 2nd harmonic as a second note one
+  octave up. Those notes are now **flagged** `possible_octave_ghost`, never
+  deleted. The default MIDI leaves them out; `midi/raw/` keeps them, because
+  real octave doublings exist.
+- **Bass:** onsets inside a held note cut off 60–80 ms slivers of the same
+  pitch (precision 0.80). The segmentation now joins a sliver to its neighbour.
+- **Stem offset:** a 15 ms stem offset is removed (median error < 12 ms).
+- **MIDI export:** the tempo is correct, the first downbeat lands exactly on a
+  bar line (pad recorded in `export.json`), notes are shifted by exactly the
+  pad and are **not quantised**.
+
+**Full-length song (235.5 s, cloud CPU):** analyse 22.6 s · transcribe 51.3 s
+· export + review 16.0 s · peak memory ≈ 1.1 GB. Bass 360/360 notes; melody
+488 clean against 480 true (chroma agreement 0.995 / 0.97 — a listening aid,
+not an accuracy figure).
+
+**These are synthetic tones.** Real songs will score lower, and real songs
+have no ground truth, so they are judged by listening (review/ A/B files),
+never by an invented accuracy number.
+
 ## Sprint 0 — unit tests
 `pytest tests/` → 3 passed. Covers the .amxd container structure, that the
 bridge script is present, and the test tone.

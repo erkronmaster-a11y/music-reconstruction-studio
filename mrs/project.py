@@ -132,3 +132,41 @@ def render_click(m: dict, out: str | Path, click_gain: float = 0.5) -> Path:
     out = Path(out)
     sf.write(out, np.stack([y, y], 1), sr)
     return out
+
+
+# ---------- Sprint 1b: which file to transcribe for each part ----------
+def pick_sources(m: dict) -> dict[str, dict]:
+    """bass ← bass stem; melody ← melody stem, else 'other' stem. No stem → the
+    part is skipped and reported, rather than guessed from the full mix
+    (the mix carries drums and vocals, which would come out as false notes)."""
+    by_role: dict[str, list[dict]] = {}
+    for s in m["sources"]:
+        by_role.setdefault(s["role"], []).append(s)
+    out = {}
+    if by_role.get("bass"):
+        out["bass"] = by_role["bass"][0]
+    for role in ("melody", "other"):
+        if by_role.get(role):
+            out["melody"] = by_role[role][0]
+            break
+    return out
+
+
+def transcribe(m: dict, parts: list[str] | None = None) -> list[str]:
+    """Fills m['tracks'] raw layers. Returns messages (skips, timings)."""
+    import time
+    from . import manifest, transcribe as tr
+    msgs = []
+    chosen = pick_sources(m)
+    for part in parts or ["bass", "melody"]:
+        src = chosen.get(part)
+        if not src:
+            msgs.append(f"{part}: skipped — no {part} stem in this project "
+                        f"(add a file with '{part}' in its name, or a Traktor .stem.mp4)")
+            continue
+        t0 = time.time()
+        raw = tr.transcribe_source(src, part)
+        manifest.set_raw_track(m, part, part, raw)
+        msgs.append(f"{part}: {len(raw['notes'])} notes from '{src['id']}' via {raw['method']} "
+                    f"({time.time() - t0:.1f}s)")
+    return msgs

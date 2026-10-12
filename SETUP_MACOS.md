@@ -64,6 +64,20 @@ few minutes, and nothing in it changes your system or your Ableton settings.
 4. Results go to `~/Music/MRS Projects/<song>/`. Only a short text summary is
    sent to GitHub, never your audio.
 
+## 6. Song → MIDI (Sprint 1b, a few minutes per song)
+
+1. Double-click **`mac/6-transcribe-song.command`**.
+2. Drag in a Traktor `.stem.mp4`, a song folder, or a project folder from
+   `~/Music/MRS Projects/`, then press Enter.
+3. Two Finder windows open:
+   - **midi/**: bass and melody `.mid` files. `midi/raw/` holds every detected
+     note, unfiltered.
+   - **review/**: the "AB" files. With headphones, the **left ear is the
+     original part** and the **right ear is the MIDI** played back with a
+     plain tone.
+4. Tell Claude what you hear: where the MIDI is wrong (wrong notes, missing
+   notes, timing).
+
 ## Fallback: build the device by hand (if Live won't load the .amxd)
 
 This takes about 2 minutes, and only needs doing if step 3.2 fails, or if

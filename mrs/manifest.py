@@ -106,3 +106,39 @@ def effective_timing(m: dict) -> dict:
         else:
             out[key] = {"value": d.get(key), "source": "detected"}
     return out
+
+
+# ---------- transcription tracks (Sprint 1b) ----------
+# track = {"id", "role", "source_id", "raw": {method, ..., notes[]},
+#          "corrections": [] }   # corrections are written by the editor (Sprint 4), never by analysis
+
+def set_raw_track(m: dict, track_id: str, role: str, raw: dict) -> dict:
+    """Replace the raw layer of a track (re-analysis). Corrections are kept."""
+    for t in m["tracks"]:
+        if t["id"] == track_id:
+            t["raw"] = {**raw, "created": now()}
+            return t
+    t = {"id": track_id, "role": role, "source_id": raw["source_id"], "raw": {**raw, "created": now()},
+         "corrections": []}
+    m["tracks"].append(t)
+    return t
+
+
+def track(m: dict, track_id: str) -> dict:
+    for t in m["tracks"]:
+        if t["id"] == track_id:
+            return t
+    raise KeyError(track_id)
+
+
+CLEAN_SKIPS = {"possible_octave_ghost"}
+
+
+def effective_notes(t: dict, view: str = "clean") -> list[dict]:
+    """Raw notes with corrections applied, each tagged source='detected'.
+    view='clean' leaves out notes flagged in CLEAN_SKIPS; view='raw' keeps all."""
+    notes = [{**n, "source": "detected"} for n in t["raw"]["notes"]
+             if view == "raw" or not (set(n.get("flags", [])) & CLEAN_SKIPS)]
+    if t.get("corrections"):
+        raise NotImplementedError("corrections are applied by the Sprint 4 editor")
+    return notes
