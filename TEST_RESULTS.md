@@ -133,6 +133,9 @@ Beat This! takes about 8 s per 80 s of audio on CPU.
 - **Tests:** `pytest` → **31 passed**. In the drifting-song test, bass notes
   land on whole beats after mapping (median off-grid < 0.04 beat). Each stem's
   sync offset is carried into its own warp markers.
+- **Real song (owner's Mac, 156 s AI track):** listening check of
+  `click-beatmap.wav` → "stays pretty good the whole way". The single-tempo
+  click drifted badly on the same song.
 - **Not yet checked in Live:** that warp markers placed through the LOM play
   the song in time (Sprint 3 / next Mac test).
 
