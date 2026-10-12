@@ -15,6 +15,7 @@ def built(request, tmp_path_factory):
     m, _ = project.build(folder=d)
     project.transcribe(m, ["bass", "drums"])
     m["timing"]["detected"]["export_mode"] = request.param
+    m["timing"]["warp_per_beat"] = request.param == "beatmap"
     return m, request.param, tmp_path_factory.mktemp("out")
 
 
@@ -80,4 +81,7 @@ def test_builder_warp_markers_in_simulated_live(built, tmp_path):
     r = subprocess.run(["node", "tools/mock_live_warp.js", "live/loomback_build.js", str(plan)],
                        capture_output=True, text=True, check=True)
     res = json.loads(r.stdout.strip().splitlines()[-1])
-    assert res["missing"] == 0 and res["now"] == res["wanted"], res
+    # Live 12.0.15 refuses adds: the clip must still start and end exactly where the plan says
+    assert res["error"] is None and res["check"]["start_error_beats"] == 0 and abs(res["check"]["end_error_beats"]) < 0.01, res
+    if mode == "constant":
+        assert res["worst_deviation_beats"] < 0.005, res

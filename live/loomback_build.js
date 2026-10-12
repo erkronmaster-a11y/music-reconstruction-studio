@@ -129,6 +129,7 @@ function findTrack(song, name) {
 
 // ---------- build ----------
 function build() {
+    WARP_FORMAT = null; WARP_TRIED = [];
     R = { phase: "build", time: new Date().toString(), live_version: null, steps: [], tracks: [] };
     var app = new LiveAPI("live_app");
     R.live_version = app.call("get_major_version") + "." + app.call("get_minor_version") + "." + app.call("get_bugfix_version");
@@ -197,48 +198,95 @@ function buildAudio(song, t, res) {
     res.markers_before = ex.length;
     res.live_markers_at_start = ex;
     var want = t.warp_markers;
-    var first = want[0], last = want[want.length - 1];
-    if (ex.length) clip.call("move_warp_marker", ex[0].beat_time, first.beat_time - ex[0].beat_time);
-    res.end_marker = placeAtSample(clip, last.sample_time, last.beat_time);
-    var refused = 0;
-    for (var m = 1; m < want.length - 1; m++) {
-        var n0 = markers(clip).length;
-        clip.call("add_warp_marker", { beat_time: want[m].beat_time, sample_time: want[m].sample_time });
-        if (markers(clip).length === n0) {          // refused: fall back to add-then-move
-            refused++;
-            placeAtSample(clip, want[m].sample_time, want[m].beat_time);
+    var last = want[want.length - 1];
+    // Mac run 2: Live puts its first marker on the file's FIRST SOUND (0.04 s
+    // into the mix, 0.35 s into the vocals), not at sample 0. Moving every
+    // clip's first marker to the same beat shifted each stem differently.
+    // The marker must go to the beat where ITS OWN sample belongs.
+    if (!ex.length) throw "clip has no warp markers (warping off?)";
+    var s0 = ex[0].sample_time, b0 = beatAt(want, s0);
+    clip.call("move_warp_marker", ex[0].beat_time, b0 - ex[0].beat_time);   // Live carries its hidden helper along
+    // Try the full per-beat warp (adds); every format was refused on 12.0.15.
+    var added = 0;
+    for (var m = 1; m < want.length; m++) {
+        if (want[m].sample_time <= s0 + 0.03) continue;
+        if (addMarker(clip, want[m].beat_time, want[m].sample_time)) added++;
+        else if (WARP_FORMAT === null) break;   // no format works: stop trying
+    }
+    res.warp_add_format = WARP_FORMAT === null ? "none accepted" : WARP_FORMATS[WARP_FORMAT][0];
+    res.warp_formats_tried = WARP_TRIED.slice(0, 8);
+    if (added === 0) {
+        // Two-marker fit with moves only: the helper marker right after the
+        // first sets the clip's tempo. Point it so the clip runs at the song's
+        // average tempo from this marker to the end → start and end line up.
+        var now = markers(clip);
+        if (now.length >= 2) {
+            var h = now[1];
+            var rate = (last.beat_time - b0) / Math.max(1e-6, last.sample_time - s0);   // beats per second
+            var hb = b0 + rate * (h.sample_time - s0);
+            clip.call("move_warp_marker", h.beat_time, hb - h.beat_time);
         }
+        res.warp_method = "two-marker fit (adds not accepted by this Live): aligned start, average tempo";
+        res.average_tempo_bpm = Math.round(rate * 60 * 1000) / 1000;
+    } else {
+        res.warp_method = "per-beat markers via " + res.warp_add_format;
     }
-    res.explicit_adds_refused = refused;
-    // Live's hidden tempo helper (moved along with the first marker) is now a
-    // stray marker just after our first one: remove anything that is not ours.
-    var now = markers(clip), strays = 0;
-    for (var q = now.length - 2; q >= 1; q--) {
-        var mine = false;
-        for (var w2 = 0; w2 < want.length && !mine; w2++)
-            if (Math.abs(now[q].beat_time - want[w2].beat_time) < 0.001) mine = true;
-        if (!mine) { clip.call("remove_warp_marker", now[q].beat_time); strays++; }
-    }
-    res.stray_markers_removed = strays;
     // clip length follows the audio
     try { clip.set("end_marker", last.beat_time); clip.set("loop_end", last.beat_time); } catch (e) {}
     var fin = markers(clip);
-    res.markers_wanted = want.length;
     res.markers_now = fin.length;
     res.first_marker = fin[0];
-    res.last_marker = fin[fin.length - 1];
     res.clip_start = Number(clip.get("start_time"));
     res.clip_end = Number(clip.get("end_time"));
-    // check: every wanted marker present within 1 ms / 0.001 beat
-    var miss = 0;
-    for (var w = 0; w < want.length; w++) {
-        var found = false;
-        for (var f = 0; f < fin.length && !found; f++)
-            if (Math.abs(fin[f].beat_time - want[w].beat_time) < 0.001 && Math.abs(fin[f].sample_time - want[w].sample_time) < 0.003) found = true;
-        if (!found) miss++;
+    // check where the clip's end and start now play, against the plan
+    var endBeat = beatFromMarkers(fin, last.sample_time), startBeat = beatFromMarkers(fin, s0);
+    res.check = { start_error_beats: Math.round((startBeat - b0) * 1000) / 1000,
+                  end_error_beats: Math.round((endBeat - last.beat_time) * 1000) / 1000 };
+    if (Math.abs(res.check.start_error_beats) > 0.01 || Math.abs(res.check.end_error_beats) > 0.05)
+        res.error = "clip not where the plan puts it: " + JSON.stringify(res.check);
+}
+
+// plan markers (sample→beat), piecewise linear; extrapolated at the ends
+function beatAt(want, S) {
+    if (S <= want[0].sample_time) {
+        var r0 = (want[1].beat_time - want[0].beat_time) / (want[1].sample_time - want[0].sample_time);
+        return want[0].beat_time + (S - want[0].sample_time) * r0;
     }
-    res.markers_missing = miss;
-    if (miss > 0) res.error = miss + " of " + want.length + " warp markers did not land";
+    for (var i = 0; i < want.length - 1; i++)
+        if (S <= want[i + 1].sample_time)
+            return want[i].beat_time + (S - want[i].sample_time) * (want[i + 1].beat_time - want[i].beat_time) / (want[i + 1].sample_time - want[i].sample_time);
+    var n = want.length;
+    return want[n - 1].beat_time + (S - want[n - 1].sample_time) * (want[n - 1].beat_time - want[n - 2].beat_time) / (want[n - 1].sample_time - want[n - 2].sample_time);
+}
+// where Live will play sample S, from the clip's own markers (last segment extrapolated)
+function beatFromMarkers(mk, S) {
+    if (mk.length < 2) return NaN;
+    var a = mk[0], b = mk[1];
+    for (var i = 0; i < mk.length - 1; i++) if (mk[i].sample_time <= S) { a = mk[i]; b = mk[i + 1]; }
+    return a.beat_time + (S - a.sample_time) * (b.beat_time - a.beat_time) / (b.sample_time - a.sample_time);
+}
+
+// add_warp_marker: on Live 12.0.15 every add was refused while moves worked,
+// so the argument format is in doubt. Try each plausible form once, keep the
+// first one that adds a marker, and report it (like add_new_notes in Sprint 0).
+var WARP_FORMAT = null;
+var WARP_FORMATS = [
+    ["dict object", function (c, b, s) { c.call("add_warp_marker", s === undefined ? { beat_time: b } : { beat_time: b, sample_time: s }); }],
+    ["json string", function (c, b, s) { c.call("add_warp_marker", JSON.stringify(s === undefined ? { beat_time: b } : { beat_time: b, sample_time: s })); }],
+    ["key value list", function (c, b, s) { if (s === undefined) c.call("add_warp_marker", "beat_time", b); else c.call("add_warp_marker", "beat_time", b, "sample_time", s); }],
+    ["positional", function (c, b, s) { if (s === undefined) c.call("add_warp_marker", b); else c.call("add_warp_marker", b, s); }]
+];
+var WARP_TRIED = [];
+function addMarker(clip, b, s) {
+    var n0 = markers(clip).length;
+    if (WARP_FORMAT !== null) { WARP_FORMATS[WARP_FORMAT][1](clip, b, s); return markers(clip).length > n0; }
+    for (var f = 0; f < WARP_FORMATS.length; f++) {
+        try { WARP_FORMATS[f][1](clip, b, s); } catch (e) {}
+        var ok = markers(clip).length > n0;
+        WARP_TRIED.push({ format: WARP_FORMATS[f][0], with_sample: s !== undefined, ok: ok });
+        if (ok) { WARP_FORMAT = f; return true; }
+    }
+    return false;
 }
 
 // Put a marker at sample time S and beat B without giving Live a sample_time:
@@ -251,11 +299,11 @@ function placeAtSample(clip, S, B) {
     for (var i = 0; i < mk.length - 1; i++) if (mk[i].sample_time <= S) { a = mk[i]; b2 = mk[i + 1]; }
     var slope = (b2.beat_time - a.beat_time) / Math.max(1e-9, b2.sample_time - a.sample_time);
     var b0 = a.beat_time + (S - a.sample_time) * slope;
-    clip.call("add_warp_marker", { beat_time: b0 });
-    clip.call("move_warp_marker", b0, B - b0);
+    var added = addMarker(clip, b0);
+    if (added) clip.call("move_warp_marker", b0, B - b0);
     var after = markers(clip), best = null;
     for (var k = 0; k < after.length; k++) if (!best || Math.abs(after[k].beat_time - B) < Math.abs(best.beat_time - B)) best = after[k];
-    return { asked: { beat_time: B, sample_time: S }, got: best };
+    return { asked: { beat_time: B, sample_time: S }, got: best, added: added };
 }
 
 // Instruments: if the Set has a template track "LB Bass" / "LB Melody" /
@@ -306,7 +354,25 @@ function buildMidi(song, t, res, plan) {
     var back = parseDict(ac.call("get_notes_extended", 0, 128, 0.0, plan.length_beats + 4));
     res.notes_in_arrangement = back && back.notes ? back.notes.length : 0;
     if (res.notes_in_arrangement !== t.notes.length) res.error = "note count " + res.notes_in_arrangement + " ≠ " + t.notes.length;
-    if (!res.instrument) res.instrument = loadInstrument(song, tr, t.instrument_candidates || []);
+    if (!res.instrument) res.instrument = insertNative(tr, t.role);
+    if (!res.instrument || !res.instrument.loaded) {
+        var b = loadInstrument(song, tr, t.instrument_candidates || []);
+        res.instrument = { insert_device: res.instrument, browser: b, loaded: !!(b && b.loaded) };
+    }
+}
+
+// Track.insert_device (documented, Live 12.3+): native instruments by name.
+// Bass/melody get Drift; drums get Drum Rack (empty until a kit is dropped in —
+// a native device cannot carry samples).
+var NATIVE = { bass: "Drift", melody: "Drift", drums: "Drum Rack" };
+function insertNative(tr, role) {
+    var name = NATIVE[role];
+    if (!name) return null;
+    var before = ids(tr.api, "devices").length;
+    try { tr.api.call("insert_device", name); } catch (e) { return { loaded: false, tried: "insert_device " + name, error: String(e) }; }
+    var after = ids(tr.api, "devices").length;
+    return { loaded: after > before, device: name, via: "insert_device",
+             note: after > before ? null : "not available (needs Live 12.3 or later)" };
 }
 
 // Best effort: Live's browser, documented in the LOM. Selects the track, then
@@ -370,9 +436,12 @@ function verify() {
                 if (notes[k].pitch !== want[k].pitch || Math.abs(notes[k].start_time - want[k].start_time) > 0.001) bad++;
             step("notes: " + t.name, notes.length === want.length && bad === 0, { found: notes.length, wanted: want.length, mismatched: bad });
         } else {
-            var mk = markers(clip);
-            step("warp: " + t.name, Number(clip.get("warping")) === 1 && mk.length >= t.warp_markers.length,
-                 { markers: mk.length, wanted: t.warp_markers.length, mode: Number(clip.get("warp_mode")) });
+            var mk = markers(clip), w = t.warp_markers, lastW = w[w.length - 1];
+            var endErr = beatFromMarkers(mk, lastW.sample_time) - lastW.beat_time;
+            var startErr = beatFromMarkers(mk, mk[0].sample_time) - beatAt(w, mk[0].sample_time);
+            step("warp: " + t.name, Number(clip.get("warping")) === 1 && Math.abs(startErr) < 0.01 && Math.abs(endErr) < 0.05,
+                 { markers: mk.length, per_beat: mk.length >= w.length, start_error_beats: Math.round(startErr * 1000) / 1000,
+                   end_error_beats: Math.round(endErr * 1000) / 1000 });
         }
     }
     finish("live-verify.json");
@@ -386,6 +455,17 @@ function finish(file) {
         firstErr = firstErr.replace(/[\u0080-\uffff]/g, "-");
     }
     R.summary = failed.length ? "FAILED: " + failed.join(" | ") : "ALL OK";
+    if (R.phase === "build" && R.tracks) {
+        var made = 0, midiOk = 0, midi = 0, warpOk = 0, audio = 0, inst = 0;
+        for (var k = 0; k < R.tracks.length; k++) {
+            var tk = R.tracks[k];
+            if (!tk.error || tk.kind === "audio") made++;
+            if (tk.kind === "midi") { midi++; if (!tk.error) midiOk++; if (tk.instrument && tk.instrument.loaded) inst++; }
+            else { audio++; if (!tk.error) warpOk++; }
+        }
+        R.summary = made + " tracks built | MIDI " + midiOk + "/" + midi + " exact | warped " + warpOk + "/" + audio +
+                    " | instruments " + inst + "/" + midi + (failed.length ? " (details in report)" : "");
+    }
     var saved = writeJson(file, R);
     // status line carries the first error itself, so a screenshot is a full report
     show(R.phase + " - " + R.summary + (firstErr ? " :: " + firstErr.substring(0, 160) : "")

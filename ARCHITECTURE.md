@@ -68,7 +68,10 @@ line). The export then works as follows:
 - MIDI notes are placed with `to_beats()` (piecewise linear between beats).
   Their microtiming relative to the beat is kept; nothing is quantised.
 
-The warp markers use the documented `Clip.add_warp_marker`. Audio files are
+On Live 12.0.15, `add_warp_marker` is refused, so the builder uses moves
+only: the first marker goes to its own sample's beat, and the hidden helper
+sets the average tempo. MIDI then uses the same constant mapping by default
+(`timing.warp_per_beat` opts into beat-map export). Audio files are
 never altered. A user timing correction switches the export back to
 constant mode.
 

@@ -22,7 +22,11 @@ def timeline(m: dict) -> dict:
     """'beatmap' mode when a beat map exists (Live tempo constant, audio warped
     at every beat, notes placed by the map); else 'constant' (one tempo + pad)."""
     bm = (m["timing"]["detected"] or {}).get("beat_map") or {}
-    if (bm.get("positions") and not m["timing"].get("correction")
+    # Per-beat warping needs Live to accept added warp markers. Live 12.0.15
+    # refused every add (Mac, 2026-10-13), so clips can only run at one steady
+    # rate there; MIDI then has to follow the same steady mapping, or audio and
+    # MIDI drift apart mid-song. Beat-map export is opt-in: timing.warp_per_beat.
+    if (bm.get("positions") and not m["timing"].get("correction") and m["timing"].get("warp_per_beat")
             and (m["timing"]["detected"] or {}).get("export_mode", "beatmap") == "beatmap"):
         return {"mode": "beatmap", "tempo_bpm": bm["live_tempo_bpm"], "beats_per_bar": bm["beats_per_bar"],
                 "first_downbeat_s": bm["downbeats_s"][0] if bm["downbeats_s"] else bm["beats_s"][0],

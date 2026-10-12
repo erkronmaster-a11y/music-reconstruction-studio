@@ -150,6 +150,21 @@ follow (a tempo map is on the roadmap).
     markers missing.
   - **Instruments:** come from template tracks `LB Bass` / `LB Melody` /
     `LB Drums`, which are duplicated.
+- **Run 2 (report pushed 2026-10-13):**
+  - Every `add_warp_marker` was refused, with or without sample_time; only
+    moves work.
+  - Live puts each clip's first marker on its **first sound** (mix 0.04 s,
+    vocals 0.35 s), so moving them all to one beat **offset every stem
+    differently**. That matches "drums don't match the bass".
+  - **Fix:** each first marker goes to the beat of its own sample; the hidden
+    helper marker is moved to set the song's average tempo (moves only). In
+    the simulation (now matching the report) start and end land exactly.
+  - Because Live can't warp per beat here, the export uses **one constant
+    tempo for audio and MIDI alike** (MIDI = audio timing exactly). Beat-map
+    export is opt-in (`timing.warp_per_beat`) for a Live that accepts adds.
+  - The builder also tries 4 argument formats for `add_warp_marker` and
+    reports which one works, and tries `Track.insert_device` (Live 12.3+)
+    for Drift / Drum Rack before the browser.
 - Three bugs were found on the way and fixed:
   - Max's file writer can't write non-ASCII text, so reports are now ASCII.
   - Live loaded the device from outside `<repo>/live/`, so the plan and

@@ -79,6 +79,7 @@ def test_midi_export_alignment(proj, tmp_path, mode):
     assert m["timing"]["detected"]["export_mode"] == "constant"   # steady synthetic song
     m = json.loads(json.dumps(m))
     m["timing"]["detected"]["export_mode"] = mode
+    m["timing"]["warp_per_beat"] = mode == "beatmap"
     info = export.write_midi(m, tmp_path / "midi")
     tl = info["timeline"]
     assert tl["mode"] == mode
