@@ -39,9 +39,9 @@ def patcher():
         box("js", "newobj", "js mrs_bridge.js", [10, 45, 120, 22],
             saved_object_attributes={"filename": "mrs_bridge.js", "parameter_enable": 0}),
         box("status", "message", "click run, then save/close/reopen, then verify",
-            [10, 80, 400, 22], ins=2),
+            [10, 80, 700, 60], ins=2),
         box("note", "comment", "MRS Bridge — Sprint 0 test. Results go to reports/sprint0/.",
-            [10, 110, 400, 20], outs=0),
+            [10, 148, 400, 20], outs=0),
         # Keep MIDI flowing through, so the device is harmless on any track.
         box("midiin", "newobj", "midiin", [430, 10, 45, 22], outs=1),
         box("midiout", "newobj", "midiout", [430, 45, 50, 22], outs=0),

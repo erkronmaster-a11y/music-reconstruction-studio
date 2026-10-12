@@ -65,19 +65,50 @@ function repoDir() {
     return parts.join("/");
 }
 
+// Sprint 0 lesson: File.isopen can be true while nothing reaches the disk.
+// So every save is read back, and only a file we can read counts as saved.
+function fileSize(path) {
+    var f = new File(path, "read");
+    if (!f.isopen) return 0;
+    var n = f.eof;
+    f.close();
+    return n;
+}
+
+function writeVia(method, path, s) {
+    try {
+        if (method === "dict") {
+            var d = new Dict();
+            d.parse(s);
+            d.export_json(path);
+        } else {
+            var f = new File(path, "write", "TEXT");
+            if (!f.isopen) return 0;
+            for (var i = 0; i < s.length; i += 2000) f.writestring(s.substring(i, i + 2000));
+            f.eof = f.position;
+            f.close();
+        }
+    } catch (e) { post("MRS: " + method + " write error " + e + "\n"); return 0; }
+    return fileSize(path);
+}
+
+// Returns the path that was written and verified, or null.
 function writeJson(name, obj) {
     var dir = repoDir();
-    if (!dir) { post("MRS: device path unknown, result only in Max console\n"); return false; }
-    var path = dir + "/reports/sprint0/" + name;
+    if (!dir) { post("MRS: device path unknown\n"); return null; }
     var s = JSON.stringify(obj, null, 2);
-    var f = new File(path, "write", "TEXT");
-    if (!f.isopen) { post("MRS: cannot write " + path + "\n"); return false; }
-    f.eof = 0;
-    for (var i = 0; i < s.length; i += 2000) f.writestring(s.substring(i, i + 2000));
-    f.eof = f.position;
-    f.close();
-    post("MRS: wrote " + path + "\n");
-    return true;
+    var withVolume = dir + "/reports/sprint0/" + name;          // "Macintosh HD:/Users/…"
+    var posix = withVolume.replace(/^[^\/]*:/, "");              // "/Users/…"
+    var paths = [withVolume, posix];
+    var methods = ["dict", "file"];
+    for (var p = 0; p < paths.length; p++) {
+        for (var m = 0; m < methods.length; m++) {
+            var size = writeVia(methods[m], paths[p], s);
+            post("MRS: save via " + methods[m] + " to " + paths[p] + " -> " + size + " bytes\n");
+            if (size > 0) return paths[p];
+        }
+    }
+    return null;
 }
 
 // ---------- helpers ----------
@@ -237,15 +268,16 @@ function verify() {
 }
 
 function finish(file) {
-    var fails = 0;
+    var failed = [];
     for (var i = 0; i < result.steps.length; i++) {
         var s = result.steps[i];
         // A note variant that failed before a later variant worked is not a real failure.
-        if (!s.ok && !(result.note_method && s.step.indexOf("notes via ") === 0)) fails++;
+        if (!s.ok && !(result.note_method && s.step.indexOf("notes via ") === 0)) failed.push(s.step);
     }
-    result.summary = fails === 0 ? "ALL OK" : fails + " step(s) failed — see steps";
+    // Failed step names go in the status line too, so a screenshot alone is a usable report.
+    result.summary = failed.length === 0 ? "ALL OK" : "FAILED: " + failed.join(" | ");
     var saved = writeJson(file, result);
-    show(result.phase + ": " + result.summary + (saved ? " (saved)" : " (NOT saved — see Max console)"));
+    show(result.phase + " — " + result.summary + (saved ? " — saved: " + saved : " — NOT SAVED"));
 }
 
 function bang() { run(); }
