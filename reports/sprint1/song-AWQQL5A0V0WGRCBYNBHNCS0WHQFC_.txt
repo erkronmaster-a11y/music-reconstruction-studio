@@ -1,0 +1,18 @@
+Project: AWQQL5A0V0WGRCBYNBHNCS0WHQFC
+
+source     format   rate ch    length  sync
+mix        WAVEX   48000  2   156.03s  reference
+other      WAVEX   48000  2   156.03s  +0.0 ms (conf 0.324)
+bass       WAVEX   48000  2   156.03s  +0.0 ms (conf 0.644)
+drums      WAVEX   48000  2   156.03s  +0.0 ms (conf 0.704)
+vocals     WAVEX   48000  2   156.03s  +0.0 ms (conf 0.243)
+
+Timing (value · where it came from)
+  tempo_bpm         132.512  · detected
+  first_downbeat_s  0.8243  · detected
+  beats_per_bar     4  · detected
+  detected beats    326, downbeat confidence 0.056, beat spacing spread 0.101
+
+Check:
+  - first downbeat is uncertain — check it by ear (click track) and correct if needed
+  - beat spacing varies (10.1%) — tempo may drift or the tracker struggled
