@@ -1,0 +1,215 @@
+{
+	"phase" : "create",
+	"time" : "Mon Oct 12 2026 14:44:20 GMT+0200 (CEST)",
+	"live_version" : "12.0.15",
+	"max_version" : "862",
+	"steps" : [ 		{
+			"step" : "live_version",
+			"ok" : 1,
+			"detail" : "12.0.15"
+		}
+, 		{
+			"step" : "open live_set",
+			"ok" : 1,
+			"detail" : 			{
+				"id" : "1"
+			}
+
+		}
+, 		{
+			"step" : "set tempo",
+			"ok" : 1,
+			"detail" : 			{
+				"before" : 117.5,
+				"after" : 117.5
+			}
+
+		}
+, 		{
+			"step" : "removed previous MIDI test track",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "create_midi_track",
+			"ok" : 1,
+			"detail" : 			{
+				"before" : 3,
+				"after" : 4
+			}
+
+		}
+, 		{
+			"step" : "set track name",
+			"ok" : 1,
+			"detail" : "MRS Sprint0 MIDI"
+		}
+, 		{
+			"step" : "set track color",
+			"ok" : 1,
+			"detail" : 1698303
+		}
+, 		{
+			"step" : "route A: create_midi_clip (arrangement)",
+			"ok" : 0,
+			"detail" : 			{
+				"clip_ids" : [  ]
+			}
+
+		}
+, 		{
+			"step" : "route B: session clip_slot.create_clip",
+			"ok" : 1,
+			"detail" : 			{
+				"id" : "9"
+			}
+
+		}
+, 		{
+			"step" : "route B: notes into session clip",
+			"ok" : 1,
+			"detail" : 4
+		}
+, 		{
+			"step" : "route B: duplicate_clip_to_arrangement",
+			"ok" : 1,
+			"detail" : 			{
+				"clip_ids" : [ 10 ]
+			}
+
+		}
+, 		{
+			"step" : "clip position",
+			"ok" : 1,
+			"detail" : 			{
+				"start_time" : 4,
+				"length" : 4
+			}
+
+		}
+, 		{
+			"step" : "4 notes match exactly (incl. off-grid note)",
+			"ok" : 1,
+			"detail" : 			{
+				"ok" : 1,
+				"count" : 4,
+				"notes" : [ 					{
+						"expected" : 						{
+							"pitch" : 60,
+							"start_time" : 0,
+							"duration" : 0.5,
+							"velocity" : 100
+						}
+,
+						"got" : 						{
+							"note_id" : 1,
+							"pitch" : 60,
+							"start_time" : 0,
+							"duration" : 0.5,
+							"velocity" : 100,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+, 					{
+						"expected" : 						{
+							"pitch" : 64,
+							"start_time" : 1,
+							"duration" : 0.5,
+							"velocity" : 90
+						}
+,
+						"got" : 						{
+							"note_id" : 2,
+							"pitch" : 64,
+							"start_time" : 1,
+							"duration" : 0.5,
+							"velocity" : 90,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+, 					{
+						"expected" : 						{
+							"pitch" : 67,
+							"start_time" : 2.037,
+							"duration" : 0.5,
+							"velocity" : 80
+						}
+,
+						"got" : 						{
+							"note_id" : 3,
+							"pitch" : 67,
+							"start_time" : 2.036999979187479,
+							"duration" : 0.5,
+							"velocity" : 80,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+, 					{
+						"expected" : 						{
+							"pitch" : 72,
+							"start_time" : 3,
+							"duration" : 0.75,
+							"velocity" : 70
+						}
+,
+						"got" : 						{
+							"note_id" : 4,
+							"pitch" : 72,
+							"start_time" : 3,
+							"duration" : 0.75,
+							"velocity" : 70,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+ ]
+			}
+
+		}
+, 		{
+			"step" : "create_audio_track",
+			"ok" : 1,
+			"detail" : 			{
+				"before" : 4,
+				"after" : 5
+			}
+
+		}
+, 		{
+			"step" : "create_audio_clip (arrangement)",
+			"ok" : 1,
+			"detail" : 			{
+				"path" : "/Users/locohood/Documents/GitHub/music-reconstruction-studio/assets/test-tone.wav",
+				"clip" : 				{
+					"start_time" : 4,
+					"file_path" : "/Users/locohood/Documents/GitHub/music-reconstruction-studio/assets/test-tone.wav",
+					"warping" : 1
+				}
+
+			}
+
+		}
+ ],
+	"summary" : "ALL OK",
+	"clip_route" : "B session + duplicate_clip_to_arrangement",
+	"note_method" : "copied from session clip"
+}

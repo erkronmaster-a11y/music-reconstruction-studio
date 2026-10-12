@@ -1,0 +1,136 @@
+{
+	"phase" : "verify_after_reopen",
+	"time" : "Mon Oct 12 2026 14:50:20 GMT+0200 (CEST)",
+	"live_version" : "12.0.15",
+	"max_version" : "862",
+	"steps" : [ 		{
+			"step" : "tempo survived",
+			"ok" : 1,
+			"detail" : 117.5
+		}
+, 		{
+			"step" : "MIDI test track present",
+			"ok" : 1,
+			"detail" : 3
+		}
+, 		{
+			"step" : "arrangement clip present",
+			"ok" : 1,
+			"detail" : [ 10 ]
+		}
+, 		{
+			"step" : "clip still at beat 4",
+			"ok" : 1,
+			"detail" : 4
+		}
+, 		{
+			"step" : "4 notes match exactly after reopen",
+			"ok" : 1,
+			"detail" : 			{
+				"ok" : 1,
+				"count" : 4,
+				"notes" : [ 					{
+						"expected" : 						{
+							"pitch" : 60,
+							"start_time" : 0,
+							"duration" : 0.5,
+							"velocity" : 100
+						}
+,
+						"got" : 						{
+							"note_id" : 1,
+							"pitch" : 60,
+							"start_time" : 0,
+							"duration" : 0.5,
+							"velocity" : 100,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+, 					{
+						"expected" : 						{
+							"pitch" : 64,
+							"start_time" : 1,
+							"duration" : 0.5,
+							"velocity" : 90
+						}
+,
+						"got" : 						{
+							"note_id" : 2,
+							"pitch" : 64,
+							"start_time" : 1,
+							"duration" : 0.5,
+							"velocity" : 90,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+, 					{
+						"expected" : 						{
+							"pitch" : 67,
+							"start_time" : 2.037,
+							"duration" : 0.5,
+							"velocity" : 80
+						}
+,
+						"got" : 						{
+							"note_id" : 3,
+							"pitch" : 67,
+							"start_time" : 2.036999979187479,
+							"duration" : 0.5,
+							"velocity" : 80,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+, 					{
+						"expected" : 						{
+							"pitch" : 72,
+							"start_time" : 3,
+							"duration" : 0.75,
+							"velocity" : 70
+						}
+,
+						"got" : 						{
+							"note_id" : 4,
+							"pitch" : 72,
+							"start_time" : 3,
+							"duration" : 0.75,
+							"velocity" : 70,
+							"mute" : 0,
+							"probability" : 1,
+							"velocity_deviation" : 0,
+							"release_velocity" : 64
+						}
+,
+						"ok" : 1
+					}
+ ]
+			}
+
+		}
+, 		{
+			"step" : "audio test track present",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "audio clip present",
+			"ok" : 1,
+			"detail" : null
+		}
+ ],
+	"summary" : "ALL OK"
+}
