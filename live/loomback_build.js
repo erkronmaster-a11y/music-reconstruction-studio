@@ -11,7 +11,9 @@
 //   ClipSlot.create_clip + add_new_notes + Track.duplicate_clip_to_arrangement,
 //   Clip warping / warp_mode / add_warp_marker / move_warp_marker / remove_warp_marker,
 //   Browser + load_item (instruments; best effort).
-// Results: <repo>/reports/sprint3/live-build.json and live-verify.json.
+// Plan and reports go through ~/Music/MRS Projects/_live/ (fixed, works
+// wherever Live keeps the device), with <repo>/live/inbox and
+// <repo>/reports/sprint3 as second choices.
 
 autowatch = 1;
 inlets = 1;
@@ -32,6 +34,36 @@ function repoDir() {
     var i = p.lastIndexOf("/live/");
     if (i < 0) return null;
     return p.substring(0, i);
+}
+// Mac test: Live loaded the device from somewhere other than <repo>/live/, so
+// repoDir() was null and both the plan and the report were "missing". The
+// fixed exchange folder ~/Music/MRS Projects/_live/ does not depend on where
+// the device file sits; home is taken from any /Users/<name>/ path.
+function homeDir() {
+    var p = posix(String(this.patcher.filepath || ""));
+    var m = p.match(/^(\/Users\/[^\/]+)\//);
+    return m ? m[1] : null;
+}
+function exchangeDirs() {
+    var out = [], h = homeDir(), r = repoDir();
+    if (h) out.push(h + "/Music/MRS Projects/_live");
+    if (r) { out.push(posix(r) + "/live/inbox"); }
+    out.push("/tmp/loomback");   // last resort: needs no knowledge of any path
+    return out;
+}
+function readPlan() {
+    var dirs = exchangeDirs(), tried = [];
+    for (var i = 0; i < dirs.length; i++) {
+        var path = dirs[i] + "/build.json";
+        tried.push(path);
+        var txt = readText(path);
+        if (txt) {
+            try { return { plan: JSON.parse(txt), path: path }; }
+            catch (e) { return { error: "plan unreadable: " + e, path: path }; }
+        }
+    }
+    return { error: "no plan found — click 'Send to Ableton' in Loomback first", tried: tried,
+             device_path: String(this.patcher.filepath || "(unknown)") };
 }
 function posix(p) { return String(p).replace(/^[^\/]*:/, ""); }
 
@@ -55,10 +87,11 @@ function ascii(s) {
     return s.replace(/[\u0080-\uffff]/g, function (c) { return "\\u" + ("0000" + c.charCodeAt(0).toString(16)).slice(-4); });
 }
 function writeJson(name, obj) {
-    var dir = repoDir(); if (!dir) return null;
     var s = ascii(JSON.stringify(obj, null, 1));
-    var paths = [dir + "/reports/sprint3/" + name, posix(dir) + "/reports/sprint3/" + name,
-                 dir + "/reports/" + name, posix(dir) + "/reports/" + name];  // if sprint3/ is missing
+    var paths = [], h = homeDir(), dir = repoDir();
+    if (h) paths.push(h + "/Music/MRS Projects/_live/" + name);   // collected by 7-send-ableton-results
+    if (dir) paths.push(posix(dir) + "/reports/sprint3/" + name, posix(dir) + "/reports/" + name);
+    paths.push("/tmp/loomback/" + name);
     for (var i = 0; i < paths.length; i++) {
         try { var d = new Dict(); d.parse(s); d.export_json(paths[i]); } catch (e) {}
         if (fileSize(paths[i]) > 0) return paths[i];
@@ -99,12 +132,9 @@ function build() {
     R = { phase: "build", time: new Date().toString(), live_version: null, steps: [], tracks: [] };
     var app = new LiveAPI("live_app");
     R.live_version = app.call("get_major_version") + "." + app.call("get_minor_version") + "." + app.call("get_bugfix_version");
-    var dir = repoDir();
-    var txt = dir ? readText(dir + "/live/inbox/build.json") : null;
-    var plan = null;
-    try { plan = JSON.parse(txt); } catch (e) {}
-    if (!step("read plan (live/inbox/build.json)", plan && plan.format === "loomback-live-plan",
-              plan ? { project: plan.project, tracks: plan.tracks.length } : "missing — click 'Send to Ableton' in Loomback first")) {
+    var rp = readPlan(), plan = rp.plan;
+    if (!step("read plan", plan && plan.format === "loomback-live-plan",
+              plan ? { project: plan.project, tracks: plan.tracks.length, from: rp.path } : rp)) {
         return finish("live-build.json");
     }
     R.project = plan.project;
@@ -260,10 +290,8 @@ function searchBrowser(item, name, depth) {
 // ---------- verify ----------
 function verify() {
     R = { phase: "verify", time: new Date().toString(), steps: [] };
-    var dir = repoDir();
-    var plan = null;
-    try { plan = JSON.parse(readText(dir + "/live/inbox/build.json")); } catch (e) {}
-    if (!step("read plan", !!plan)) return finish("live-verify.json");
+    var rp = readPlan(), plan = rp.plan;
+    if (!step("read plan", !!plan, plan ? rp.path : rp)) return finish("live-verify.json");
     var song = new LiveAPI("live_set");
     step("tempo", Math.abs(Number(song.get("tempo")) - plan.tempo_bpm) < 0.001, Number(song.get("tempo")));
     for (var i = 0; i < plan.tracks.length; i++) {
@@ -295,12 +323,14 @@ function finish(file) {
     for (var i = 0; i < R.steps.length; i++) if (!R.steps[i].ok) {
         failed.push(R.steps[i].step);
         if (!firstErr) { var d = R.steps[i].detail; firstErr = typeof d === "string" ? d : JSON.stringify(d); }
+        firstErr = firstErr.replace(/[\u0080-\uffff]/g, "-");
     }
     R.summary = failed.length ? "FAILED: " + failed.join(" | ") : "ALL OK";
     var saved = writeJson(file, R);
     // status line carries the first error itself, so a screenshot is a full report
     show(R.phase + " - " + R.summary + (firstErr ? " :: " + firstErr.substring(0, 160) : "")
          + (saved ? " - report saved" : " - REPORT NOT SAVED (see Max console)"));
+    if (firstErr.length > 160) post("LB first error (full): " + firstErr + "\n");
     post("LB report:\n" + JSON.stringify(R) + "\n");
 }
 

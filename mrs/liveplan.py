@@ -19,6 +19,12 @@ from pathlib import Path
 
 from . import beatmap, export, manifest
 
+import os
+
+# Fixed exchange folder shared with the Loomback Builder device (it finds it
+# from the user's home, wherever Live keeps the device file).
+EXCHANGE = Path(os.environ.get("MRS_PROJECTS", Path.home() / "Music" / "MRS Projects")) / "_live"
+
 # Track order and look, following the brief: mix, vocals, bass, melody, drums, other stems.
 ORDER = {"mix": 0, "vocals": 1, "bass": 2, "melody": 3, "drums": 4, "other": 5}
 COLORS = {"mix": 0xEDF0F4, "vocals": 0xEFFF36, "bass": 0x2AA8FF, "melody": 0xFF3FBD, "drums": 0x48FF91, "other": 0x8FD3C9}
@@ -77,9 +83,11 @@ def write(m: dict, project_dir: str | Path, inbox: str | Path | None = None) -> 
     plan = build(m)
     out = Path(project_dir) / "live-plan.json"
     out.write_text(json.dumps(plan))
-    inbox = Path(inbox) if inbox else Path(__file__).resolve().parents[1] / "live" / "inbox"
-    inbox.mkdir(parents=True, exist_ok=True)
-    (inbox / "build.json").write_text(json.dumps(plan))
+    targets = [Path(inbox)] if inbox else [EXCHANGE, Path(__file__).resolve().parents[1] / "live" / "inbox",
+                                            Path("/tmp/loomback")]
+    for d in targets:
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "build.json").write_text(json.dumps(plan))
     return out
 
 
