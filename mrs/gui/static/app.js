@@ -79,15 +79,22 @@ $("#pathGo").onclick = () => $("#pathInput").value.trim() && analyze($("#pathInp
 
 // ---------- jobs ----------
 async function runJob(body, label) {
+  log(`\n▶ ${label}`);
+  let job;
+  try { ({ job } = await post("/api/run", body)); }
+  catch (e) { log("✖ could not start: " + e.message); return { state: "failed" }; }
+  return watchJob(job, label);
+}
+async function watchJob(job, label) {
   const pill = $("#jobPill");
   pill.hidden = false; pill.className = "job-pill"; $("#jobText").textContent = label + "…";
   setBusy(true);
-  log(`\n▶ ${label}`);
-  const { job } = await post("/api/run", body);
   let seen = 0;
   while (true) {
     await new Promise((r) => setTimeout(r, 700));
-    const j = await api("/api/job?id=" + job);
+    let j;
+    try { j = await api("/api/job?id=" + job); }
+    catch (e) { log("✖ lost contact with Loomback — is the Terminal window still open?"); setBusy(false); return { state: "failed" }; }
     j.log.slice(seen).forEach(log); seen = j.log.length;
     if (j.state !== "running") {
       pill.className = "job-pill " + (j.state === "done" ? "ok" : "fail");
@@ -422,5 +429,10 @@ function draw() {
   }
 }
 
-loadProjects();
+loadProjects().then(async () => {
+  // a step started before a page reload keeps running on the server: show it
+  const jobs = await api("/api/jobs").catch(() => []);
+  const running = jobs.filter((j) => j.state === "running").pop();
+  if (running) { log("(resuming a step that was still running)"); watchJob(running.id, running.args[0]); }
+});
 new ResizeObserver(draw).observe($("#tlWrap"));

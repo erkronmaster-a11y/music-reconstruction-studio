@@ -70,6 +70,9 @@ def run_job(args: list[str], src: str | None = None) -> str:
                     if line.startswith("PROJECT_DIR="):
                         job["result"] = line.split("=", 1)[1]
             job["state"] = "done" if p.wait() == 0 else "failed"
+            print(f"[job {jid}] {' '.join(args[:1])} → {job['state']}", flush=True)
+            if job["state"] == "failed":
+                print("\n".join("    " + l for l in job["log"][-8:]), flush=True)
         except Exception as e:  # report, never hide
             job["log"].append(f"ERROR: {e!r}")
             job["state"] = "failed"
@@ -147,6 +150,26 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
+        try:
+            self._get()
+        except Exception as e:  # a bad request must never take Loomback down
+            print(f"ERROR in GET {self.path}: {e!r}", flush=True)
+            try:
+                self.send(500, {"error": repr(e)})
+            except Exception:
+                pass
+
+    def do_POST(self):
+        try:
+            self._post()
+        except Exception as e:
+            print(f"ERROR in POST {self.path}: {e!r}", flush=True)
+            try:
+                self.send(500, {"error": repr(e)})
+            except Exception:
+                pass
+
+    def _get(self):
         u = urlparse(self.path)
         q = {k: v[0] for k, v in parse_qs(u.query).items()}
         try:
@@ -161,6 +184,8 @@ class Handler(BaseHTTPRequestHandler):
                     return self.send(403, {"error": "not allowed"})
                 from mrs import naming
                 return self.send(200, naming.suggest(q["dir"]))
+            if u.path == "/api/jobs":  # lets a reloaded page pick up a running step
+                return self.send(200, sorted(JOBS.values(), key=lambda j: j["started"])[-5:])
             if u.path == "/api/job":
                 j = JOBS.get(q["id"])
                 return self.send(200 if j else 404, j or {"error": "no such job"})
@@ -176,7 +201,7 @@ class Handler(BaseHTTPRequestHandler):
         except (KeyError, PermissionError, ValueError, FileNotFoundError) as e:
             return self.send(400, {"error": repr(e)})
 
-    def do_POST(self):
+    def _post(self):
         u = urlparse(self.path)
         n = int(self.headers.get("Content-Length", 0))
         try:
