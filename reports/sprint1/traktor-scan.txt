@@ -1,20 +1,20 @@
-# Traktor / NI Stems scan — 2026-10-12 16:12
+# Traktor / NI Stems scan — 2026-10-12 19:57
 
 ## .stem.mp4 / .stem.m4a outside the Traktor cache (Music, Documents, Desktop, Downloads; first 40)
 
 ## Traktor 4 stem cache — titles from Traktor's collection.nml (newest first, first 40)
 184 stem files in /Users/locohood/Music/Traktor/Stems; library: /Users/locohood/Documents/Native Instruments/Traktor 4.0.0/collection.nml
-titles matched from library: 0
-2025-12-08  1QX1NCDERPK5ACUJ44LZDSLOXEWA                                  /Users/locohood/Music/Traktor/Stems/027/1QX1NCDERPK5ACUJ44LZDSLOXEWA.stem.mp4
+titles found (library code or unique length match): 53 of 184
+2025-12-08  ella eloco                                                    /Users/locohood/Music/Traktor/Stems/027/1QX1NCDERPK5ACUJ44LZDSLOXEWA.stem.mp4
 2025-12-07  4BR4BGDJV4N2RBPZPHLIBYKADDEA                                  /Users/locohood/Music/Traktor/Stems/062/4BR4BGDJV4N2RBPZPHLIBYKADDEA.stem.mp4
-2025-12-06  VMGRCYBCJGKQKA1Y2MXDAMJKVK2C                                  /Users/locohood/Music/Traktor/Stems/021/VMGRCYBCJGKQKA1Y2MXDAMJKVK2C.stem.mp4
+2025-12-06  Electric Rescue - The Banging Apaches Dance (Banging Mix)     /Users/locohood/Music/Traktor/Stems/021/VMGRCYBCJGKQKA1Y2MXDAMJKVK2C.stem.mp4
 2025-12-06  XRNJZ4DKQM3MCBOFJTUMAOF2UVQA                                  /Users/locohood/Music/Traktor/Stems/055/XRNJZ4DKQM3MCBOFJTUMAOF2UVQA.stem.mp4
 2025-12-06  YNZ4VOCBTW1JNDW3OPMCCH5WYX3D                                  /Users/locohood/Music/Traktor/Stems/056/YNZ4VOCBTW1JNDW3OPMCCH5WYX3D.stem.mp4
 2025-12-06  S3T4XYAZQATVXDSPUPKDCH2AZCGC                                  /Users/locohood/Music/Traktor/Stems/050/S3T4XYAZQATVXDSPUPKDCH2AZCGC.stem.mp4
 2025-12-06  0UZBJDCYD0H5XBDLENVRCUBVFUWB                                  /Users/locohood/Music/Traktor/Stems/026/0UZBJDCYD0H5XBDLENVRCUBVFUWB.stem.mp4
 2025-12-06  NYG40OANQ52DFDNMNMSJDJYHPZRB                                  /Users/locohood/Music/Traktor/Stems/013/NYG40OANQ52DFDNMNMSJDJYHPZRB.stem.mp4
-2025-11-06  JSYUNGCGGZISHBFQCOLCCXKBV13B                                  /Users/locohood/Music/Traktor/Stems/073/JSYUNGCGGZISHBFQCOLCCXKBV13B.stem.mp4
-2025-11-06  AWU3GQDTPBB55B1435ZFDDF2NWGA                                  /Users/locohood/Music/Traktor/Stems/064/AWU3GQDTPBB55B1435ZFDDF2NWGA.stem.mp4
+2025-11-06  Sir Mix-A-Lot - Baby got back HQ Sound                        /Users/locohood/Music/Traktor/Stems/073/JSYUNGCGGZISHBFQCOLCCXKBV13B.stem.mp4
+2025-11-06  MONO - Life In Mono                                           /Users/locohood/Music/Traktor/Stems/064/AWU3GQDTPBB55B1435ZFDDF2NWGA.stem.mp4
 2025-11-05  GIY4QLDSEECGCCYJ24BABOU4DXNC                                  /Users/locohood/Music/Traktor/Stems/006/GIY4QLDSEECGCCYJ24BABOU4DXNC.stem.mp4
 2025-11-05  ECJEGWC4HK1STDKMLXSUDUBVI25D                                  /Users/locohood/Music/Traktor/Stems/068/ECJEGWC4HK1STDKMLXSUDUBVI25D.stem.mp4
 2025-11-05  3SIOBWCPHOOSPDBWZUKUAYFTJFWD                                  /Users/locohood/Music/Traktor/Stems/093/3SIOBWCPHOOSPDBWZUKUAYFTJFWD.stem.mp4
@@ -22,11 +22,11 @@ titles matched from library: 0
 2025-04-29  U5A5H5CPRIZJFAPUON35BWANP0UB                                  /Users/locohood/Music/Traktor/Stems/116/U5A5H5CPRIZJFAPUON35BWANP0UB.stem.mp4
 2025-04-29  RC31C1CX50NHEC11UO4GBS14YLTB                                  /Users/locohood/Music/Traktor/Stems/081/RC31C1CX50NHEC11UO4GBS14YLTB.stem.mp4
 2025-04-28  HZ2QKPCBVKTRGDLUWD4GAZLVL0ZD                                  /Users/locohood/Music/Traktor/Stems/039/HZ2QKPCBVKTRGDLUWD4GAZLVL0ZD.stem.mp4
-2025-04-28  LPL55GAJMKCUUAA1HAJZB3ICV3SD                                  /Users/locohood/Music/Traktor/Stems/107/LPL55GAJMKCUUAA1HAJZB3ICV3SD.stem.mp4
+2025-04-28  Alexander Marcus - Alexander Marcus - Papaya (Official Video  /Users/locohood/Music/Traktor/Stems/107/LPL55GAJMKCUUAA1HAJZB3ICV3SD.stem.mp4
 2025-04-14  ZDPM10BUECMGICTKYC1UAD5AME5C                                  /Users/locohood/Music/Traktor/Stems/121/ZDPM10BUECMGICTKYC1UAD5AME5C.stem.mp4
 2025-03-16  5HB3VQA3MPFTVAQJBLHYBBNUSKEB                                  /Users/locohood/Music/Traktor/Stems/127/5HB3VQA3MPFTVAQJBLHYBBNUSKEB.stem.mp4
-2025-01-26  CMX5A4AXUTF5ICFW1VRNAED0L1IC                                  /Users/locohood/Music/Traktor/Stems/002/CMX5A4AXUTF5ICFW1VRNAED0L1IC.stem.mp4
-2025-01-10  W1PQ4ABTJQ2P1CBHPEAWBMHIEY1C                                  /Users/locohood/Music/Traktor/Stems/118/W1PQ4ABTJQ2P1CBHPEAWBMHIEY1C.stem.mp4
+2025-01-26  Electrypnose - Show Me Another World (Original Mix)           /Users/locohood/Music/Traktor/Stems/002/CMX5A4AXUTF5ICFW1VRNAED0L1IC.stem.mp4
+2025-01-10  Chris Isaak - Wicked Game (Adriatique & Thyladomid Edit)      /Users/locohood/Music/Traktor/Stems/118/W1PQ4ABTJQ2P1CBHPEAWBMHIEY1C.stem.mp4
 2025-01-10  AKGE0EAGWMR21C5PAK0BDJLIH53B                                  /Users/locohood/Music/Traktor/Stems/064/AKGE0EAGWMR21C5PAK0BDJLIH53B.stem.mp4
 2025-01-10  TRVOMRBHPV1AEDSDGUXUDEPCSN5D                                  /Users/locohood/Music/Traktor/Stems/051/TRVOMRBHPV1AEDSDGUXUDEPCSN5D.stem.mp4
 2025-01-10  PYQFLMAXEYO05B1UY52PCQVX2LEA                                  /Users/locohood/Music/Traktor/Stems/015/PYQFLMAXEYO05B1UY52PCQVX2LEA.stem.mp4
@@ -37,12 +37,12 @@ titles matched from library: 0
 2024-12-21  0PND3WC5CXZUVCF00ER3BEULEEIA                                  /Users/locohood/Music/Traktor/Stems/122/0PND3WC5CXZUVCF00ER3BEULEEIA.stem.mp4
 2024-12-21  EB1PSSCL03MURCMVN5WYAMLE1AJC                                  /Users/locohood/Music/Traktor/Stems/036/EB1PSSCL03MURCMVN5WYAMLE1AJC.stem.mp4
 2024-12-21  NXSBN3C2LBLYPBV032ZCAOZKD1HD                                  /Users/locohood/Music/Traktor/Stems/109/NXSBN3C2LBLYPBV032ZCAOZKD1HD.stem.mp4
-2024-12-21  3PZLHRBVQ1MRCBQFRJPKA32PKT4A                                  /Users/locohood/Music/Traktor/Stems/125/3PZLHRBVQ1MRCBQFRJPKA32PKT4A.stem.mp4
-2024-12-21  KNSHJ3CIBWW2HAPTZU5NDZSJAQVD                                  /Users/locohood/Music/Traktor/Stems/042/KNSHJ3CIBWW2HAPTZU5NDZSJAQVD.stem.mp4
+2024-12-21  TiM TASTE - Wid Woond (Original Mix)                          /Users/locohood/Music/Traktor/Stems/125/3PZLHRBVQ1MRCBQFRJPKA32PKT4A.stem.mp4
+2024-12-21  TiM TASTE - The Last Night (Original Mix)                     /Users/locohood/Music/Traktor/Stems/042/KNSHJ3CIBWW2HAPTZU5NDZSJAQVD.stem.mp4
 2024-12-21  WBRLMZAKWV0LIAYIGCBOCKXOOTSC                                  /Users/locohood/Music/Traktor/Stems/054/WBRLMZAKWV0LIAYIGCBOCKXOOTSC.stem.mp4
-2024-12-21  UGPLOQCV45CIHAU2AUNHAHWE5HMA                                  /Users/locohood/Music/Traktor/Stems/084/UGPLOQCV45CIHAU2AUNHAHWE5HMA.stem.mp4
+2024-12-21  TiM TASTE - Dreaming (Original Mix)                           /Users/locohood/Music/Traktor/Stems/084/UGPLOQCV45CIHAU2AUNHAHWE5HMA.stem.mp4
 2024-12-21  NKORXAAM1TO3EALTGMZMDPKT5KQD                                  /Users/locohood/Music/Traktor/Stems/077/NKORXAAM1TO3EALTGMZMDPKT5KQD.stem.mp4
-2024-12-21  C4N42ECFYVSJHBTYJSYTB2LFKJOB                                  /Users/locohood/Music/Traktor/Stems/066/C4N42ECFYVSJHBTYJSYTB2LFKJOB.stem.mp4
+2024-12-21  Thomas Klipps - Miscounted (Original Mix)                     /Users/locohood/Music/Traktor/Stems/066/C4N42ECFYVSJHBTYJSYTB2LFKJOB.stem.mp4
 2024-12-21  TOY22CDYC3SV4DR4JHNVCNZFVM3B                                  /Users/locohood/Music/Traktor/Stems/083/TOY22CDYC3SV4DR4JHNVCNZFVM3B.stem.mp4
 2024-12-21  M5CHSICPGEEUWAUQQG42CWNNIBSA                                  /Users/locohood/Music/Traktor/Stems/108/M5CHSICPGEEUWAUQQG42CWNNIBSA.stem.mp4
 
@@ -58,6 +58,7 @@ none of the first 50 stem codes appear in /Users/locohood/Documents/Native Instr
 4.3G	/Users/locohood/Music/Engine Library/Stems
 9.5G	/Users/locohood/Music/Traktor
 9.4G	/Users/locohood/Music/Traktor/Stems
+216M	/Users/locohood/Music/MRS Projects/AWQQL5A0V0WGRCBYNBHNCS0WHQFC/stems
   0B	/Users/locohood/Music/_Serato_/Subcrates/Serato Stems
 
 ## Inside folders named *stem* or *cache* under Traktor: file types and counts

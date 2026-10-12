@@ -1,5 +1,5 @@
 # MRS Sprint 1a — Mac install report
-date: 2026-10-12 16:10:25 +0200
+date: 2026-10-12 19:56:52 +0200
 python: Python 3.11.16
 ffmpeg: ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers  (/opt/homebrew/bin/ffmpeg)
 python_used_for_venv: python3.11
@@ -13,24 +13,38 @@ scipy==1.17.1
 soundfile==0.14.0
 
 ## pip install — errors and last lines
-Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
-Installing collected packages: mpmath, urllib3, typing-extensions, tqdm, threadpoolctl, sympy, six, setuptools, PyYAML, pygments, pycparser, protobuf, pluggy, platformdirs, packaging, numpy, narwhals, msgpack, llvmlite, iniconfig, importlib_resources, idna, decorator, cloudpickle, charset_normalizer, certifi, audioread, attrs, soxr, scipy, requests, pytest, pyaml, numba, mido, lazy_loader, joblib, cffi, cattrs, soundfile, scikit-learn, resampy, pretty_midi, pooch, mir_eval, coremltools, librosa, basic-pitch
-  Attempting uninstall: setuptools
-    Found existing installation: setuptools 79.0.1
-    Uninstalling setuptools-79.0.1:
-      Successfully uninstalled setuptools-79.0.1
+Downloading einops-0.8.2-py3-none-any.whl (65 kB)
+Downloading filelock-4.1.1-py3-none-any.whl (132 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.4-cp311-cp311-macosx_11_0_arm64.whl (12 kB)
+Downloading rotary_embedding_torch-0.9.1-py3-none-any.whl (17 kB)
+Installing collected packages: torchaudio, networkx, MarkupSafe, fsspec, filelock, einops, jinja2, torch, rotary-embedding-torch, beat-this
 
-Successfully installed PyYAML-6.0.3 attrs-26.1.0 audioread-3.1.0 basic-pitch-0.4.0 cattrs-26.2.1 certifi-2026.7.22 cffi-2.1.1 charset_normalizer-3.5.2 cloudpickle-3.1.2 coremltools-9.0 decorator-5.3.1 idna-3.20 importlib_resources-7.1.0 iniconfig-2.3.1 joblib-1.6.0 lazy_loader-0.6 librosa-0.11.0 llvmlite-0.50.0 mido-1.3.3 mir_eval-0.8.2 mpmath-1.3.0 msgpack-1.2.3 narwhals-2.27.1 numba-0.68.0 numpy-1.26.4 packaging-26.3 platformdirs-4.13.0 pluggy-1.6.0 pooch-1.9.0 pretty_midi-0.2.11.post0 protobuf-7.36.2 pyaml-26.7.0 pycparser-3.11 pygments-2.21.0 pytest-9.1.1 requests-2.34.2 resampy-0.4.2 scikit-learn-1.9.1 scipy-1.17.1 setuptools-80.10.2 six-1.17.0 soundfile-0.14.0 soxr-1.1.0 sympy-1.14.0 threadpoolctl-3.7.0 tqdm-4.70.1 typing-extensions-4.16.0 urllib3-2.8.0
+Successfully installed MarkupSafe-3.0.4 beat-this-1.1.0 einops-0.8.2 filelock-4.1.1 fsspec-2026.9.0 jinja2-3.1.6 networkx-3.6.1 rotary-embedding-torch-0.9.1 torch-2.11.0 torchaudio-2.11.0
 
 ## Unit + integration tests (pytest)
-..................                                                       [100%]
-18 passed in 90.07s (0:01:30)
+    def test_octave_ghosts_flagged_not_deleted(proj, tmp_path):
+        m, truth, *_ = proj
+        t = manifest.track(m, "melody")
+        raw, clean = manifest.effective_notes(t, "raw"), manifest.effective_notes(t, "clean")
+>       assert len(raw) > len(clean)                              # flagged notes still exist in raw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert 0 > 0
+E        +  where 0 = len([])
+E        +  and   0 = len([])
+
+tests/test_sprint1b.py:140: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_sprint1b.py::test_melody_against_ground_truth - assert 0.0 ...
+FAILED tests/test_sprint1b.py::test_octave_ghosts_flagged_not_deleted - asser...
+2 failed, 29 passed in 41.11s
 
 ## Transcription probe
-bass (E1-E3, warm) basic-pitch {'ref_notes': 40, 'est_notes': 72, 'onset_precision': 0.389, 'onset_recall': 0.7, 'onset_f1': 0.5, 'onset_offset_f1': 0.393, 'mean_onset_error_ms': 21.1, 'seconds': 7.68}
-bass (E1-E3, warm) pyin {'ref_notes': 40, 'est_notes': 44, 'onset_precision': 0.909, 'onset_recall': 1.0, 'onset_f1': 0.952, 'onset_offset_f1': 0.952, 'mean_onset_error_ms': 4.5, 'seconds': 24.78}
-melody (C4-C6, bright) basic-pitch {'ref_notes': 48, 'est_notes': 48, 'onset_precision': 1.0, 'onset_recall': 1.0, 'onset_f1': 1.0, 'onset_offset_f1': 0.875, 'mean_onset_error_ms': 5.3, 'seconds': 1.37}
-melody (C4-C6, bright) pyin {'ref_notes': 48, 'est_notes': 94, 'onset_precision': 0.511, 'onset_recall': 1.0, 'onset_f1': 0.676, 'onset_offset_f1': 0.676, 'mean_onset_error_ms': 4.0, 'seconds': 10.45}
-peak RSS MB 265024.0
-       54.25 real        16.20 user         6.35 sys
-           273760256  maximum resident set size
+Torch version 2.11.0 has not been tested with coremltools. You may run into unexpected errors. Torch 2.7.0 is the most recent version that has been tested.
+bass (E1-E3, warm) basic-pitch {'ref_notes': 40, 'est_notes': 72, 'onset_precision': 0.389, 'onset_recall': 0.7, 'onset_f1': 0.5, 'onset_offset_f1': 0.393, 'mean_onset_error_ms': 21.1, 'seconds': 0.97}
+bass (E1-E3, warm) pyin {'ref_notes': 40, 'est_notes': 44, 'onset_precision': 0.909, 'onset_recall': 1.0, 'onset_f1': 0.952, 'onset_offset_f1': 0.952, 'mean_onset_error_ms': 4.5, 'seconds': 1.76}
+melody (C4-C6, bright) basic-pitch {'ref_notes': 48, 'est_notes': 48, 'onset_precision': 1.0, 'onset_recall': 1.0, 'onset_f1': 1.0, 'onset_offset_f1': 0.875, 'mean_onset_error_ms': 5.3, 'seconds': 0.46}
+melody (C4-C6, bright) pyin {'ref_notes': 48, 'est_notes': 94, 'onset_precision': 0.511, 'onset_recall': 1.0, 'onset_f1': 0.676, 'onset_offset_f1': 0.676, 'mean_onset_error_ms': 4.0, 'seconds': 2.03}
+peak RSS MB 786.0
+        7.70 real         9.90 user         4.70 sys
+           835895296  maximum resident set size
