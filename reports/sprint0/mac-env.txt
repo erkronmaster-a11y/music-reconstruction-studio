@@ -1,0 +1,43 @@
+# MRS Sprint 0 — Mac environment report
+date: 2026-10-12 13:46:49 +0200
+
+## System
+macos: 13.6.1 (build 22G313)
+arch_uname: arm64
+cpu: Apple M1 Pro
+rosetta_translated: 0
+apple_silicon: 1
+ram_gb: 16
+disk_free_home: 59Gi
+
+## Ableton Live
+live_app: /Applications/Ableton Live 11 Suite.app
+  version: 11.2 (2022-09-19_33f2245cd0)
+  bundle_id: com.ableton.live
+  binary_archs: x86_64 arm64
+  edition_from_name: Suite
+  bundled_max:
+    /Applications/Ableton Live 11 Suite.app/Contents/App-Resources/Max/Max.app
+live_app: /Applications/Ableton Live 12 Suite.app
+  version: 12.0.15 (2024-07-15_98b4d22779)
+  bundle_id: com.ableton.live
+  binary_archs: x86_64 arm64
+  edition_from_name: Suite
+  bundled_max:
+    /Applications/Ableton Live 12 Suite.app/Contents/App-Resources/Max/Max.app
+standalone_max: 
+live_prefs_versions: Live 10.1.42 Live 10.1.43 Live 11.2 Live 11.2.5 Live 12.0.15 Live 12.0.2 Live 12.0.5 
+user_library: /Users/locohood/Music/Ableton/User Library
+max8_prefs: yes
+max9_prefs: no
+
+## Developer tools
+xcode_clt: /Applications/Xcode.app/Contents/Developer
+python3: Python 3.12.4 at /opt/miniconda3/bin/python3
+python3.11: Python 3.11.16 at /Users/locohood/.local/bin/python3.11
+python3.12: Python 3.12.4 at /opt/miniconda3/bin/python3.12
+python3.13: Python 3.13.12 at /opt/homebrew/bin/python3.13
+brew: Homebrew 6.0.21
+git: git version 2.33.0
+uv: not installed
+ffmpeg: ffmpeg version 2.8.1-tessus Copyright (c) 2000-2015 the FFmpeg developers
