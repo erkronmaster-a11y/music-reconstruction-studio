@@ -48,10 +48,17 @@ function readText(path) {
     return s;
 }
 function fileSize(path) { var f = new File(path, "read"); if (!f.isopen) return 0; var n = f.eof; f.close(); return n; }
+// Max's File/Dict writers failed on non-ASCII text ("—", "≠") on the Mac:
+// the report was "NOT SAVED". Everything above 0x7F is written as \uXXXX,
+// which is still valid JSON.
+function ascii(s) {
+    return s.replace(/[\u0080-\uffff]/g, function (c) { return "\\u" + ("0000" + c.charCodeAt(0).toString(16)).slice(-4); });
+}
 function writeJson(name, obj) {
     var dir = repoDir(); if (!dir) return null;
-    var s = JSON.stringify(obj, null, 1);
-    var paths = [dir + "/reports/sprint3/" + name, posix(dir) + "/reports/sprint3/" + name];
+    var s = ascii(JSON.stringify(obj, null, 1));
+    var paths = [dir + "/reports/sprint3/" + name, posix(dir) + "/reports/sprint3/" + name,
+                 dir + "/reports/" + name, posix(dir) + "/reports/" + name];  // if sprint3/ is missing
     for (var i = 0; i < paths.length; i++) {
         try { var d = new Dict(); d.parse(s); d.export_json(paths[i]); } catch (e) {}
         if (fileSize(paths[i]) > 0) return paths[i];
@@ -284,11 +291,17 @@ function verify() {
 }
 
 function finish(file) {
-    var failed = [];
-    for (var i = 0; i < R.steps.length; i++) if (!R.steps[i].ok) failed.push(R.steps[i].step);
+    var failed = [], firstErr = "";
+    for (var i = 0; i < R.steps.length; i++) if (!R.steps[i].ok) {
+        failed.push(R.steps[i].step);
+        if (!firstErr) { var d = R.steps[i].detail; firstErr = typeof d === "string" ? d : JSON.stringify(d); }
+    }
     R.summary = failed.length ? "FAILED: " + failed.join(" | ") : "ALL OK";
     var saved = writeJson(file, R);
-    show(R.phase + " — " + R.summary + (saved ? " — report saved" : " — REPORT NOT SAVED"));
+    // status line carries the first error itself, so a screenshot is a full report
+    show(R.phase + " - " + R.summary + (firstErr ? " :: " + firstErr.substring(0, 160) : "")
+         + (saved ? " - report saved" : " - REPORT NOT SAVED (see Max console)"));
+    post("LB report:\n" + JSON.stringify(R) + "\n");
 }
 
 function bang() { build(); }
