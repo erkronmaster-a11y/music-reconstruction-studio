@@ -46,7 +46,7 @@ few minutes, and nothing in it changes your system or your Ableton settings.
 
 1. In GitHub Desktop: **Fetch origin** → **Pull origin**.
 2. Double-click **`mac/3-install.command`**.
-   - It installs `uv` and a current `ffmpeg` with Homebrew, builds the Python
+   - It installs a current `ffmpeg` with Homebrew, builds the Python
      environment and runs all the tests on your Mac.
    - It tries Basic Pitch.
    - It looks for Traktor stem files. It only reads; it never moves, changes
