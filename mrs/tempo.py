@@ -14,7 +14,7 @@ SR = 22050
 HOP = 256
 
 
-def detect(y: np.ndarray, sr: int = SR, beats_per_bar: int = 4) -> dict:
+def detect(y: np.ndarray, sr: int = SR, beats_per_bar: int = 4, rough_bpm: float | None = None) -> dict:
     import librosa
     env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=HOP, aggregate=np.median)
     tempo, beat_frames = librosa.beat.beat_track(onset_envelope=env, sr=sr, hop_length=HOP, units="frames")
@@ -35,7 +35,9 @@ def detect(y: np.ndarray, sr: int = SR, beats_per_bar: int = 4) -> dict:
     # and drift (on a Mac test song: 132.51 instead of ~132.0 → the click drifted
     # ~0.4 s by the end). Instead, test every tempo near the tracker's estimate
     # against the whole onset curve and keep the one whose grid lines up best.
-    rough = 60.0 / float(np.median(ibi))
+    # A beat-map tempo (Beat This!) is a better starting point than librosa's,
+    # which on the owner's song read ~132 for a ~100 BPM song (a 4:3 error).
+    rough = rough_bpm or 60.0 / float(np.median(ibi))
     bpm, phase = fit_grid(y, sr, rough)
     period = 60.0 / bpm
     out["tempo_bpm"] = round(bpm, 3)

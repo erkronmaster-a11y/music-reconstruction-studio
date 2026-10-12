@@ -81,10 +81,11 @@ def build(folder: str | Path | None = None, mix_path: str | Path | None = None,
             warnings.append(f"{sid}: starts {s['offset_s'] * 1000:+.1f} ms relative to the mix "
                             f"(confidence {s['confidence']}); it will be shifted to line up")
 
-    m["timing"]["detected"] = tempo.detect(y_mix, sr=sync.SR)
+    bm = beatmap.detect(str(mix_path))
+    m["timing"]["detected"] = tempo.detect(y_mix, sr=sync.SR, rough_bpm=bm.get("live_tempo_bpm"))
     t = m["timing"]["detected"]
-    t["beat_map"] = beatmap.detect(str(mix_path))
-    bm = t["beat_map"]
+    t["beat_map"] = bm
+    choose_mode(t)
     if bm.get("irregular_bars"):
         warnings.append(f"{len(bm['irregular_bars'])} bar(s) are not {bm['beats_per_bar']} beats long "
                         f"(first at {bm['irregular_bars'][0]['at_s']}s) — downbeats after them may sit off Live's bar lines")
@@ -112,6 +113,10 @@ def summary(m: dict) -> str:
     L.append(f"  detected beats    {len(d.get('beats_s', []))}, downbeat confidence {d.get('downbeat_confidence')}, "
              f"beat spacing spread {d.get('tempo_stability')}")
     bm = d.get("beat_map") or {}
+    if d.get("export_mode"):
+        g = d.get("constant_grid_gap_ms") or {}
+        L.append(f"  export mode       {d['export_mode']} (one-tempo grid vs beat map: median {g.get('median')} ms, "
+                 f"95% {g.get('p95')} ms)")
     if bm.get("beats_s"):
         L.append(f"  beat map          {len(bm['beats_s'])} beats, {len(bm['downbeats_s'])} downbeats, tempo "
                  f"{bm['tempo_range_bpm'][0]}–{bm['tempo_range_bpm'][1]} BPM → Live tempo {bm['live_tempo_bpm']} "
@@ -202,6 +207,34 @@ def redetect_timing(m: dict) -> dict:
     The user's correction, if any, is kept untouched."""
     src = manifest.mix(m)
     y, _ = audio.load(src["path"], sr=sync.SR)
-    m["timing"]["detected"] = tempo.detect(y, sr=sync.SR)
-    m["timing"]["detected"]["beat_map"] = beatmap.detect(src["path"])
+    bm = beatmap.detect(src["path"])
+    m["timing"]["detected"] = tempo.detect(y, sr=sync.SR, rough_bpm=bm.get("live_tempo_bpm"))
+    m["timing"]["detected"]["beat_map"] = bm
+    choose_mode(m["timing"]["detected"])
     return m
+
+
+def choose_mode(t: dict, tol_ms: float = 20.0) -> None:
+    """Simplest thing that fits: if one constant tempo stays within tol_ms of
+    the beat map for 95 % of beats, export at constant tempo (no warping);
+    otherwise use the beat map. The measured gap is stored either way."""
+    bm = t.get("beat_map") or {}
+    if not bm.get("beats_s"):
+        t["export_mode"] = "constant"
+        return
+    b = np.asarray(bm["beats_s"])
+    period = 60.0 / t["tempo_bpm"]
+    d = (b - b[0]) / period
+    # best phase: align grid to the beat map in a least-squares sense
+    k = np.round(d)
+    phase = float(np.mean(b - k * period))
+    gap = np.abs(b - (phase + k * period)) * 1000
+    t["constant_grid_gap_ms"] = {"median": round(float(np.median(gap)), 1), "p95": round(float(np.percentile(gap, 95)), 1)}
+    t["export_mode"] = "constant" if t["constant_grid_gap_ms"]["p95"] <= tol_ms else "beatmap"
+    if t["export_mode"] == "constant" and bm.get("downbeats_s"):
+        # The grid fitted to every beat-map beat is the most precise anchor
+        # (librosa's downbeat was ~16 ms late on a test song): put the first
+        # downbeat on that grid, at Beat This!'s first downbeat.
+        k0 = round((bm["downbeats_s"][0] - phase) / period)
+        t["first_downbeat_s"] = round(phase + k0 * period, 4)
+        t["first_downbeat_source"] = "beat map grid fit"

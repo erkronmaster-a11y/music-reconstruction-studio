@@ -139,6 +139,21 @@ Beat This! takes about 8 s per 80 s of audio on CPU.
 - **Not yet checked in Live:** that warp markers placed through the LOM play
   the song in time (Sprint 3 / next Mac test).
 
+### Sprint 1c follow-up — steadier than it looked (2026-10-12)
+- **Real song:** Beat This! reads the owner's song at **~100 BPM**. librosa's
+  128–132 was a 4:3 error, not drift. The tempo fit now starts from the beat
+  map's tempo.
+- **Jitter:** Beat This! beats sit on a 20 ms raster. They are smoothed by a
+  local fit (corrections ≤ 12 ms only), so warp markers don't wobble.
+- **Missed or stray beats:** they are filled in or dropped by local spacing.
+  This was seen at the end of a test song, where it put notes 0.26 beat off.
+- **Simplest mode that fits:** one constant tempo is used when it stays within
+  20 ms of the beat map for 95% of beats (no warping); otherwise the beat map
+  is used. A steady test song → constant; the ±3% wobble song → beat map.
+- **Constant-mode anchor:** the first downbeat now comes from the grid fitted
+  to all beat-map beats. librosa's downbeat was 16 ms late.
+- `pytest` → **32 passed**.
+
 ## Sprint 1b — bass + melody → MIDI (2026-10-12, Linux, synthetic ground truth)
 `pytest tests/` → **28 passed**. Scored with `mir_eval` (onset ±50 ms, pitch exact).
 

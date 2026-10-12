@@ -22,7 +22,8 @@ def timeline(m: dict) -> dict:
     """'beatmap' mode when a beat map exists (Live tempo constant, audio warped
     at every beat, notes placed by the map); else 'constant' (one tempo + pad)."""
     bm = (m["timing"]["detected"] or {}).get("beat_map") or {}
-    if bm.get("positions") and not m["timing"].get("correction"):
+    if (bm.get("positions") and not m["timing"].get("correction")
+            and (m["timing"]["detected"] or {}).get("export_mode", "beatmap") == "beatmap"):
         return {"mode": "beatmap", "tempo_bpm": bm["live_tempo_bpm"], "beats_per_bar": bm["beats_per_bar"],
                 "first_downbeat_s": bm["downbeats_s"][0] if bm["downbeats_s"] else bm["beats_s"][0],
                 "pad_s": 0.0, "first_downbeat_bar": int(bm["positions"][bm["beats_s"].index(

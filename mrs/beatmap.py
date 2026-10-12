@@ -40,6 +40,10 @@ def detect(path: str) -> dict:
 
 def build(beats: np.ndarray, downs: np.ndarray, method: str, beats_per_bar: int = 4) -> dict:
     beats = np.unique(np.round(beats, 4))
+    raw = beats.copy()
+    beats = fill_gaps(beats)
+    if len(beats) >= 9:
+        beats = smooth(beats)
     if len(beats) < 8:
         return {"method": method, "beats_s": beats.tolist(), "downbeats_s": [], "positions": [],
                 "note": "too few beats for a beat map"}
@@ -57,11 +61,53 @@ def build(beats: np.ndarray, downs: np.ndarray, method: str, beats_per_bar: int 
     ibi = np.diff(beats)
     local_bpm = 60.0 / ibi
     return {"method": method, "beats_s": [round(float(b), 4) for b in beats],
+            "beats_raw_s": [round(float(b), 4) for b in raw],
+            "gap_fixes": int(len(beats) - len(raw)),
             "downbeats_s": [round(float(beats[i]), 4) for i in down_idx],
             "positions": positions.tolist(), "beats_per_bar": beats_per_bar,
             "live_tempo_bpm": round(float(np.median(local_bpm)), 2),
             "tempo_range_bpm": [round(float(np.percentile(local_bpm, 5)), 1), round(float(np.percentile(local_bpm, 95)), 1)],
             "irregular_bars": irregular}
+
+
+def fill_gaps(beats: np.ndarray, half: int = 4) -> np.ndarray:
+    """A missed beat leaves a double-length gap (seen at the end of a test song);
+    a stray extra beat leaves a short one. Compared with the local median beat
+    spacing, missed beats are filled in evenly and stray beats dropped, so beat
+    numbers keep counting correctly. Changes are counted in `gap_fixes`."""
+    if len(beats) < 4:
+        return beats
+    out = [beats[0]]
+    ibi = np.diff(beats)
+    for i in range(1, len(beats)):
+        local = float(np.median(ibi[max(0, i - 1 - half): i - 1 + half]))
+        gap = beats[i] - out[-1]
+        if gap < 0.6 * local:          # stray beat: skip it
+            continue
+        n = int(round(gap / local))
+        for k in range(1, n):          # missed beat(s): fill evenly
+            out.append(beats[i] - gap + gap * k / n)
+        out.append(beats[i])
+    return np.asarray(out)
+
+
+def smooth(beats: np.ndarray, half: int = 4) -> np.ndarray:
+    """Beat This! reports beats on a 20 ms frame raster (50 fps), so raw beats
+    jitter ±10 ms; used as warp markers that jitter would audibly wobble the
+    audio. Each beat is replaced by a local straight-line fit over ±4 beats:
+    keeps real tempo drift, removes raster noise."""
+    n = len(beats)
+    out = beats.copy()
+    idx = np.arange(n)
+    for i in range(n):
+        a, b = max(0, i - half), min(n, i + half + 1)
+        k, c = np.polyfit(idx[a:b], beats[a:b], 1)
+        fit = k * i + c
+        # Only raster-sized corrections (≤ 12 ms). A larger gap is a real
+        # timing event (fill, ending, tempo jump) and the raw beat is kept.
+        if abs(fit - beats[i]) <= 0.012:
+            out[i] = fit
+    return out
 
 
 def to_beats(bm: dict, t_s: np.ndarray | float) -> np.ndarray:

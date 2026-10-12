@@ -70,25 +70,32 @@ def test_missing_stem_is_skipped_not_guessed(tmp_path):
     assert m["tracks"] == [] and all("skipped" in x for x in msgs)
 
 
-def test_midi_export_alignment(proj, tmp_path):
-    """Beat-map mode: Live tempo constant, notes placed by beat number."""
+@pytest.mark.parametrize("mode", ["constant", "beatmap"])
+def test_midi_export_alignment(proj, tmp_path, mode):
+    """A steady song is exported at constant tempo (simplest fit); the beat-map
+    path is forced here too. Either way bass notes (on beats in the truth) land
+    on whole beats, not quantised, and the first downbeat sits on a bar line."""
     m, truth, *_ = proj
+    assert m["timing"]["detected"]["export_mode"] == "constant"   # steady synthetic song
+    m = json.loads(json.dumps(m))
+    m["timing"]["detected"]["export_mode"] = mode
     info = export.write_midi(m, tmp_path / "midi")
     tl = info["timeline"]
-    assert tl["mode"] == "beatmap"
+    assert tl["mode"] == mode
     pm = pretty_midi.PrettyMIDI(str(tmp_path / "midi" / f"{m['name']} - bass.mid"))
     assert abs(pm.get_tempo_changes()[1][0] - tl["tempo_bpm"]) < 0.01
-    # bass notes are on beats in the truth → on whole beats in the MIDI (not quantised: within 0.06 beat)
     beats = [n.start * tl["tempo_bpm"] / 60 for n in pm.instruments[0].notes]
     off = [abs(b - round(b)) for b in beats]
-    assert np.median(off) < 0.03 and max(off) < 0.08
-    # the song's first downbeat sits on a bar line
-    first_note_beat = min(beats)
-    assert abs(first_note_beat / 4 - round(first_note_beat / 4)) < 0.02
-    wm = info["audio_placement"]["bass"]["warp_markers"]
-    mixm = info["audio_placement"]["mix"]["warp_markers"]
-    assert abs((wm[3]["sample_time"] - mixm[3]["sample_time"]) - 0.015) < 0.002   # stem offset carried into its markers
-    assert wm[3]["beat_time"] == mixm[3]["beat_time"]
+    assert np.median(off) < 0.03 and max(off) < 0.08, max(off)
+    first = min(beats)
+    assert abs(first / 4 - round(first / 4)) < 0.02
+    if mode == "beatmap":
+        wm = info["audio_placement"]["bass"]["warp_markers"]
+        mixm = info["audio_placement"]["mix"]["warp_markers"]
+        assert abs((wm[3]["sample_time"] - mixm[3]["sample_time"]) - 0.015) < 0.002
+        assert wm[3]["beat_time"] == mixm[3]["beat_time"]
+    else:
+        assert info["audio_placement"]["bass"]["start_s"] == pytest.approx(tl["pad_s"] - 0.015, abs=1e-3)
 
 
 def test_drifting_tempo_lands_on_grid(tmp_path):
@@ -110,6 +117,7 @@ def test_drifting_tempo_lands_on_grid(tmp_path):
     m, _ = project.build(folder=d)
     project.transcribe(m, ["bass"])
     bm = m["timing"]["detected"]["beat_map"]
+    assert m["timing"]["detected"]["export_mode"] == "beatmap"     # drifting song → warping
     assert "beat_this" in bm["method"] and bm["tempo_range_bpm"][1] - bm["tempo_range_bpm"][0] > 4
     pos = beatmap.to_beats(bm, [n["start_s"] for n in manifest.effective_notes(manifest.track(m, "bass"))])
     off = np.abs(pos - np.round(pos))
