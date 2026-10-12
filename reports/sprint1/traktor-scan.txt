@@ -1,85 +1,33 @@
-# Traktor / NI Stems scan — 2026-10-12 15:31
+# Traktor / NI Stems scan — 2026-10-12 15:38
 
-## .stem.mp4 / .stem.m4a files (first 40)
-/Users/locohood/Music/Traktor/Stems/103/HPOGSNDRQJR1WBNVT5QBBREBPS4A.stem.mp4
-/Users/locohood/Music/Traktor/Stems/102/GH1LBOBPBNFPUDQFZMFEDW33LHAA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/024/Y2K0KYA02EKHIBJE2CBTCCAXXI5C.stem.mp4
-/Users/locohood/Music/Traktor/Stems/015/PU2T2JBYNTP2SDHD0SSRDQLVVD2C.stem.mp4
-/Users/locohood/Music/Traktor/Stems/015/PYQFLMAXEYO05B1UY52PCQVX2LEA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/012/MI4XXQBPM1DWPAN0VWK3CAVXKTMB.stem.mp4
-/Users/locohood/Music/Traktor/Stems/079/PC0AERBNJ1XBNBPPVRD5AM11YCFC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/041/JFDBUHAN5K5W4AYPUTAGAWTHU3IC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/077/NKORXAAM1TO3EALTGMZMDPKT5KQD.stem.mp4
-/Users/locohood/Music/Traktor/Stems/077/NK01CFDUZPQRHDEXQCPSBSKC441B.stem.mp4
-/Users/locohood/Music/Traktor/Stems/083/TOY22CDYC3SV4DR4JHNVCNZFVM3B.stem.mp4
-/Users/locohood/Music/Traktor/Stems/084/UCAVTTDVJTXCGDNMWHJ5CF4EGHTD.stem.mp4
-/Users/locohood/Music/Traktor/Stems/084/UGPLOQCV45CIHAU2AUNHAHWE5HMA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/070/GW3D5ED3USNU2CUFWISKDQYKSMQD.stem.mp4
-/Users/locohood/Music/Traktor/Stems/070/GSNDRFC1XLCZICC43M5ECRPF00OB.stem.mp4
-/Users/locohood/Music/Traktor/Stems/013/NYEYVZARVBV0ICI0ATOPDUO4OZ1D.stem.mp4
-/Users/locohood/Music/Traktor/Stems/013/NUXF3GAPWXSHACBU51VUDEMXGNFD.stem.mp4
-/Users/locohood/Music/Traktor/Stems/013/NYG40OANQ52DFDNMNMSJDJYHPZRB.stem.mp4
-/Users/locohood/Music/Traktor/Stems/013/NMH4WFARGBUAJCHAHG40DMJI5LIC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/014/O2G4K4AUYJO42AX0R3RQCNCYK0UD.stem.mp4
-/Users/locohood/Music/Traktor/Stems/025/ZEFTBKDHJJQIVAW4RPUEB5QFMJWD.stem.mp4
-/Users/locohood/Music/Traktor/Stems/025/ZI4LV1AJRF43IBE10R2QBGQSKHRD.stem.mp4
-/Users/locohood/Music/Traktor/Stems/085/V4CT1ZCFXXTGEC3RZMHVDO1N2FXC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/049/RFXL2DDBQ3JGVBWU1NINDJCYCS3C.stem.mp4
-/Users/locohood/Music/Traktor/Stems/076/MKQO2OAOR3F0FBK0UDOKCGVOUP2A.stem.mp4
-/Users/locohood/Music/Traktor/Stems/076/MGLSLCDUDJVPVCFYKR0BBIIVAGZC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/076/M0NOHYBVYCCPZB2ITO5WB3DJCLIA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/040/INTZFDAIZ1CPADZ44EXJBOPQNAOC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/040/IV4NGPCQEPDJ3CEKMUVGCRSR4FGA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/040/IR3NWTDPFUUXABXOECDND3LO5JGA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/078/OK0G2FB5CSS0UC5N22NACYEHXV3B.stem.mp4
-/Users/locohood/Music/Traktor/Stems/078/O4DZKOBDNT3URCPCJWKCD0VVHDYC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/047/PF2HZVC2F3PP4AN1H3QODQA5LWOB.stem.mp4
-/Users/locohood/Music/Traktor/Stems/065/BS3BAJASKPTFFAFDP1NKBONCFLBA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/065/B4RFJKBDOLDNWA4VJU5ADE0AGWPA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/091/1CWIXWBUNKB4BAXQGZRHAMRR5OBB.stem.mp4
-/Users/locohood/Music/Traktor/Stems/096/A1Q4ADD1ZNGATABYXCXUC3JLH2ZC.stem.mp4
-/Users/locohood/Music/Traktor/Stems/096/APVRBSBB5MPQADVRFNZQAMUOM3OB.stem.mp4
-/Users/locohood/Music/Traktor/Stems/062/4BR4BGDJV4N2RBPZPHLIBYKADDEA.stem.mp4
-/Users/locohood/Music/Traktor/Stems/054/WFD4MMA1UUPFYCCINX2QANAZAJYB.stem.mp4
-total: 184
+## .stem.mp4 / .stem.m4a outside the Traktor cache (Music, Documents, Desktop, Downloads; first 40)
 
-## Traktor 4 stem cache (~/Music/Traktor/Stems): count, size, first 25 titles
-files: 184   size: 9.4G
-  HPOGSNDRQJR1WBNVT5QBBREBPS4A.stem.mp4  ->  
-  GH1LBOBPBNFPUDQFZMFEDW33LHAA.stem.mp4  ->  
-  Y2K0KYA02EKHIBJE2CBTCCAXXI5C.stem.mp4  ->  
-  PU2T2JBYNTP2SDHD0SSRDQLVVD2C.stem.mp4  ->  
-  PYQFLMAXEYO05B1UY52PCQVX2LEA.stem.mp4  ->  
-  MI4XXQBPM1DWPAN0VWK3CAVXKTMB.stem.mp4  ->  
-  PC0AERBNJ1XBNBPPVRD5AM11YCFC.stem.mp4  ->  
-  JFDBUHAN5K5W4AYPUTAGAWTHU3IC.stem.mp4  ->  
-  NKORXAAM1TO3EALTGMZMDPKT5KQD.stem.mp4  ->  
-  NK01CFDUZPQRHDEXQCPSBSKC441B.stem.mp4  ->  
-  TOY22CDYC3SV4DR4JHNVCNZFVM3B.stem.mp4  ->  
-  UCAVTTDVJTXCGDNMWHJ5CF4EGHTD.stem.mp4  ->  
-  UGPLOQCV45CIHAU2AUNHAHWE5HMA.stem.mp4  ->  
-  GW3D5ED3USNU2CUFWISKDQYKSMQD.stem.mp4  ->  
-  GSNDRFC1XLCZICC43M5ECRPF00OB.stem.mp4  ->  
-  NYEYVZARVBV0ICI0ATOPDUO4OZ1D.stem.mp4  ->  
-  NUXF3GAPWXSHACBU51VUDEMXGNFD.stem.mp4  ->  
-  NYG40OANQ52DFDNMNMSJDJYHPZRB.stem.mp4  ->  
-  NMH4WFARGBUAJCHAHG40DMJI5LIC.stem.mp4  ->  
-  O2G4K4AUYJO42AX0R3RQCNCYK0UD.stem.mp4  ->  
-  ZEFTBKDHJJQIVAW4RPUEB5QFMJWD.stem.mp4  ->  
-  ZI4LV1AJRF43IBE10R2QBGQSKHRD.stem.mp4  ->  
-  V4CT1ZCFXXTGEC3RZMHVDO1N2FXC.stem.mp4  ->  
-  RFXL2DDBQ3JGVBWU1NINDJCYCS3C.stem.mp4  ->  
-  MKQO2OAOR3F0FBK0UDOKCGVOUP2A.stem.mp4  ->  
+## Traktor 4 stem cache — titles from Traktor's collection.nml (newest first, first 40)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/locohood/Documents/GitHub/music-reconstruction-studio/mrs/__main__.py", line 15, in <module>
+    from . import manifest, nistem, project
+  File "/Users/locohood/Documents/GitHub/music-reconstruction-studio/mrs/nistem.py", line 18, in <module>
+    from .audio import ffmpeg_path
+  File "/Users/locohood/Documents/GitHub/music-reconstruction-studio/mrs/audio.py", line 14, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+## How collection.nml refers to one stem file (to check the title lookup)
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/Users/locohood/Documents/GitHub/music-reconstruction-studio/mrs/nistem.py", line 18, in <module>
+    from .audio import ffmpeg_path
+  File "/Users/locohood/Documents/GitHub/music-reconstruction-studio/mrs/audio.py", line 14, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
 
 ## Traktor / Native Instruments folders and sizes
 954M	/Users/locohood/Documents/Native Instruments/Traktor 4.0.0
 189M	/Users/locohood/Documents/Native Instruments/Traktor 3.11.1
  20K	/Users/locohood/Library/Application Support/Native Instruments/Traktor
   0B	/Users/locohood/Library/Application Support/Native Instruments/Traktor/StemFilesTempDir
-4.0K	/Users/locohood/Library/Caches/com.apple.helpd/Generated/com.apple.SystemInformation.help*11.0
-  0B	/Users/locohood/Library/Caches/CloudKit/com.apple.systempreferences.AppleIDSettings
-8.0K	/Users/locohood/Library/Caches/org.whispersystems.signal-desktop.ShipIt
- 16K	/Users/locohood/Library/Caches/Google/Chrome/System Profile
 8.1M	/Users/locohood/Music/Vital/Unsystematic Fragmentation
 4.3G	/Users/locohood/Music/Engine Library/Stems
 9.5G	/Users/locohood/Music/Traktor
