@@ -101,6 +101,15 @@ The numbered scripts below still work. Loomback runs the same steps.
 6. Double-click **`mac/7-send-ableton-results.command`** and tell Claude
    **"pushed"**.
 
+**Your own instruments and VSTs (optional, set up once):**
+1. In a Live Set, make three MIDI tracks named exactly **`LB Bass`**,
+   **`LB Melody`** and **`LB Drums`**.
+2. Put your favourite instrument or VST on each (a Drum Rack for drums).
+3. Save that Set as your **template**, and build into it.
+
+The builder **copies** these tracks for each song, sounds included. Without
+them you get empty MIDI tracks: drag any instrument on.
+
 The full mix and the reference stems start **muted**; vocals and the MIDI
 tracks play. Unmute anything to compare.
 

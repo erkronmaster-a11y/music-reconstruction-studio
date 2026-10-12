@@ -66,3 +66,18 @@ def test_write_and_instructions(built, tmp_path):
     assert plan == json.loads(p.read_text())
     txt = liveplan.instructions(plan)
     assert str(plan["tempo_bpm"]) in txt and "Warp ON" in txt
+
+
+def test_builder_warp_markers_in_simulated_live(built, tmp_path):
+    """Runs live/loomback_build.js's marker code against a simulation of Live 12.0.15's
+    rules seen on the Mac (hidden helper marker; explicit adds only between markers)."""
+    import shutil, subprocess
+    if not shutil.which("node"):
+        pytest.skip("node not installed")
+    m, mode, out = built
+    plan = tmp_path / "plan.json"
+    plan.write_text(json.dumps(liveplan.build(m)))
+    r = subprocess.run(["node", "tools/mock_live_warp.js", "live/loomback_build.js", str(plan)],
+                       capture_output=True, text=True, check=True)
+    res = json.loads(r.stdout.strip().splitlines()[-1])
+    assert res["missing"] == 0 and res["now"] == res["wanted"], res

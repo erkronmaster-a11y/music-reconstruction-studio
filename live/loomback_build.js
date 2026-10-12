@@ -185,26 +185,41 @@ function buildAudio(song, t, res) {
     clip.set("warp_mode", hasMode ? wantMode : 4);   // Complex Pro, else Complex
     res.warp_mode = Number(clip.get("warp_mode"));
 
-    // Markers: keep Live's first and last, delete any others, move those two to
-    // our first/last positions (so every stretch has a realistic tempo — Live
-    // only accepts 5–999 BPM between markers), then add ours in between.
+    // Warp markers. Mac run (Live 12.0.15): Live's dict holds the first marker
+    // plus a hidden helper ~0.03 beat after it (it sets the clip tempo), and
+    // add_warp_marker with an explicit sample_time was refused for all 257
+    // markers past that helper — a new marker must lie BETWEEN two existing
+    // ones. So: (1) move the first marker to our first, (2) create our END
+    // marker the documented way — add with beat_time only (Live picks the
+    // sample) and move it to our end beat — (3) add the rest, which now all
+    // fall between two markers.
     var ex = markers(clip);
     res.markers_before = ex.length;
-    for (var j = ex.length - 2; j >= 1; j--) clip.call("remove_warp_marker", ex[j].beat_time);
-    ex = markers(clip);
+    res.live_markers_at_start = ex;
     var want = t.warp_markers;
     var first = want[0], last = want[want.length - 1];
-    if (ex.length >= 2) {
-        clip.call("move_warp_marker", ex[0].beat_time, first.beat_time - ex[0].beat_time);
-        ex = markers(clip);
-        clip.call("move_warp_marker", ex[ex.length - 1].beat_time, last.beat_time - ex[ex.length - 1].beat_time);
-    } else {
-        clip.call("add_warp_marker", { beat_time: first.beat_time, sample_time: first.sample_time });
-        clip.call("add_warp_marker", { beat_time: last.beat_time, sample_time: last.sample_time });
-    }
+    if (ex.length) clip.call("move_warp_marker", ex[0].beat_time, first.beat_time - ex[0].beat_time);
+    res.end_marker = placeAtSample(clip, last.sample_time, last.beat_time);
+    var refused = 0;
     for (var m = 1; m < want.length - 1; m++) {
+        var n0 = markers(clip).length;
         clip.call("add_warp_marker", { beat_time: want[m].beat_time, sample_time: want[m].sample_time });
+        if (markers(clip).length === n0) {          // refused: fall back to add-then-move
+            refused++;
+            placeAtSample(clip, want[m].sample_time, want[m].beat_time);
+        }
     }
+    res.explicit_adds_refused = refused;
+    // Live's hidden tempo helper (moved along with the first marker) is now a
+    // stray marker just after our first one: remove anything that is not ours.
+    var now = markers(clip), strays = 0;
+    for (var q = now.length - 2; q >= 1; q--) {
+        var mine = false;
+        for (var w2 = 0; w2 < want.length && !mine; w2++)
+            if (Math.abs(now[q].beat_time - want[w2].beat_time) < 0.001) mine = true;
+        if (!mine) { clip.call("remove_warp_marker", now[q].beat_time); strays++; }
+    }
+    res.stray_markers_removed = strays;
     // clip length follows the audio
     try { clip.set("end_marker", last.beat_time); clip.set("loop_end", last.beat_time); } catch (e) {}
     var fin = markers(clip);
@@ -219,15 +234,58 @@ function buildAudio(song, t, res) {
     for (var w = 0; w < want.length; w++) {
         var found = false;
         for (var f = 0; f < fin.length && !found; f++)
-            if (Math.abs(fin[f].beat_time - want[w].beat_time) < 0.001 && Math.abs(fin[f].sample_time - want[w].sample_time) < 0.001) found = true;
+            if (Math.abs(fin[f].beat_time - want[w].beat_time) < 0.001 && Math.abs(fin[f].sample_time - want[w].sample_time) < 0.003) found = true;
         if (!found) miss++;
     }
     res.markers_missing = miss;
     if (miss > 0) res.error = miss + " of " + want.length + " warp markers did not land";
 }
 
+// Put a marker at sample time S and beat B without giving Live a sample_time:
+// find the beat where S currently plays (from the existing markers), add a
+// marker there, then move it to B. Returns what Live ended up with.
+function placeAtSample(clip, S, B) {
+    var mk = markers(clip);
+    if (!mk.length) return { error: "no markers" };
+    var a = mk[0], b2 = mk[mk.length - 1];
+    for (var i = 0; i < mk.length - 1; i++) if (mk[i].sample_time <= S) { a = mk[i]; b2 = mk[i + 1]; }
+    var slope = (b2.beat_time - a.beat_time) / Math.max(1e-9, b2.sample_time - a.sample_time);
+    var b0 = a.beat_time + (S - a.sample_time) * slope;
+    clip.call("add_warp_marker", { beat_time: b0 });
+    clip.call("move_warp_marker", b0, B - b0);
+    var after = markers(clip), best = null;
+    for (var k = 0; k < after.length; k++) if (!best || Math.abs(after[k].beat_time - B) < Math.abs(best.beat_time - B)) best = after[k];
+    return { asked: { beat_time: B, sample_time: S }, got: best };
+}
+
+// Instruments: if the Set has a template track "LB Bass" / "LB Melody" /
+// "LB Drums" (any instrument or VST on it), it is duplicated for this part —
+// the owner's preselected sounds. Otherwise an empty MIDI track, then a
+// best-effort browser load (found nothing on Live 12.0.15).
+function templateIndex(song, role) {
+    var want = "lb " + role, n = song.getcount("tracks");
+    for (var i = 0; i < n; i++) {
+        var nm = String(new LiveAPI("live_set tracks " + i).get("name")).toLowerCase();
+        if (nm === want) return i;
+    }
+    return -1;
+}
+
 function buildMidi(song, t, res, plan) {
-    var tr = newTrack(song, "midi", t);
+    var tpl = templateIndex(song, t.role), tr;
+    if (tpl >= 0) {
+        song.call("duplicate_track", tpl);                 // copy lands right after the template
+        var idx = tpl + 1;
+        var api = new LiveAPI("live_set tracks " + idx);
+        api.set("name", t.name); api.set("color", t.color); api.set("mute", 0);
+        tr = { api: api, index: idx };
+        // remove clips the template may carry
+        var old = ids(api, "arrangement_clips");
+        for (var c = old.length - 1; c >= 0; c--) try { api.call("delete_clip", "id", old[c]); } catch (e) {}
+        res.instrument = { loaded: ids(api, "devices").length > 0, from_template: "LB " + t.role };
+    } else {
+        tr = newTrack(song, "midi", t);
+    }
     var slot = new LiveAPI("live_set tracks " + tr.index + " clip_slots 0");
     slot.call("create_clip", plan.length_beats);
     var sc = new LiveAPI("live_set tracks " + tr.index + " clip_slots 0 clip");
@@ -248,7 +306,7 @@ function buildMidi(song, t, res, plan) {
     var back = parseDict(ac.call("get_notes_extended", 0, 128, 0.0, plan.length_beats + 4));
     res.notes_in_arrangement = back && back.notes ? back.notes.length : 0;
     if (res.notes_in_arrangement !== t.notes.length) res.error = "note count " + res.notes_in_arrangement + " ≠ " + t.notes.length;
-    res.instrument = loadInstrument(song, tr, t.instrument_candidates || []);
+    if (!res.instrument) res.instrument = loadInstrument(song, tr, t.instrument_candidates || []);
 }
 
 // Best effort: Live's browser, documented in the LOM. Selects the track, then
@@ -270,7 +328,9 @@ function loadInstrument(song, tr, names) {
                 }
             }
         }
-        return { loaded: false, note: "none of " + names.join(", ") + " found in the browser" };
+        var diag = {};
+        try { diag.browser_id = br.id; diag.instruments_children = ids(new LiveAPI("live_app browser instruments"), "children").length; } catch (e) { diag.error = String(e); }
+        return { loaded: false, note: "none of " + names.join(", ") + " found in the browser", browser: diag };
     } catch (e) { return { loaded: false, error: String(e) }; }
 }
 function searchBrowser(item, name, depth) {

@@ -135,6 +135,21 @@ follow (a tempo map is on the roadmap).
 - **Instruments did not load:** the MIDI tracks showed "No Output".
 - The build report has not been pushed yet, so warp-marker and note-count
   checks are unconfirmed.
+- **Build report (pushed):**
+  - **MIDI is perfect:** bass 435/435, melody 448/448, drums 754/754 notes
+    placed.
+  - **Warping failed:** 257/258 markers were refused on every audio clip.
+    Live's dict holds the first marker plus a hidden tempo helper 0.03 beat
+    later, and an explicit-sample add past the last marker is refused.
+  - **Instruments:** the browser search found nothing on 12.0.15.
+- **Fixes:**
+  - **Warping:** the end marker is created first (add without sample_time,
+    then move), so all other markers fall between two existing ones. The
+    stray helper is removed. This is verified against a simulation of those
+    rules (`tools/mock_live_warp.js`, in pytest) in both timing modes: 0
+    markers missing.
+  - **Instruments:** come from template tracks `LB Bass` / `LB Melody` /
+    `LB Drums`, which are duplicated.
 - Three bugs were found on the way and fixed:
   - Max's file writer can't write non-ASCII text, so reports are now ASCII.
   - Live loaded the device from outside `<repo>/live/`, so the plan and
