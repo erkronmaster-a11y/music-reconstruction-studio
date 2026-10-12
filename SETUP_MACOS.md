@@ -84,6 +84,30 @@ few minutes, and nothing in it changes your system or your Ableton settings.
 
 The numbered scripts below still work. Loomback runs the same steps.
 
+## 7. Build the Ableton Set (Sprint 3)
+
+1. In Loomback, open the song. Click **1 Transcribe + export MIDI** if you
+   haven't yet, then **2 Send to Ableton**.
+2. In Ableton: **File → New Live Set**.
+3. In Finder, open `music-reconstruction-studio/live/` and drag
+   **`Loomback Builder.amxd`** onto the empty MIDI track.
+4. Click **`build`** in the device. Large songs can take up to a minute.
+   You get:
+   - the tempo set;
+   - your mix and stems on audio tracks, warped to the grid;
+   - bass, melody and drums on MIDI tracks;
+   - basic Ableton instruments where it could load them.
+5. Click **`verify`**. The status line should read `verify — ALL OK`.
+6. Double-click **`mac/7-send-ableton-results.command`** and tell Claude
+   **"pushed"**.
+
+The full mix and the reference stems start **muted**; vocals and the MIDI
+tracks play. Unmute anything to compare.
+
+**If something doesn't build:** the project folder has
+`IMPORT-BY-HAND.txt` and `midi/`, with the same tempo and positions for doing
+it by hand.
+
 ## 6. Song → MIDI (Sprint 1b, a few minutes per song)
 
 1. Double-click **`mac/6-transcribe-song.command`**.

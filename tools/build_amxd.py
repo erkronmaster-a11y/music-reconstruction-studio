@@ -15,6 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "live" / "MRS Bridge.amxd"
+BUILDER = ROOT / "live" / "Loomback Builder.amxd"
 
 
 def box(id_, maxclass, text, rect, ins=1, outs=1, **extra):
@@ -32,16 +33,15 @@ def line(src, dst, inlet=0, outlet=0):
     return {"patchline": {"source": [src, outlet], "destination": [dst, inlet]}}
 
 
-def patcher():
+def patcher(js="mrs_bridge.js", status="click run, then save/close/reopen, then verify",
+            note="MRS Bridge — Sprint 0 test. Results go to reports/sprint0/.", buttons=("run", "verify")):
     boxes = [
-        box("run", "message", "run", [10, 10, 40, 22], ins=2),
-        box("verify", "message", "verify", [60, 10, 50, 22], ins=2),
-        box("js", "newobj", "js mrs_bridge.js", [10, 45, 120, 22],
-            saved_object_attributes={"filename": "mrs_bridge.js", "parameter_enable": 0}),
-        box("status", "message", "click run, then save/close/reopen, then verify",
-            [10, 80, 700, 60], ins=2),
-        box("note", "comment", "MRS Bridge — Sprint 0 test. Results go to reports/sprint0/.",
-            [10, 148, 400, 20], outs=0),
+        box("run", "message", buttons[0], [10, 10, 40, 22], ins=2),
+        box("verify", "message", buttons[1], [60, 10, 50, 22], ins=2),
+        box("js", "newobj", f"js {js}", [10, 45, 140, 22],
+            saved_object_attributes={"filename": js, "parameter_enable": 0}),
+        box("status", "message", status, [10, 80, 700, 60], ins=2),
+        box("note", "comment", note, [10, 148, 500, 20], outs=0),
         # Keep MIDI flowing through, so the device is harmless on any track.
         box("midiin", "newobj", "midiin", [430, 10, 45, 22], outs=1),
         box("midiout", "newobj", "midiout", [430, 45, 50, 22], outs=0),
@@ -57,20 +57,27 @@ def patcher():
         "default_fontsize": 10.0, "default_fontface": 0, "default_fontname": "Arial Bold",
         "gridonopen": 1, "gridsize": [8.0, 8.0],
         "boxes": boxes, "lines": lines,
-        "dependency_cache": [{"name": "mrs_bridge.js", "bootpath": ".", "type": "TEXT", "implicit": 1}],
+        "dependency_cache": [{"name": js, "bootpath": ".", "type": "TEXT", "implicit": 1}],
         "latency": 0, "is_mpe": 0, "external_mpe_tuning_enabled": 0,
         "minimum_live_version": "", "minimum_max_version": "", "platform_compatibility": 0,
         "autosave": 0,
     }}
 
 
-def main():
-    body = json.dumps(patcher(), indent=1).encode() + b"\n\x00"
+def write(path, p):
+    body = json.dumps(p, indent=1).encode() + b"\n\x00"
     data = (b"ampf" + struct.pack("<I", 4) + b"mmmm"          # mmmm = MIDI effect
             + b"meta" + struct.pack("<I", 4) + struct.pack("<I", 0)
             + b"ptch" + struct.pack("<I", len(body)) + body)
-    OUT.write_bytes(data)
-    print(f"wrote {OUT} ({len(data)} bytes)")
+    path.write_bytes(data)
+    print(f"wrote {path} ({len(data)} bytes)")
+
+
+def main():
+    write(OUT, patcher())
+    write(BUILDER, patcher(js="loomback_build.js", buttons=("build", "verify"),
+                           status="Send to Ableton in Loomback, then click build (new empty Set recommended)",
+                           note="Loomback Builder by SMV — builds tracks, MIDI, warping. Reports: reports/sprint3/"))
 
 
 if __name__ == "__main__":

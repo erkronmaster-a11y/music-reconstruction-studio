@@ -20,6 +20,8 @@ uncertain, never passed off as exact, and missing notes are never invented.
 | 1a | Audio import, Traktor stems, stem sync, tempo/downbeat | 🟡 Mac run pending |
 | 1b | Bass + melody to MIDI, A/B review | ✅ ran on a real song (36 s, < 1 GB) |
 | 1c | Beat map for drifting songs | ✅ verified by ear |
+| 2 | Drums → GM MIDI | ✅ sounds good on a real song |
+| 3 | Ableton builder (device) | 🟡 Live run pending |
 | GUI v1 | Loomback: projects, Traktor picker, timeline, piano roll, A/B mixer, timing fixes | 🟡 tested in cloud browser; Mac pending |
 
 ## Start here

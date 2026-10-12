@@ -42,19 +42,33 @@ def timeline(m: dict) -> dict:
             "sources": {k: v["source"] for k, v in eff.items()}}
 
 
-def place(m: dict, tl: dict, t_s: float) -> float:
-    """Mix-timeline seconds → seconds in the MIDI file (MIDI tempo = tl tempo)."""
+def raw_beats(m: dict, tl: dict, t_s: float) -> float:
+    """Mix-timeline seconds → beat position before the whole-bar shift."""
     if tl["mode"] == "beatmap":
         from . import beatmap
-        return float(beatmap.to_beats(m["timing"]["detected"]["beat_map"], t_s)[0]) * 60.0 / tl["tempo_bpm"]
-    return t_s + tl["pad_s"]
+        return float(beatmap.to_beats(m["timing"]["detected"]["beat_map"], t_s)[0])
+    return (t_s + tl["pad_s"]) * tl["tempo_bpm"] / 60.0
+
+
+def add_shift(m: dict, tl: dict) -> dict:
+    """Whole bars added in front so no file (incl. stems with a sync offset)
+    starts before beat 0 — Live cannot place audio at negative positions."""
+    import math
+    earliest = min(raw_beats(m, tl, -(s.get("sync") or {}).get("offset_s", 0.0)) for s in m["sources"])
+    tl["shift_beats"] = tl["beats_per_bar"] * math.ceil(max(0.0, -earliest) / tl["beats_per_bar"] - 1e-9)
+    return tl
+
+
+def place(m: dict, tl: dict, t_s: float) -> float:
+    """Mix-timeline seconds → seconds in the MIDI file (MIDI tempo = tl tempo)."""
+    return (raw_beats(m, tl, t_s) + tl.get("shift_beats", 0)) * 60.0 / tl["tempo_bpm"]
 
 
 def write_midi(m: dict, out_dir: str | Path) -> dict:
     import pretty_midi
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    tl = timeline(m)
+    tl = add_shift(m, timeline(m))
     files = {}
     for view, sub in (("clean", out_dir), ("raw", out_dir / "raw")):
         sub.mkdir(parents=True, exist_ok=True)

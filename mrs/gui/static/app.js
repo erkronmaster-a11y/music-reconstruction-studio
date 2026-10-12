@@ -98,13 +98,17 @@ async function runJob(body, label) {
   }
 }
 function setBusy(b) {
-  ["#btnTranscribe", "#btnRedetect", "#btnTempo", "#btnClear", "#pathGo"].forEach((s) => $(s).disabled = b || (s !== "#pathGo" && !S.dir));
+  ["#btnTranscribe", "#btnLive", "#btnRedetect", "#btnTempo", "#btnClear", "#pathGo"].forEach((s) => $(s).disabled = b || (s !== "#pathGo" && !S.dir));
 }
 async function analyze(src) {
   const j = await runJob({ action: "analyze", src }, "Analysing");
   if (j.state === "done" && j.result) { await loadProjects(); openProject(j.result); }
 }
 $("#btnTranscribe").onclick = async () => { await runJob({ action: "all", dir: S.dir }, "Transcribing + exporting"); openProject(S.dir); };
+$("#btnLive").onclick = async () => {
+  if (!S.data.project.tracks.length) { log("Run step 1 first — there is no MIDI to send yet."); return; }
+  await runJob({ action: "live", dir: S.dir }, "Preparing the Ableton build");
+};
 $("#btnRedetect").onclick = async () => { await runJob({ action: "redetect", dir: S.dir }, "Re-detecting timing"); openProject(S.dir); };
 $("#btnTempo").onclick = async () => {
   await runJob({ action: "tempo", dir: S.dir, bpm: $("#bpmIn").value, downbeat: $("#downIn").value }, "Saving timing correction");

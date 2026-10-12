@@ -12,6 +12,7 @@ import sys
 import time
 from pathlib import Path
 
+import json
 import re
 
 from . import manifest, nistem, project
@@ -29,6 +30,7 @@ def main(argv=None):
     t.add_argument("--redetect", action="store_true", help="re-run tempo detection (keeps your correction)")
     c = sub.add_parser("click"); c.add_argument("project")
     tr = sub.add_parser("transcribe"); tr.add_argument("project"); tr.add_argument("--parts", default="bass,melody,drums")
+    lp = sub.add_parser("live-plan", help="write the Ableton build plan (for the Loomback Builder device)"); lp.add_argument("project")
     rn = sub.add_parser("rename"); rn.add_argument("project"); rn.add_argument("name")
     ns = sub.add_parser("names", help="suggest names from tags / Traktor / file names"); ns.add_argument("project")
     pl = sub.add_parser("pipeline", help="transcribe + export + click checks"); pl.add_argument("project")
@@ -75,6 +77,15 @@ def main(argv=None):
             manifest.correct_timing(m, args.bpm, args.downbeat, args.bar, args.note)
         manifest.save(m, args.project)
         print(project.summary(m))
+    elif args.cmd == "live-plan":
+        from . import liveplan
+        m = manifest.load(args.project)
+        out = liveplan.write(m, Path(args.project).parent)
+        plan = json.loads(out.read_text())
+        (Path(args.project).parent / "IMPORT-BY-HAND.txt").write_text(liveplan.instructions(plan) + "\n")
+        print(f"Plan for Ableton written ({len(plan['tracks'])} tracks, {plan['tempo_bpm']} BPM, {plan['mode']} mode).")
+        print("In Ableton: open a new Set, drag 'live/Loomback Builder.amxd' onto any MIDI track, click 'build'.")
+        print(f"Manual fallback: {Path(args.project).parent / 'IMPORT-BY-HAND.txt'}")
     elif args.cmd == "rename":
         from . import naming
         new = naming.rename(Path(args.project).parent, args.name)

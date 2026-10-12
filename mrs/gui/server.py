@@ -212,6 +212,8 @@ class Handler(BaseHTTPRequestHandler):
                     for k, flag in (("bpm", "--bpm"), ("downbeat", "--downbeat")):
                         if body.get(k) not in (None, ""):
                             args += [flag, str(float(body[k]))]
+                if a == "live":
+                    args = ["live-plan", pj]
                 if a == "rename":
                     args = ["rename", pj, str(body["name"])]
                 if a == "all":

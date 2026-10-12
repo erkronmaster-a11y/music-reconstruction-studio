@@ -116,6 +116,18 @@ The test now requires < 20 ms drift over 2.5 minutes. A `click-follow.wav`
 now show when a song's tempo **really** changes, which a single tempo can't
 follow (a tempo map is on the roadmap).
 
+## Sprint 3 — Ableton build plan (2026-10-12, Linux)
+`tests/test_sprint3.py` runs in both constant and beat-map modes. In each:
+- warp markers increase in both sample and beat time;
+- every stretch stays within 5–999 BPM;
+- nothing starts before beat 0;
+- a 20 ms stem offset is carried into that stem's markers;
+- the plan's MIDI notes match `midi/*.mid` within 0.01 beat;
+- the manual-import text is written.
+
+`pytest` → **48 passed**. **The device itself is only testable in Live on the
+Mac** (pending).
+
 ## Sprint 2 — drums → GM MIDI (2026-10-12, Linux, synthetic ground truth)
 **Method:** band-wise SuperFlux onsets on the drums stem (DSP, no model) → kick
 / snare / closed hat / open hat / unclassified. **Test kit:** pitch-drop kick,

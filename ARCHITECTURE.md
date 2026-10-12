@@ -86,6 +86,25 @@ constant mode.
 The export writes the MIDI on channel 10 (`is_drum`). Notes are 60 ms
 one-shots at the detected times.
 
+## Ableton build (Sprint 3)
+- **Plan:** `mrs/liveplan.py` writes `live-plan.json` (and
+  `live/inbox/build.json`) with the tempo, the bar shift, and every track:
+  - audio: file, mute, warp mode, warp markers;
+  - MIDI: notes in beats, plus instrument candidates.
+- **Device:** `live/loomback_build.js` in `Loomback Builder.amxd` builds it
+  through the LOM:
+  - every audio clip sits at beat 0 with Warp on;
+  - Live's first and last warp markers are moved to the plan's first and
+    last, then the per-beat markers are added between them (each stretch
+    stays inside Live's 5–999 BPM rule);
+  - MIDI goes Session clip → `add_new_notes` (400 at a time) →
+    `duplicate_clip_to_arrangement`;
+  - instruments are loaded via the browser (`load_item`) where a name matches.
+- **Checks:** every step is read back and reported in `reports/sprint3/`.
+- **Fallback:** `IMPORT-BY-HAND.txt` plus `midi/` use the same mapping
+  (`export.add_shift`), which is tested to agree with the plan within
+  0.01 beat.
+
 ## MIDI export
 `mrs/export.py`. MIDI time = audio time + `pad_s`, where `pad_s` puts the
 first downbeat on a bar line. `export.json` records the tempo, `pad_s` and the

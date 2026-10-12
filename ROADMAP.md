@@ -12,7 +12,7 @@ to go over **10%** is split up, or confirmed with Erick before it starts.
 | GUI v1 | **Loomback**: local web app in SMV Studio's design language — run steps, beat/bar timeline, piano roll, A/B mixer (stems ↔ MIDI ↔ click), timing correction | ≈9% | 🟡 built + browser-tested in cloud; Mac pending |
 | 2 | Drums: kick / snare / closed hat / open hat / unclassified, GM mapping, groove kept | 10–13% | 🟡 built + tested in cloud (F1 0.89–1.00 synthetic); real song pending |
 | 2b | Vocal melody → MIDI (guide for re-singing / vocal synth) | ≈2% | later |
-| 3 | Live arrangement builder + fallback export package | 10–14% | — |
+| 3 | Live arrangement builder (Loomback Builder device) + manual fallback (IMPORT-BY-HAND.txt + midi/) | 10–14% | 🟡 built; plan validated in cloud; Live run pending |
 | 4a | Editor: pitch / length / onset / delete / add, beat grid | 8–10% | — |
 | 4b | A/B playback, selective reanalysis | 8–10% | — |
 
@@ -28,6 +28,14 @@ to go over **10%** is split up, or confirmed with Erick before it starts.
   manual correction covers it.
 - **Tempo:** a single global value. Songs with tempo changes need a tempo map
   (later).
+
+## Ideas from Erick (later)
+- **Instrument choice per part:** preselected VSTs, recommended VSTs, or Ableton
+  instruments only. Live's browser API exposes `plugins` next to
+  `instruments`, so the Builder can load a chosen plug-in the same way it
+  loads native instruments now.
+- **Vocal melody → MIDI** (2b), feeding a singing-voice synth or a re-sung
+  guide.
 
 ## Not now
 Elaborate UI, preset matching, mastering, licensing.
