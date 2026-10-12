@@ -57,12 +57,14 @@ function liveVersion() {
 
 // ---------- paths ----------
 function repoDir() {
-    var p = this.patcher.filepath; // e.g. "Macintosh HD:/Users/x/.../live/MRS Bridge.amxd"
-    if (!p) return null;
-    var parts = String(p).split("/");
-    parts.pop(); // file
-    parts.pop(); // live/
-    return parts.join("/");
+    // On the Mac (Live 12.0.15) filepath was not "<repo>/live/MRS Bridge.amxd":
+    // stripping two segments landed in the parent of the repo. So cut at the
+    // "/live" folder itself, whatever follows it.
+    var p = String(this.patcher.filepath || "");
+    var i = p.lastIndexOf("/live/");
+    if (i < 0 && /\/live$/.test(p)) i = p.length - 5;
+    if (i < 0) { post("MRS: unexpected device path " + p + "\n"); return null; }
+    return p.substring(0, i);
 }
 
 // Sprint 0 lesson: File.isopen can be true while nothing reaches the disk.
@@ -189,17 +191,42 @@ function doRun() {
     track.set("color", 0x00e5ff);
     step("set track color", Number(track.get("color")) !== 0, Number(track.get("color")));
 
-    // Arrangement MIDI clip
+    // Arrangement MIDI clip. Route A: Track.create_midi_clip (failed on Live
+    // 12.0.15). Route B: build in a Session slot, then
+    // Track.duplicate_clip_to_arrangement. Each route's notes are written
+    // before the copy, so route B exercises the full path Sprint 3 would use.
+    result.clip_route = null;
     track.call("create_midi_clip", CLIP_START, CLIP_LEN);
     var clipIds = idList(track, "arrangement_clips");
-    if (!step("create_midi_clip (arrangement)", clipIds.length === 1, { clip_ids: clipIds })) return;
+    if (step("route A: create_midi_clip (arrangement)", clipIds.length === 1, { clip_ids: clipIds })) {
+        result.clip_route = "A create_midi_clip";
+    } else {
+        var slot = new LiveAPI("live_set tracks " + (after - 1) + " clip_slots 0");
+        slot.call("create_clip", CLIP_LEN);
+        var sclip = new LiveAPI("live_set tracks " + (after - 1) + " clip_slots 0 clip");
+        if (!step("route B: session clip_slot.create_clip", sclip.id !== 0, { id: sclip.id })) return;
+        sclip.call("add_new_notes", { notes: EXPECTED });
+        if (readNotes(sclip).length === 0) sclip.call("add_new_notes", JSON.stringify({ notes: EXPECTED }));
+        step("route B: notes into session clip", readNotes(sclip).length === EXPECTED.length, readNotes(sclip).length);
+        // Object arguments are passed as two atoms ("id", n); try the one-atom form too.
+        track.call("duplicate_clip_to_arrangement", "id", Number(sclip.id), CLIP_START);
+        clipIds = idList(track, "arrangement_clips");
+        if (clipIds.length === 0) {
+            track.call("duplicate_clip_to_arrangement", "id " + sclip.id, CLIP_START);
+            clipIds = idList(track, "arrangement_clips");
+        }
+        if (!step("route B: duplicate_clip_to_arrangement", clipIds.length === 1, { clip_ids: clipIds })) return;
+        slot.call("delete_clip");
+        result.clip_route = "B session + duplicate_clip_to_arrangement";
+    }
     var clip = new LiveAPI("id " + clipIds[0]);
     var st = Number(clip.get("start_time")), len = Number(clip.get("length"));
     step("clip position", Math.abs(st - CLIP_START) < TOL && Math.abs(len - CLIP_LEN) < TOL, { start_time: st, length: len });
     clip.set("name", "4-note test");
 
     // Notes: try the documented dict form; record which variant Live accepted.
-    var method = null, got = [];
+    var method = null, got = readNotes(clip);
+    if (got.length > 0) method = "copied from session clip"; // route B already carries the notes
     var attempts = [
         ["add_new_notes(object)", function () { clip.call("add_new_notes", { notes: EXPECTED }); }],
         ["add_new_notes(json string)", function () { clip.call("add_new_notes", JSON.stringify({ notes: EXPECTED })); }],
@@ -272,7 +299,10 @@ function finish(file) {
     for (var i = 0; i < result.steps.length; i++) {
         var s = result.steps[i];
         // A note variant that failed before a later variant worked is not a real failure.
-        if (!s.ok && !(result.note_method && s.step.indexOf("notes via ") === 0)) failed.push(s.step);
+        // Same for route A when route B then placed the clip.
+        var recovered = (result.note_method && s.step.indexOf("notes via ") === 0) ||
+                        (result.clip_route && s.step.indexOf("route A") === 0);
+        if (!s.ok && !recovered) failed.push(s.step);
     }
     // Failed step names go in the status line too, so a screenshot alone is a usable report.
     result.summary = failed.length === 0 ? "ALL OK" : "FAILED: " + failed.join(" | ");
