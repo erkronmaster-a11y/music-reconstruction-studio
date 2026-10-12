@@ -1,6 +1,6 @@
 {
 	"phase" : "verify",
-	"time" : "Tue Oct 13 2026 00:42:05 GMT+0200 (CEST)",
+	"time" : "Tue Oct 13 2026 00:50:26 GMT+0200 (CEST)",
 	"steps" : [ 		{
 			"step" : "read plan",
 			"ok" : 1,
@@ -9,7 +9,7 @@
 , 		{
 			"step" : "tempo",
 			"ok" : 1,
-			"detail" : 100
+			"detail" : 100.074996948242188
 		}
 , 		{
 			"step" : "present: Original mix",
@@ -26,8 +26,9 @@
 			"ok" : 0,
 			"detail" : 			{
 				"markers" : 2,
-				"wanted" : 258,
-				"mode" : 6
+				"per_beat" : 1,
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
 			}
 
 		}
@@ -46,8 +47,9 @@
 			"ok" : 0,
 			"detail" : 			{
 				"markers" : 2,
-				"wanted" : 258,
-				"mode" : 6
+				"per_beat" : 1,
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
 			}
 
 		}
@@ -66,8 +68,9 @@
 			"ok" : 0,
 			"detail" : 			{
 				"markers" : 2,
-				"wanted" : 258,
-				"mode" : 6
+				"per_beat" : 1,
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
 			}
 
 		}
@@ -126,8 +129,9 @@
 			"ok" : 0,
 			"detail" : 			{
 				"markers" : 2,
-				"wanted" : 258,
-				"mode" : 6
+				"per_beat" : 1,
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
 			}
 
 		}
@@ -166,8 +170,9 @@
 			"ok" : 0,
 			"detail" : 			{
 				"markers" : 2,
-				"wanted" : 258,
-				"mode" : 6
+				"per_beat" : 1,
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
 			}
 
 		}

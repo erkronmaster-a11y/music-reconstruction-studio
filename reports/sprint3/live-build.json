@@ -1,6 +1,6 @@
 {
 	"phase" : "build",
-	"time" : "Tue Oct 13 2026 00:41:48 GMT+0200 (CEST)",
+	"time" : "Tue Oct 13 2026 00:50:09 GMT+0200 (CEST)",
 	"live_version" : "12.0.15",
 	"steps" : [ 		{
 			"step" : "read plan",
@@ -15,7 +15,7 @@
 , 		{
 			"step" : "tempo",
 			"ok" : 1,
-			"detail" : 100
+			"detail" : 100.074996948242188
 		}
 , 		{
 			"step" : "track: Original mix",
@@ -34,37 +34,44 @@
 						"beat_time" : 0.03125
 					}
  ],
-				"end_marker" : 				{
-					"asked" : 					{
-						"beat_time" : 263.951110000000028,
-						"sample_time" : 156.030669999999986
+				"warp_add_format" : "none accepted",
+				"warp_formats_tried" : [ 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-,
-					"got" : 					{
-						"sample_time" : 0.062510092167977,
-						"beat_time" : 3.951829940892441
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-
-				}
-,
-				"explicit_adds_refused" : 256,
-				"stray_markers_removed" : 0,
-				"markers_wanted" : 258,
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+ ],
+				"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+				"average_tempo_bpm" : 100.075000000000003,
 				"markers_now" : 2,
 				"first_marker" : 				{
 					"sample_time" : 0.043760092167977,
-					"beat_time" : 3.920579940892441
-				}
-,
-				"last_marker" : 				{
-					"sample_time" : 0.062510092167977,
-					"beat_time" : 3.951829940892441
+					"beat_time" : 3.891348235098235
 				}
 ,
 				"clip_start" : 0,
-				"clip_end" : 263.951110087828852,
-				"markers_missing" : 258,
-				"error" : "258 of 258 warp markers did not land"
+				"clip_end" : 264.064509969197445,
+				"check" : 				{
+					"start_error_beats" : 0,
+					"end_error_beats" : -0.195
+				}
+,
+				"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 			}
 
 		}
@@ -85,37 +92,64 @@
 						"beat_time" : 0.03125
 					}
  ],
-				"end_marker" : 				{
-					"asked" : 					{
-						"beat_time" : 263.951110000000028,
-						"sample_time" : 156.030669999999986
+				"warp_add_format" : "none accepted",
+				"warp_formats_tried" : [ 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-,
-					"got" : 					{
-						"sample_time" : 0.369271284508399,
-						"beat_time" : 3.951829940892441
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-
-				}
-,
-				"explicit_adds_refused" : 256,
-				"stray_markers_removed" : 0,
-				"markers_wanted" : 258,
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+ ],
+				"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+				"average_tempo_bpm" : 100.075000000000003,
 				"markers_now" : 2,
 				"first_marker" : 				{
 					"sample_time" : 0.350521284508399,
-					"beat_time" : 3.920579940892441
-				}
-,
-				"last_marker" : 				{
-					"sample_time" : 0.369271284508399,
-					"beat_time" : 3.951829940892441
+					"beat_time" : 4.403000385031635
 				}
 ,
 				"clip_start" : 0,
-				"clip_end" : 263.951110087828852,
-				"markers_missing" : 258,
-				"error" : "258 of 258 warp markers did not land"
+				"clip_end" : 264.064509969197445,
+				"check" : 				{
+					"start_error_beats" : 0,
+					"end_error_beats" : -0.195
+				}
+,
+				"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 			}
 
 		}
@@ -136,37 +170,64 @@
 						"beat_time" : 0.03125
 					}
  ],
-				"end_marker" : 				{
-					"asked" : 					{
-						"beat_time" : 263.951110000000028,
-						"sample_time" : 156.030669999999986
+				"warp_add_format" : "none accepted",
+				"warp_formats_tried" : [ 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-,
-					"got" : 					{
-						"sample_time" : 0.080132833491188,
-						"beat_time" : 3.951829940892441
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-
-				}
-,
-				"explicit_adds_refused" : 256,
-				"stray_markers_removed" : 0,
-				"markers_wanted" : 258,
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+ ],
+				"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+				"average_tempo_bpm" : 100.075000000000003,
 				"markers_now" : 2,
 				"first_marker" : 				{
 					"sample_time" : 0.061382833491188,
-					"beat_time" : 3.920579940892441
-				}
-,
-				"last_marker" : 				{
-					"sample_time" : 0.080132833491188,
-					"beat_time" : 3.951829940892441
+					"beat_time" : 3.920741498085248
 				}
 ,
 				"clip_start" : 0,
-				"clip_end" : 263.951110087828852,
-				"markers_missing" : 258,
-				"error" : "258 of 258 warp markers did not land"
+				"clip_end" : 264.064509969197445,
+				"check" : 				{
+					"start_error_beats" : 0,
+					"end_error_beats" : -0.195
+				}
+,
+				"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 			}
 
 		}
@@ -180,13 +241,24 @@
 				"notes_in_clip" : 435,
 				"notes_in_arrangement" : 435,
 				"instrument" : 				{
-					"loaded" : 0,
-					"note" : "none of Bass, Drift, Analog, Operator found in the browser",
-					"browser" : 					{
-						"browser_id" : "0",
-						"instruments_children" : 0
+					"insert_device" : 					{
+						"loaded" : 0,
+						"device" : "Drift",
+						"via" : "insert_device",
+						"note" : "not available (needs Live 12.3 or later)"
 					}
+,
+					"browser" : 					{
+						"loaded" : 0,
+						"note" : "none of Bass, Drift, Analog, Operator found in the browser",
+						"browser" : 						{
+							"browser_id" : "0",
+							"instruments_children" : 0
+						}
 
+					}
+,
+					"loaded" : 0
 				}
 
 			}
@@ -202,13 +274,24 @@
 				"notes_in_clip" : 448,
 				"notes_in_arrangement" : 448,
 				"instrument" : 				{
-					"loaded" : 0,
-					"note" : "none of Drift, Wavetable, Analog, Operator found in the browser",
-					"browser" : 					{
-						"browser_id" : "0",
-						"instruments_children" : 0
+					"insert_device" : 					{
+						"loaded" : 0,
+						"device" : "Drift",
+						"via" : "insert_device",
+						"note" : "not available (needs Live 12.3 or later)"
 					}
+,
+					"browser" : 					{
+						"loaded" : 0,
+						"note" : "none of Drift, Wavetable, Analog, Operator found in the browser",
+						"browser" : 						{
+							"browser_id" : "0",
+							"instruments_children" : 0
+						}
 
+					}
+,
+					"loaded" : 0
 				}
 
 			}
@@ -231,37 +314,64 @@
 						"beat_time" : 0.03125
 					}
  ],
-				"end_marker" : 				{
-					"asked" : 					{
-						"beat_time" : 263.951110000000028,
-						"sample_time" : 156.030669999999986
+				"warp_add_format" : "none accepted",
+				"warp_formats_tried" : [ 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-,
-					"got" : 					{
-						"sample_time" : 0.064739057076283,
-						"beat_time" : 3.951829940892441
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-
-				}
-,
-				"explicit_adds_refused" : 256,
-				"stray_markers_removed" : 0,
-				"markers_wanted" : 258,
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+ ],
+				"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+				"average_tempo_bpm" : 100.075000000000003,
 				"markers_now" : 2,
 				"first_marker" : 				{
 					"sample_time" : 0.045989057076283,
-					"beat_time" : 3.920579940892441
-				}
-,
-				"last_marker" : 				{
-					"sample_time" : 0.064739057076283,
-					"beat_time" : 3.951829940892441
+					"beat_time" : 3.895065871628371
 				}
 ,
 				"clip_start" : 0,
-				"clip_end" : 263.951110087828852,
-				"markers_missing" : 258,
-				"error" : "258 of 258 warp markers did not land"
+				"clip_end" : 264.064509969197445,
+				"check" : 				{
+					"start_error_beats" : 0,
+					"end_error_beats" : -0.195
+				}
+,
+				"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 			}
 
 		}
@@ -275,13 +385,24 @@
 				"notes_in_clip" : 754,
 				"notes_in_arrangement" : 754,
 				"instrument" : 				{
-					"loaded" : 0,
-					"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser",
-					"browser" : 					{
-						"browser_id" : "0",
-						"instruments_children" : 0
+					"insert_device" : 					{
+						"loaded" : 0,
+						"device" : "Drum Rack",
+						"via" : "insert_device",
+						"note" : "not available (needs Live 12.3 or later)"
 					}
+,
+					"browser" : 					{
+						"loaded" : 0,
+						"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser",
+						"browser" : 						{
+							"browser_id" : "0",
+							"instruments_children" : 0
+						}
 
+					}
+,
+					"loaded" : 0
 				}
 
 			}
@@ -304,37 +425,64 @@
 						"beat_time" : 0.03125
 					}
  ],
-				"end_marker" : 				{
-					"asked" : 					{
-						"beat_time" : 263.951110000000028,
-						"sample_time" : 156.030669999999986
+				"warp_add_format" : "none accepted",
+				"warp_formats_tried" : [ 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-,
-					"got" : 					{
-						"sample_time" : 0.066632469989703,
-						"beat_time" : 3.951829940892441
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
 					}
-
-				}
-,
-				"explicit_adds_refused" : 256,
-				"stray_markers_removed" : 0,
-				"markers_wanted" : 258,
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "dict object",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "json string",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "key value list",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+, 					{
+						"format" : "positional",
+						"with_sample" : 1,
+						"ok" : 0
+					}
+ ],
+				"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+				"average_tempo_bpm" : 100.075000000000003,
 				"markers_now" : 2,
 				"first_marker" : 				{
 					"sample_time" : 0.047882469989703,
-					"beat_time" : 3.920579940892441
-				}
-,
-				"last_marker" : 				{
-					"sample_time" : 0.066632469989703,
-					"beat_time" : 3.951829940892441
+					"beat_time" : 3.898223911505161
 				}
 ,
 				"clip_start" : 0,
-				"clip_end" : 263.951110087828852,
-				"markers_missing" : 258,
-				"error" : "258 of 258 warp markers did not land"
+				"clip_end" : 264.064509969197445,
+				"check" : 				{
+					"start_error_beats" : 0,
+					"end_error_beats" : -0.195
+				}
+,
+				"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 			}
 
 		}
@@ -353,37 +501,44 @@
 					"beat_time" : 0.03125
 				}
  ],
-			"end_marker" : 			{
-				"asked" : 				{
-					"beat_time" : 263.951110000000028,
-					"sample_time" : 156.030669999999986
+			"warp_add_format" : "none accepted",
+			"warp_formats_tried" : [ 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-,
-				"got" : 				{
-					"sample_time" : 0.062510092167977,
-					"beat_time" : 3.951829940892441
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-
-			}
-,
-			"explicit_adds_refused" : 256,
-			"stray_markers_removed" : 0,
-			"markers_wanted" : 258,
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+ ],
+			"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+			"average_tempo_bpm" : 100.075000000000003,
 			"markers_now" : 2,
 			"first_marker" : 			{
 				"sample_time" : 0.043760092167977,
-				"beat_time" : 3.920579940892441
-			}
-,
-			"last_marker" : 			{
-				"sample_time" : 0.062510092167977,
-				"beat_time" : 3.951829940892441
+				"beat_time" : 3.891348235098235
 			}
 ,
 			"clip_start" : 0,
-			"clip_end" : 263.951110087828852,
-			"markers_missing" : 258,
-			"error" : "258 of 258 warp markers did not land"
+			"clip_end" : 264.064509969197445,
+			"check" : 			{
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
+			}
+,
+			"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 		}
 , 		{
 			"name" : "Vocals (stem)",
@@ -399,37 +554,64 @@
 					"beat_time" : 0.03125
 				}
  ],
-			"end_marker" : 			{
-				"asked" : 				{
-					"beat_time" : 263.951110000000028,
-					"sample_time" : 156.030669999999986
+			"warp_add_format" : "none accepted",
+			"warp_formats_tried" : [ 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-,
-				"got" : 				{
-					"sample_time" : 0.369271284508399,
-					"beat_time" : 3.951829940892441
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-
-			}
-,
-			"explicit_adds_refused" : 256,
-			"stray_markers_removed" : 0,
-			"markers_wanted" : 258,
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+ ],
+			"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+			"average_tempo_bpm" : 100.075000000000003,
 			"markers_now" : 2,
 			"first_marker" : 			{
 				"sample_time" : 0.350521284508399,
-				"beat_time" : 3.920579940892441
-			}
-,
-			"last_marker" : 			{
-				"sample_time" : 0.369271284508399,
-				"beat_time" : 3.951829940892441
+				"beat_time" : 4.403000385031635
 			}
 ,
 			"clip_start" : 0,
-			"clip_end" : 263.951110087828852,
-			"markers_missing" : 258,
-			"error" : "258 of 258 warp markers did not land"
+			"clip_end" : 264.064509969197445,
+			"check" : 			{
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
+			}
+,
+			"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 		}
 , 		{
 			"name" : "Bass (stem)",
@@ -445,37 +627,64 @@
 					"beat_time" : 0.03125
 				}
  ],
-			"end_marker" : 			{
-				"asked" : 				{
-					"beat_time" : 263.951110000000028,
-					"sample_time" : 156.030669999999986
+			"warp_add_format" : "none accepted",
+			"warp_formats_tried" : [ 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-,
-				"got" : 				{
-					"sample_time" : 0.080132833491188,
-					"beat_time" : 3.951829940892441
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-
-			}
-,
-			"explicit_adds_refused" : 256,
-			"stray_markers_removed" : 0,
-			"markers_wanted" : 258,
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+ ],
+			"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+			"average_tempo_bpm" : 100.075000000000003,
 			"markers_now" : 2,
 			"first_marker" : 			{
 				"sample_time" : 0.061382833491188,
-				"beat_time" : 3.920579940892441
-			}
-,
-			"last_marker" : 			{
-				"sample_time" : 0.080132833491188,
-				"beat_time" : 3.951829940892441
+				"beat_time" : 3.920741498085248
 			}
 ,
 			"clip_start" : 0,
-			"clip_end" : 263.951110087828852,
-			"markers_missing" : 258,
-			"error" : "258 of 258 warp markers did not land"
+			"clip_end" : 264.064509969197445,
+			"check" : 			{
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
+			}
+,
+			"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 		}
 , 		{
 			"name" : "Bass MIDI",
@@ -484,13 +693,24 @@
 			"notes_in_clip" : 435,
 			"notes_in_arrangement" : 435,
 			"instrument" : 			{
-				"loaded" : 0,
-				"note" : "none of Bass, Drift, Analog, Operator found in the browser",
-				"browser" : 				{
-					"browser_id" : "0",
-					"instruments_children" : 0
+				"insert_device" : 				{
+					"loaded" : 0,
+					"device" : "Drift",
+					"via" : "insert_device",
+					"note" : "not available (needs Live 12.3 or later)"
 				}
+,
+				"browser" : 				{
+					"loaded" : 0,
+					"note" : "none of Bass, Drift, Analog, Operator found in the browser",
+					"browser" : 					{
+						"browser_id" : "0",
+						"instruments_children" : 0
+					}
 
+				}
+,
+				"loaded" : 0
 			}
 
 		}
@@ -501,13 +721,24 @@
 			"notes_in_clip" : 448,
 			"notes_in_arrangement" : 448,
 			"instrument" : 			{
-				"loaded" : 0,
-				"note" : "none of Drift, Wavetable, Analog, Operator found in the browser",
-				"browser" : 				{
-					"browser_id" : "0",
-					"instruments_children" : 0
+				"insert_device" : 				{
+					"loaded" : 0,
+					"device" : "Drift",
+					"via" : "insert_device",
+					"note" : "not available (needs Live 12.3 or later)"
 				}
+,
+				"browser" : 				{
+					"loaded" : 0,
+					"note" : "none of Drift, Wavetable, Analog, Operator found in the browser",
+					"browser" : 					{
+						"browser_id" : "0",
+						"instruments_children" : 0
+					}
 
+				}
+,
+				"loaded" : 0
 			}
 
 		}
@@ -525,37 +756,64 @@
 					"beat_time" : 0.03125
 				}
  ],
-			"end_marker" : 			{
-				"asked" : 				{
-					"beat_time" : 263.951110000000028,
-					"sample_time" : 156.030669999999986
+			"warp_add_format" : "none accepted",
+			"warp_formats_tried" : [ 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-,
-				"got" : 				{
-					"sample_time" : 0.064739057076283,
-					"beat_time" : 3.951829940892441
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-
-			}
-,
-			"explicit_adds_refused" : 256,
-			"stray_markers_removed" : 0,
-			"markers_wanted" : 258,
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+ ],
+			"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+			"average_tempo_bpm" : 100.075000000000003,
 			"markers_now" : 2,
 			"first_marker" : 			{
 				"sample_time" : 0.045989057076283,
-				"beat_time" : 3.920579940892441
-			}
-,
-			"last_marker" : 			{
-				"sample_time" : 0.064739057076283,
-				"beat_time" : 3.951829940892441
+				"beat_time" : 3.895065871628371
 			}
 ,
 			"clip_start" : 0,
-			"clip_end" : 263.951110087828852,
-			"markers_missing" : 258,
-			"error" : "258 of 258 warp markers did not land"
+			"clip_end" : 264.064509969197445,
+			"check" : 			{
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
+			}
+,
+			"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 		}
 , 		{
 			"name" : "Drums MIDI",
@@ -564,13 +822,24 @@
 			"notes_in_clip" : 754,
 			"notes_in_arrangement" : 754,
 			"instrument" : 			{
-				"loaded" : 0,
-				"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser",
-				"browser" : 				{
-					"browser_id" : "0",
-					"instruments_children" : 0
+				"insert_device" : 				{
+					"loaded" : 0,
+					"device" : "Drum Rack",
+					"via" : "insert_device",
+					"note" : "not available (needs Live 12.3 or later)"
 				}
+,
+				"browser" : 				{
+					"loaded" : 0,
+					"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser",
+					"browser" : 					{
+						"browser_id" : "0",
+						"instruments_children" : 0
+					}
 
+				}
+,
+				"loaded" : 0
 			}
 
 		}
@@ -588,39 +857,66 @@
 					"beat_time" : 0.03125
 				}
  ],
-			"end_marker" : 			{
-				"asked" : 				{
-					"beat_time" : 263.951110000000028,
-					"sample_time" : 156.030669999999986
+			"warp_add_format" : "none accepted",
+			"warp_formats_tried" : [ 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-,
-				"got" : 				{
-					"sample_time" : 0.066632469989703,
-					"beat_time" : 3.951829940892441
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
 				}
-
-			}
-,
-			"explicit_adds_refused" : 256,
-			"stray_markers_removed" : 0,
-			"markers_wanted" : 258,
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "dict object",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "json string",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "key value list",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+, 				{
+					"format" : "positional",
+					"with_sample" : 1,
+					"ok" : 0
+				}
+ ],
+			"warp_method" : "two-marker fit (adds not accepted by this Live): aligned start, average tempo",
+			"average_tempo_bpm" : 100.075000000000003,
 			"markers_now" : 2,
 			"first_marker" : 			{
 				"sample_time" : 0.047882469989703,
-				"beat_time" : 3.920579940892441
-			}
-,
-			"last_marker" : 			{
-				"sample_time" : 0.066632469989703,
-				"beat_time" : 3.951829940892441
+				"beat_time" : 3.898223911505161
 			}
 ,
 			"clip_start" : 0,
-			"clip_end" : 263.951110087828852,
-			"markers_missing" : 258,
-			"error" : "258 of 258 warp markers did not land"
+			"clip_end" : 264.064509969197445,
+			"check" : 			{
+				"start_error_beats" : 0,
+				"end_error_beats" : -0.195
+			}
+,
+			"error" : "clip not where the plan puts it: {\"start_error_beats\":0,\"end_error_beats\":-0.195}"
 		}
  ],
 	"project" : "HOJA DE COCA TECH HOUSE",
-	"summary" : "FAILED: track: Original mix | track: Vocals (stem) | track: Bass (stem) | track: Drums (stem) | track: Other (stem)"
+	"summary" : "8 tracks built | MIDI 3/3 exact | warped 0/5 | instruments 0/3 (details in report)"
 }
