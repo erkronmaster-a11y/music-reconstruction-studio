@@ -35,6 +35,9 @@ steps, don't assume.
   `requirements.txt`:
   - `numpy<2`: TF 2.14 crashes on NumPy 2.
   - `setuptools<81`: `resampy` imports `pkg_resources`.
+- Linux/cloud: install torch + torchaudio from the CPU index, both 2.11.0+cpu, or
+  torchaudio fails to load (`uv pip install --index-url https://download.pytorch.org/whl/cpu
+  torch==2.11.0+cpu torchaudio==2.11.0+cpu`).
 - Basic Pitch uses TensorFlow on Linux and CoreML on macOS. Use Python 3.11 on
   the Mac too; Basic Pitch 0.4.0's Darwin dependencies are only safe there.
 

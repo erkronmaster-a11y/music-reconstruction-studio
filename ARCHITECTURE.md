@@ -57,6 +57,21 @@ Defined and documented in `mrs/manifest.py`. In short:
   stem. If there is no stem, the part is **skipped and reported**, never
   guessed from the full mix.
 
+## Beat map (Sprint 1c)
+`mrs/beatmap.py`. Early AI songs drift, so no single tempo fits. Beat This!
+finds every beat and downbeat, stored in `timing.detected.beat_map`
+(`beats_s`, `downbeats_s`, `positions` = beat numbers, first downbeat on a bar
+line). The export then works as follows:
+- Live tempo = the median local tempo.
+- Every audio clip is placed at bar 1 with Warp on and one warp marker per
+  beat. Each marker's `sample_time` uses that file's own sync offset.
+- MIDI notes are placed with `to_beats()` (piecewise linear between beats).
+  Their microtiming relative to the beat is kept; nothing is quantised.
+
+The warp markers use the documented `Clip.add_warp_marker`. Audio files are
+never altered. A user timing correction switches the export back to
+constant mode.
+
 ## MIDI export
 `mrs/export.py`. MIDI time = audio time + `pad_s`, where `pad_s` puts the
 first downbeat on a bar line. `export.json` records the tempo, `pad_s` and the

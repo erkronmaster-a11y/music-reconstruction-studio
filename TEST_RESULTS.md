@@ -116,6 +116,26 @@ The test now requires < 20 ms drift over 2.5 minutes. A `click-follow.wav`
 now show when a song's tempo **really** changes, which a single tempo can't
 follow (a tempo map is on the roadmap).
 
+## Sprint 1c — beat map for drifting songs (2026-10-12, Linux)
+**From the Mac:** on the owner's song the beats wander about ±100 ms around
+**any** constant grid, early and late. The tempo isn't steady, so one BPM
+can't fit.
+
+On a test song with a ±3% tempo wobble (128 BPM base):
+
+| Detector | Beat error (median / 95%) | Downbeats |
+|---|---|---|
+| librosa beat_track | 22.3 / 28.9 ms | — |
+| **Beat This! 1.1.0 (final0, no DBN)** | **6.1 / 19.2 ms** | **40 / 40** within 70 ms |
+
+Beat This! takes about 8 s per 80 s of audio on CPU.
+
+- **Tests:** `pytest` → **31 passed**. In the drifting-song test, bass notes
+  land on whole beats after mapping (median off-grid < 0.04 beat). Each stem's
+  sync offset is carried into its own warp markers.
+- **Not yet checked in Live:** that warp markers placed through the LOM play
+  the song in time (Sprint 3 / next Mac test).
+
 ## Sprint 1b — bass + melody → MIDI (2026-10-12, Linux, synthetic ground truth)
 `pytest tests/` → **28 passed**. Scored with `mir_eval` (onset ±50 ms, pitch exact).
 

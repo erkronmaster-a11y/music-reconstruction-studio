@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import audio, manifest, sync, tempo
+from . import audio, beatmap, manifest, sync, tempo
 
 AUDIO_EXT = {".wav", ".aif", ".aiff", ".flac", ".mp3", ".m4a"}
 # File-name keywords → role, checked in this order. Stem words come before mix
@@ -83,6 +83,11 @@ def build(folder: str | Path | None = None, mix_path: str | Path | None = None,
 
     m["timing"]["detected"] = tempo.detect(y_mix, sr=sync.SR)
     t = m["timing"]["detected"]
+    t["beat_map"] = beatmap.detect(str(mix_path))
+    bm = t["beat_map"]
+    if bm.get("irregular_bars"):
+        warnings.append(f"{len(bm['irregular_bars'])} bar(s) are not {bm['beats_per_bar']} beats long "
+                        f"(first at {bm['irregular_bars'][0]['at_s']}s) — downbeats after them may sit off Live's bar lines")
     if t.get("downbeat_confidence", 0) < 0.15:
         warnings.append("first downbeat is uncertain — check it by ear (click track) and correct if needed")
     g = t.get("grid_gap_ms") or {}
@@ -106,6 +111,11 @@ def summary(m: dict) -> str:
         L.append(f"  {k:17} {eff[k]['value']}  · {eff[k]['source']}")
     L.append(f"  detected beats    {len(d.get('beats_s', []))}, downbeat confidence {d.get('downbeat_confidence')}, "
              f"beat spacing spread {d.get('tempo_stability')}")
+    bm = d.get("beat_map") or {}
+    if bm.get("beats_s"):
+        L.append(f"  beat map          {len(bm['beats_s'])} beats, {len(bm['downbeats_s'])} downbeats, tempo "
+                 f"{bm['tempo_range_bpm'][0]}–{bm['tempo_range_bpm'][1]} BPM → Live tempo {bm['live_tempo_bpm']} "
+                 f"({bm['method'].split(' (')[0]})")
     if d.get("grid_gap_ms"):
         L.append(f"  grid fit          tracker said {d.get('tracker_tempo_bpm')} BPM; grid-to-beat gap "
                  f"{d['grid_gap_ms']['first_third']} ms early → {d['grid_gap_ms']['last_third']} ms late")
@@ -116,8 +126,8 @@ def summary(m: dict) -> str:
 
 def render_click(m: dict, out: str | Path, click_gain: float = 0.5, follow: bool = False) -> Path:
     """Mix + click on the effective grid (accent on the downbeat) — listen to check timing.
-    follow=True clicks on the beat tracker's own beats instead (no accents): if
-    that one stays tight while the grid drifts, the song's tempo really varies."""
+    follow=True clicks on the beat map (accent = detected downbeat) — what Live's
+    warping will follow. Without a beat map: the tracker's beats, no accents."""
     import soundfile as sf
     src = manifest.mix(m)
     y, sr = audio.load(src["path"], sr=None, mono=True)
@@ -126,7 +136,12 @@ def render_click(m: dict, out: str | Path, click_gain: float = 0.5, follow: bool
                    eff["beats_per_bar"]["value"])
     if follow:
         d = m["timing"]["detected"]
-        g = [{"time_s": b, "bar": 0, "beat": 2} for b in d.get("tracker_beats_s", d["beats_s"])]
+        bm = d.get("beat_map") or {}
+        if bm.get("beats_s"):  # beat map: accent on detected downbeats
+            downs = set(bm["downbeats_s"])
+            g = [{"time_s": b, "bar": 0, "beat": 1 if b in downs else 2} for b in bm["beats_s"]]
+        else:
+            g = [{"time_s": b, "bar": 0, "beat": 2} for b in d.get("tracker_beats_s", d["beats_s"])]
     n = int(0.03 * sr)
     t = np.arange(n) / sr
     env = np.exp(-t * 150)
@@ -188,4 +203,5 @@ def redetect_timing(m: dict) -> dict:
     src = manifest.mix(m)
     y, _ = audio.load(src["path"], sr=sync.SR)
     m["timing"]["detected"] = tempo.detect(y, sr=sync.SR)
+    m["timing"]["detected"]["beat_map"] = beatmap.detect(src["path"])
     return m

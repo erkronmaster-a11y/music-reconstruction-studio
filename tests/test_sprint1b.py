@@ -71,21 +71,49 @@ def test_missing_stem_is_skipped_not_guessed(tmp_path):
 
 
 def test_midi_export_alignment(proj, tmp_path):
+    """Beat-map mode: Live tempo constant, notes placed by beat number."""
     m, truth, *_ = proj
     info = export.write_midi(m, tmp_path / "midi")
     tl = info["timeline"]
+    assert tl["mode"] == "beatmap"
     pm = pretty_midi.PrettyMIDI(str(tmp_path / "midi" / f"{m['name']} - bass.mid"))
     assert abs(pm.get_tempo_changes()[1][0] - tl["tempo_bpm"]) < 0.01
-    # first downbeat + pad lands on a bar line
-    bar_s = tl["beats_per_bar"] * 60 / tl["tempo_bpm"]
-    pos = (tl["first_downbeat_s"] + tl["pad_s"]) / bar_s
-    assert abs(pos - round(pos)) < 1e-6
-    # a MIDI note sits exactly pad_s after its raw position (no quantising)
-    raw = manifest.track(m, "bass")["raw"]["notes"][5]
-    mid = sorted(pm.instruments[0].notes, key=lambda n: n.start)[5]
-    assert abs(mid.start - (raw["start_s"] + tl["pad_s"])) < 0.002
-    assert info["audio_placement"]["mix"]["start_s"] == pytest.approx(tl["pad_s"])
-    assert info["audio_placement"]["bass"]["start_s"] == pytest.approx(tl["pad_s"] - 0.015, abs=1e-3)
+    # bass notes are on beats in the truth → on whole beats in the MIDI (not quantised: within 0.06 beat)
+    beats = [n.start * tl["tempo_bpm"] / 60 for n in pm.instruments[0].notes]
+    off = [abs(b - round(b)) for b in beats]
+    assert np.median(off) < 0.03 and max(off) < 0.08
+    # the song's first downbeat sits on a bar line
+    first_note_beat = min(beats)
+    assert abs(first_note_beat / 4 - round(first_note_beat / 4)) < 0.02
+    wm = info["audio_placement"]["bass"]["warp_markers"]
+    mixm = info["audio_placement"]["mix"]["warp_markers"]
+    assert abs((wm[3]["sample_time"] - mixm[3]["sample_time"]) - 0.015) < 0.002   # stem offset carried into its markers
+    assert wm[3]["beat_time"] == mixm[3]["beat_time"]
+
+
+def test_drifting_tempo_lands_on_grid(tmp_path):
+    """The owner's case: a song whose tempo wobbles ±3 %. Notes must still land on whole beats."""
+    import soundfile as sf
+    from mrs import beatmap
+    d = tmp_path / "song"
+    truth = testsong.make(d, bpm=128, bars=24)
+    sr = 44100
+    rate = None
+    for f in d.glob("*.wav"):
+        y, _ = sf.read(f)
+        n = len(y)
+        rate = 1 + 0.03 * np.sin(2 * np.pi * (np.arange(n) / sr) / 30)
+        src_t = np.cumsum(rate) / sr
+        src_t = src_t[src_t < n / sr]
+        yw = np.stack([np.interp(src_t * sr, np.arange(n), y[:, c]) for c in range(2)], 1)
+        sf.write(f, yw, sr)
+    m, _ = project.build(folder=d)
+    project.transcribe(m, ["bass"])
+    bm = m["timing"]["detected"]["beat_map"]
+    assert "beat_this" in bm["method"] and bm["tempo_range_bpm"][1] - bm["tempo_range_bpm"][0] > 4
+    pos = beatmap.to_beats(bm, [n["start_s"] for n in manifest.effective_notes(manifest.track(m, "bass"))])
+    off = np.abs(pos - np.round(pos))
+    assert np.median(off) < 0.04, np.median(off)
 
 
 def test_review_files(proj, tmp_path):

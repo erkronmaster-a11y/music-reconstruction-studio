@@ -7,4 +7,7 @@ mir_eval==0.8.2
 pretty_midi==0.2.11.post0
 soundfile==0.14.0
 onnxruntime==1.31.0; sys_platform == "linux"   # Linux test runs only; the Mac uses CoreML
+beat-this==1.1.0      # beat + downbeat map (Sprint 1c); downloads its model (~80 MB) on first use
+torch==2.11.0         # Linux: install from https://download.pytorch.org/whl/cpu (see AGENTS.md)
+torchaudio==2.11.0
 pytest

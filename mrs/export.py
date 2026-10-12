@@ -19,6 +19,15 @@ GM_PROGRAM = {"bass": 33, "melody": 81, "other": 0}  # Fingered Bass, Saw Lead, 
 
 
 def timeline(m: dict) -> dict:
+    """'beatmap' mode when a beat map exists (Live tempo constant, audio warped
+    at every beat, notes placed by the map); else 'constant' (one tempo + pad)."""
+    bm = (m["timing"]["detected"] or {}).get("beat_map") or {}
+    if bm.get("positions") and not m["timing"].get("correction"):
+        return {"mode": "beatmap", "tempo_bpm": bm["live_tempo_bpm"], "beats_per_bar": bm["beats_per_bar"],
+                "first_downbeat_s": bm["downbeats_s"][0] if bm["downbeats_s"] else bm["beats_s"][0],
+                "pad_s": 0.0, "first_downbeat_bar": int(bm["positions"][bm["beats_s"].index(
+                    bm["downbeats_s"][0])] // bm["beats_per_bar"]) + 1 if bm["downbeats_s"] else 1,
+                "beat_map_method": bm["method"], "sources": {"tempo_bpm": "detected (beat map)"}}
     eff = manifest.effective_timing(m)
     bpm = float(eff["tempo_bpm"]["value"])
     bpb = int(eff["beats_per_bar"]["value"] or 4)
@@ -27,9 +36,17 @@ def timeline(m: dict) -> dict:
     pad = (bar_s - down % bar_s) % bar_s
     if pad < 1e-4:
         pad = 0.0
-    return {"tempo_bpm": bpm, "beats_per_bar": bpb, "first_downbeat_s": down, "pad_s": round(pad, 6),
+    return {"mode": "constant", "tempo_bpm": bpm, "beats_per_bar": bpb, "first_downbeat_s": down, "pad_s": round(pad, 6),
             "first_downbeat_bar": int(round((down + pad) / bar_s)) + 1,
             "sources": {k: v["source"] for k, v in eff.items()}}
+
+
+def place(m: dict, tl: dict, t_s: float) -> float:
+    """Mix-timeline seconds → seconds in the MIDI file (MIDI tempo = tl tempo)."""
+    if tl["mode"] == "beatmap":
+        from . import beatmap
+        return float(beatmap.to_beats(m["timing"]["detected"]["beat_map"], t_s)[0]) * 60.0 / tl["tempo_bpm"]
+    return t_s + tl["pad_s"]
 
 
 def write_midi(m: dict, out_dir: str | Path) -> dict:
@@ -47,7 +64,7 @@ def write_midi(m: dict, out_dir: str | Path) -> dict:
             pm.time_signature_changes.append(pretty_midi.TimeSignature(tl["beats_per_bar"], 4, 0))
             inst = pretty_midi.Instrument(program=GM_PROGRAM.get(t["role"], 0), name=f"{t['id']} ({view} transcription)")
             for n in manifest.effective_notes(t, view):
-                s, e = n["start_s"] + tl["pad_s"], n["end_s"] + tl["pad_s"]
+                s, e = place(m, tl, n["start_s"]), place(m, tl, n["end_s"])
                 if e <= max(0.0, s):
                     continue
                 inst.notes.append(pretty_midi.Note(velocity=int(n["velocity"]), pitch=int(n["pitch"]),
@@ -61,14 +78,28 @@ def write_midi(m: dict, out_dir: str | Path) -> dict:
         if m["tracks"]:
             combined.write(str(sub / f"{m['name']} - all.mid"))
     info = {"project": m["name"], "timeline": tl, "midi_files": files,
-            "audio_placement": {s["id"]: {"file": s["path"], "start_s": round(tl["pad_s"] - (s["sync"] or {}).get("offset_s", 0.0), 6)}
-                                for s in m["sources"]},
+            "audio_placement": audio_placement(m, tl),
             "views": {"clean (this folder)": f"raw minus notes flagged {sorted(manifest.CLEAN_SKIPS)}",
                       "raw/": "every detected note"},
-            "note": "Place each audio file at start_s seconds and each MIDI file at 0. Live tempo = tempo_bpm. "
-                    "Notes are raw detections, not verified originals."}
+            "note": ("beatmap mode: set Live tempo to tempo_bpm, put every audio clip at bar 1 with Warp on and the "
+                     "listed warp markers; MIDI files at bar 1. " if tl["mode"] == "beatmap" else
+                     "constant mode: Live tempo = tempo_bpm; each audio file at start_s seconds, MIDI at bar 1. ")
+                    + "Notes are raw detections, not verified originals."}
     (out_dir / "export.json").write_text(json.dumps(info, indent=2))
     return info
+
+
+def audio_placement(m: dict, tl: dict) -> dict:
+    out = {}
+    for s in m["sources"]:
+        off = (s.get("sync") or {}).get("offset_s", 0.0)
+        if tl["mode"] == "beatmap":
+            from . import beatmap
+            out[s["id"]] = {"file": s["path"], "start_beats": 0.0, "warp": True,
+                            "warp_markers": beatmap.warp_markers(m["timing"]["detected"]["beat_map"], off, s["duration_s"])}
+        else:
+            out[s["id"]] = {"file": s["path"], "start_s": round(tl["pad_s"] - off, 6), "warp": False}
+    return out
 
 
 def synth(notes: list[dict], dur_s: float, sr: int = 22050) -> np.ndarray:

@@ -103,9 +103,9 @@ def main(argv=None):
     elif args.cmd == "click":
         m = manifest.load(args.project)
         out = project.render_click(m, Path(args.project).with_name("click-check.wav"))
-        fol = project.render_click(m, Path(args.project).with_name("click-follow.wav"), follow=True)
+        fol = project.render_click(m, Path(args.project).with_name("click-beatmap.wav"), follow=True)
         print(f"Wrote {out} — listen: high click = bar start, low click = beat.")
-        print(f"Wrote {fol} — clicks follow the detected beats (for comparison if the grid drifts).")
+        print(f"Wrote {fol} — clicks on every detected beat (high = downbeat). This is what Live will follow.")
 
 
 if __name__ == "__main__":
