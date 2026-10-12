@@ -25,6 +25,8 @@ def main(argv=None):
     t.add_argument("--bpm", type=float); t.add_argument("--downbeat", type=float)
     t.add_argument("--bar", type=int); t.add_argument("--note"); t.add_argument("--clear", action="store_true")
     c = sub.add_parser("click"); c.add_argument("project")
+    tl = sub.add_parser("traktor-list", help="list Traktor's cached stem files with song titles")
+    tl.add_argument("--dir", default=str(Path.home() / "Music" / "Traktor" / "Stems"))
     args = ap.parse_args(argv)
 
     if args.cmd == "analyze":
@@ -63,6 +65,14 @@ def main(argv=None):
             manifest.correct_timing(m, args.bpm, args.downbeat, args.bar, args.note)
         manifest.save(m, args.project)
         print(project.summary(m))
+    elif args.cmd == "traktor-list":
+        files = sorted(Path(args.dir).rglob("*.stem.mp4"), key=lambda p: p.stat().st_mtime, reverse=True)
+        idx = nistem.traktor_index()
+        nml = nistem.traktor_collections()
+        print(f"{len(files)} stem files in {args.dir}; library: {nml[0] if nml else 'collection.nml not found'}")
+        print(f"titles matched from library: {sum(1 for f in files if f.name[:-9] in idx)}")
+        for f in files:
+            print(f"{time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))}  {nistem.display_title(f):60.60}  {f}")
     elif args.cmd == "click":
         m = manifest.load(args.project)
         out = project.render_click(m, Path(args.project).with_name("click-check.wav"))

@@ -63,17 +63,26 @@ echo "## .stem.mp4 / .stem.m4a outside the Traktor cache (Music, Documents, Desk
 WHERE=("$HOME/Music" "$HOME/Documents" "$HOME/Desktop" "$HOME/Downloads")
 find "${WHERE[@]}" -maxdepth 6 -type f \( -iname "*.stem.mp4" -o -iname "*.stem.m4a" \) -not -path "*/Traktor/Stems/*" 2>/dev/null | head -40
 echo
-echo "## Traktor 4 stem cache (~/Music/Traktor/Stems): count, size, first 25 titles"
-TS="$HOME/Music/Traktor/Stems"
-if [ -d "$TS" ]; then
-  echo "files: $(find "$TS" -name '*.stem.mp4' | wc -l | tr -d ' ')   size: $(du -sh "$TS" | cut -f1)"
-  find "$TS" -name '*.stem.mp4' | head -25 | while read -r f; do
-    t="$(ffmpeg -hide_banner -i "$f" 2>&1 | grep -m2 -E '^\s+(title|artist)\s*:' | sed -E 's/^ +//' | tr '\n' ' ')"
-    echo "  $(basename "$f")  ->  $t"
-  done
-else
-  echo "not found"
-fi
+echo "## Traktor 4 stem cache — titles from Traktor's collection.nml (newest first, first 40)"
+.venv/bin/python -m mrs traktor-list 2>&1 | head -42
+echo
+echo "## How collection.nml refers to one stem file (to check the title lookup)"
+.venv/bin/python - <<'PY' 2>&1
+from pathlib import Path
+from mrs import nistem
+nml = nistem.traktor_collections()
+files = sorted((Path.home() / "Music/Traktor/Stems").rglob("*.stem.mp4"))
+if not nml or not files:
+    print("collection.nml or stem files not found")
+else:
+    text = nml[0].read_text(errors="replace")
+    for f in files[:50]:
+        i = text.find(f.name[:-9])
+        if i >= 0:
+            print(text[max(0, i - 600):i + 200]); break
+    else:
+        print("none of the first 50 stem codes appear in", nml[0])
+PY
 echo
 echo "## Traktor / Native Instruments folders and sizes"
 for base in "$HOME/Documents/Native Instruments" "$HOME/Library/Application Support/Native Instruments" \

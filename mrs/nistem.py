@@ -101,10 +101,52 @@ def tags(path: str | Path) -> dict:
     return out
 
 
-def display_title(path: str | Path) -> str:
-    """'Artist - Title' from tags when present, else the file name."""
+def traktor_collections() -> list[Path]:
+    """Traktor library files on this Mac, newest first."""
+    base = Path.home() / "Documents" / "Native Instruments"
+    found = list(base.glob("Traktor*/collection.nml")) if base.is_dir() else []
+    return sorted(found, key=lambda p: p.stat().st_mtime, reverse=True)
+
+
+_index_cache: dict[str, dict] | None = None
+
+
+def traktor_index(nml: Path | None = None) -> dict[str, dict]:
+    """Stem-cache code -> {artist, title, file} from Traktor's collection.nml.
+    The format is undocumented, so we don't assume where the code is stored:
+    any 28-character code appearing anywhere inside a track ENTRY counts."""
+    global _index_cache
+    if nml is None and _index_cache is not None:
+        return _index_cache
+    import xml.etree.ElementTree as ET
+    out: dict[str, dict] = {}
+    for f in ([nml] if nml else traktor_collections()[:1]):
+        try:
+            for _, el in ET.iterparse(str(f), events=("end",)):
+                if el.tag != "ENTRY":
+                    continue
+                blob = " ".join(" ".join(e.attrib.values()) for e in el.iter())
+                loc = el.find("LOCATION")
+                info = {"artist": el.get("ARTIST", ""), "title": el.get("TITLE", ""),
+                        "file": loc.get("FILE", "") if loc is not None else ""}
+                for code in set(re.findall(r"\b[A-Z0-9]{28}\b", blob)):
+                    out[code] = info
+                el.clear()
+        except (ET.ParseError, OSError):
+            continue
+    if nml is None:
+        _index_cache = out
+    return out
+
+
+def display_title(path: str | Path, nml: Path | None = None) -> str:
+    """'Artist - Title' from the file's tags, else from Traktor's collection, else the file name."""
     stem = re.sub(r"\.stem\.(mp4|m4a)$", "", Path(path).name, flags=re.I)
     t = tags(path)
+    if not t.get("title"):
+        t = traktor_index(nml).get(stem, {})
+        if not t.get("title") and t.get("file"):
+            t = {"title": Path(t["file"]).stem}
     if t.get("title"):
         name = f"{t['artist']} - {t['title']}" if t.get("artist") else t["title"]
         return re.sub(r'[/\\:*?"<>|]', "_", name).strip()

@@ -163,3 +163,16 @@ def test_ni_stem_without_metadata_uses_default_order(song, tmp_path):
     _make_stem_mp4(aligned, f, with_meta=False)
     assert nistem.read_metadata(f) is None
     assert nistem.stem_names(f) == nistem.DEFAULT_NAMES
+
+
+def test_traktor_title_from_collection(tmp_path):
+    from mrs import nistem
+    code = "AWQQL5A0V0WGRCBYNBHNCS0WHQFC"
+    nml = tmp_path / "collection.nml"
+    nml.write_text(f'''<?xml version="1.0"?><NML><COLLECTION>
+<ENTRY ARTIST="SMV" TITLE="Night Drive"><LOCATION FILE="Night Drive.wav"/><STEMS STEMS_CACHE="{code}"/></ENTRY>
+<ENTRY TITLE="Other"><LOCATION FILE="x.wav"/></ENTRY></COLLECTION></NML>''')
+    f = tmp_path / f"{code}.stem.mp4"
+    f.write_bytes(b"")
+    assert nistem.display_title(f, nml=nml) == "SMV - Night Drive"
+    assert nistem.display_title(tmp_path / "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ.stem.mp4", nml=nml) == "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
