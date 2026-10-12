@@ -174,6 +174,7 @@ function newTrack(song, kind, t) {
 
 function buildAudio(song, t, res) {
     var tr = newTrack(song, "audio", t);
+    if (t.warp === false) return buildUnwarped(tr, t, res);
     tr.api.call("create_audio_clip", posix(t.file), 0.0);
     var cids = ids(tr.api, "arrangement_clips");
     if (cids.length !== 1) throw "create_audio_clip made no clip for " + t.file;
@@ -306,6 +307,21 @@ function placeAtSample(clip, S, B) {
     return { asked: { beat_time: B, sample_time: S }, got: best, added: added };
 }
 
+// Warp OFF: the file plays at its real speed from an exact beat position.
+// Audio and MIDI share one tempo, so they stay together for the whole song.
+function buildUnwarped(tr, t, res) {
+    tr.api.call("create_audio_clip", posix(t.file), t.position_beats);
+    var cids = ids(tr.api, "arrangement_clips");
+    if (cids.length !== 1) throw "create_audio_clip made no clip for " + t.file;
+    var clip = new LiveAPI("id " + cids[0]);
+    clip.set("warping", 0);
+    res.warp_method = "warp off, placed at beat " + t.position_beats;
+    res.warping = Number(clip.get("warping"));
+    res.clip_start = Number(clip.get("start_time"));
+    res.check = { start_error_beats: Math.round((res.clip_start - t.position_beats) * 10000) / 10000 };
+    if (Math.abs(res.check.start_error_beats) > 0.001) res.error = "clip start " + res.clip_start + " instead of " + t.position_beats;
+}
+
 // Instruments: if the Set has a template track "LB Bass" / "LB Melody" /
 // "LB Drums" (any instrument or VST on it), it is duplicated for this part —
 // the owner's preselected sounds. Otherwise an empty MIDI track, then a
@@ -436,6 +452,12 @@ function verify() {
                 if (notes[k].pitch !== want[k].pitch || Math.abs(notes[k].start_time - want[k].start_time) > 0.001) bad++;
             step("notes: " + t.name, notes.length === want.length && bad === 0, { found: notes.length, wanted: want.length, mismatched: bad });
         } else {
+            if (t.warp === false) {
+                var st = Number(clip.get("start_time"));
+                step("placed: " + t.name, Math.abs(st - t.position_beats) < 0.001,
+                     { start: st, wanted: t.position_beats, warping: Number(clip.get("warping")) });
+                continue;
+            }
             var mk = markers(clip), w = t.warp_markers, lastW = w[w.length - 1];
             var endErr = beatFromMarkers(mk, lastW.sample_time) - lastW.beat_time;
             var startErr = beatFromMarkers(mk, mk[0].sample_time) - beatAt(w, mk[0].sample_time);

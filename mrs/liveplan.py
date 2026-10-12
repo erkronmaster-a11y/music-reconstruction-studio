@@ -1,11 +1,9 @@
 """Build plan for Ableton Live (Sprint 3): everything the Loomback Builder
 device needs to assemble the arrangement, as one JSON file.
 
-One rule for every audio file, whatever the timing mode: the clip sits at
-arrangement beat 0 with Warp on, and warp markers pin sample times to beat
-times. In constant mode two markers (start and end) place the audio without
-any stretching. In beat-map mode one marker per beat straightens a drifting
-song. MIDI notes use the same seconds→beats mapping, so audio and MIDI can't
+Constant mode (the default): each audio clip is placed with Warp off at the
+exact beat of its first sample, so Live plays it at true speed. Beat-map mode
+(opt-in): Warp on, one marker per beat straightens a drifting song. MIDI notes use the same seconds→beats mapping, so audio and MIDI can't
 disagree.
 
 All beat positions are shifted by whole bars (`shift_beats`) so nothing starts
@@ -54,8 +52,15 @@ def build(m: dict) -> dict:
             markers = [{"sample_time": 0.0, "beat_time": B(-off)},
                        {"sample_time": round(s["duration_s"], 5), "beat_time": B(s["duration_s"] - off)}]
         role = s["role"]
+        # Constant mode: Warp OFF — Live plays the file at its true speed, so
+        # placing it at the exact (fractional) beat of its first sample keeps
+        # it locked to MIDI computed with the same tempo for the whole song.
+        # (Mac run 3: Live's auto-warp held clips at 100.00 BPM against a song
+        # at 100.075 → 0.195 beat drift by the end; warp markers can only be
+        # moved, not added, on Live 12.0.15.)
         tracks.append({"kind": "audio", "role": role, "name": "Original mix" if role == "mix" else f"{s['id'].title()} (stem)",
                        "file": s["path"], "color": COLORS.get(role, COLORS["other"]), "mute": role in MUTED_AUDIO,
+                       "warp": tl["mode"] == "beatmap", "position_beats": markers[0]["beat_time"],
                        "warp_mode": 6, "warp_markers": markers})
     for t in m["tracks"]:
         notes = []
@@ -95,12 +100,12 @@ def instructions(plan: dict) -> str:
     """Manual fallback: how to rebuild the same Set by hand."""
     L = [f"Loomback — manual import for '{plan['project']}'", "",
          f"1. New Live Set. Set tempo to {plan['tempo_bpm']} BPM, 4/4.",
-         "2. Audio: drag each file below onto its own audio track at bar 1 (1.1.1).",
-         "   Turn Warp ON. Then place warp markers as listed (sample seconds → beat):"]
+         "2. Audio: drag each file below onto its own audio track. Constant tempo: turn Warp OFF",
+         "   and set the clip's start to the beat listed. Beat map: Warp ON, markers as listed:"]
     for t in plan["tracks"]:
         if t["kind"] == "audio":
             wm = t["warp_markers"]
-            L.append(f"   - {t['name']}: {t['file']}")
+            L.append(f"   - {t['name']}: {t['file']}" + ("" if t.get("warp", True) else f"  → Warp OFF, start at beat {t['position_beats']}"))
             L.append(f"     {len(wm)} markers; first {wm[0]}, last {wm[-1]}" + (" (constant tempo: just these two)" if len(wm) == 2 else ""))
     L += ["3. MIDI: drag the files from midi/ onto MIDI tracks at bar 1. Drums use General MIDI notes",
           "   (kick C1, snare D1, closed hat F#1, open hat A#1, other D#1) — any Drum Rack kit plays them.",

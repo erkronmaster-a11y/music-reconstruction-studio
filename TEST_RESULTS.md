@@ -165,6 +165,18 @@ follow (a tempo map is on the roadmap).
   - The builder also tries 4 argument formats for `add_warp_marker` and
     reports which one works, and tries `Track.insert_device` (Live 12.3+)
     for Drift / Drum Rack before the browser.
+- **Run 3 (report + screenshots pushed):** the owner hears stems and MIDI
+  drift apart ("no they don't [line up]").
+  - All four `add_warp_marker` formats refused; `browser_id` is 0 (no
+    browser from Max); `insert_device` is missing (it arrived in Live 12.3).
+  - Moves landed, but Live's auto-warp held each clip at **100.00 BPM**
+    against a song at **100.075**: a **0.195-beat** drift by the end.
+  - **Fix:** in constant mode audio is placed with **Warp off**, at the exact
+    fractional beat of its first sample. Live then plays it at true speed,
+    and the MIDI is computed with the same tempo, so they can't drift.
+    Checked in pytest: position + duration × tempo / 60 equals the plan's end
+    beat. Verify now checks each clip's start (`placed: …`).
+  - `pytest` → **52 passed**.
 - Three bugs were found on the way and fixed:
   - Max's file writer can't write non-ASCII text, so reports are now ASCII.
   - Live loaded the device from outside `<repo>/live/`, so the plan and

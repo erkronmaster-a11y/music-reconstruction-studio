@@ -40,7 +40,8 @@ const track = { id: 5, get: (p) => p === "arrangement_clips" ? ["id", 1] : [0], 
 function LiveAPI(path) { if (path === "live_set") return song; if (path === "id 1") return clip; return track; }
 const lib = new Function("post", "outlet", "LiveAPI", "max", "Dict", "File",
   src + "; return { buildAudio, beatFromMarkers };")(() => {}, () => {}, LiveAPI, {}, function () {}, function () {});
-const t = plan.tracks.find(x => x.kind === "audio"), res = {};
+// exercises the warp-marker path (constant plans normally use warp off; see buildUnwarped)
+const t = Object.assign({}, plan.tracks.find(x => x.kind === "audio"), { warp: true }), res = {};
 try { lib.buildAudio(song, t, res); } catch (e) { res.error = String(e); }
 const w = t.warp_markers, last = w[w.length - 1];
 // how far, in beats, does the clip play from the plan at 20 points across the file?

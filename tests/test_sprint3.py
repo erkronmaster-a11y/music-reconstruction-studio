@@ -85,3 +85,18 @@ def test_builder_warp_markers_in_simulated_live(built, tmp_path):
     assert res["error"] is None and res["check"]["start_error_beats"] == 0 and abs(res["check"]["end_error_beats"]) < 0.01, res
     if mode == "constant":
         assert res["worst_deviation_beats"] < 0.005, res
+
+
+def test_constant_mode_places_unwarped_audio_exactly(built):
+    """Warp off: a file played at true speed from position_beats must meet the MIDI
+    mapping at both ends, i.e. position + duration*tempo/60 == the plan's end beat."""
+    m, mode, out = built
+    plan = liveplan.build(m)
+    for t in plan["tracks"]:
+        if t["kind"] != "audio":
+            continue
+        assert t["warp"] == (mode == "beatmap")
+        if mode == "constant":
+            first, last = t["warp_markers"][0], t["warp_markers"][-1]
+            assert t["position_beats"] == first["beat_time"] >= 0
+            assert last["beat_time"] == pytest.approx(t["position_beats"] + last["sample_time"] * plan["tempo_bpm"] / 60, abs=0.001)

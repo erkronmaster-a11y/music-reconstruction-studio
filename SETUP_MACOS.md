@@ -94,7 +94,8 @@ The numbered scripts below still work. Loomback runs the same steps.
 4. Click **`build`** in the device. Large songs can take up to a minute.
    You get:
    - the tempo set;
-   - your mix and stems on audio tracks, warped to the grid;
+   - your mix and stems on audio tracks, placed exactly on the song's
+     tempo (Warp is off on purpose: the audio plays at its true speed);
    - bass, melody and drums on MIDI tracks;
    - basic Ableton instruments where it could load them.
 5. Click **`verify`**. The status line should read `verify — ALL OK`.
