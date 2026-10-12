@@ -12,4 +12,8 @@ Timing (value · where it came from)
   first_downbeat_s  0.3355  · detected
   beats_per_bar     4  · detected
   detected beats    334, downbeat confidence 0.752, beat spacing spread 0.101
+  beat map          256 beats, 68 downbeats, tempo 100.0–100.0 BPM → Live tempo 100.0 (beat_this 1.1.0 final0)
   grid fit          tracker said 132.512 BPM; grid-to-beat gap 112.0 ms early → 98.4 ms late
+
+Check:
+  - 7 bar(s) are not 4 beats long (first at 62.46s) — downbeats after them may sit off Live's bar lines
