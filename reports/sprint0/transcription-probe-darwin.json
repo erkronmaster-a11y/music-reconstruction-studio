@@ -11,7 +11,7 @@
         "onset_f1": 0.5,
         "onset_offset_f1": 0.393,
         "mean_onset_error_ms": 21.1,
-        "seconds": 0.97
+        "seconds": 1.04
       },
       "pyin": {
         "ref_notes": 40,
@@ -21,7 +21,7 @@
         "onset_f1": 0.952,
         "onset_offset_f1": 0.952,
         "mean_onset_error_ms": 4.5,
-        "seconds": 1.76
+        "seconds": 1.82
       }
     },
     "melody (C4-C6, bright)": {
@@ -33,7 +33,7 @@
         "onset_f1": 1.0,
         "onset_offset_f1": 0.875,
         "mean_onset_error_ms": 5.3,
-        "seconds": 0.46
+        "seconds": 0.59
       },
       "pyin": {
         "ref_notes": 48,
@@ -43,10 +43,10 @@
         "onset_f1": 0.676,
         "onset_offset_f1": 0.676,
         "mean_onset_error_ms": 4.0,
-        "seconds": 2.03
+        "seconds": 2.18
       }
     }
   },
   "basic_pitch_version": "unknown",
-  "peak_rss_mb": 786.0
+  "peak_rss_mb": 794.0
 }

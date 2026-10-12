@@ -1,4 +1,4 @@
-# Traktor / NI Stems scan — 2026-10-12 19:57
+# Traktor / NI Stems scan — 2026-10-12 20:27
 
 ## .stem.mp4 / .stem.m4a outside the Traktor cache (Music, Documents, Desktop, Downloads; first 40)
 
@@ -58,7 +58,7 @@ none of the first 50 stem codes appear in /Users/locohood/Documents/Native Instr
 4.3G	/Users/locohood/Music/Engine Library/Stems
 9.5G	/Users/locohood/Music/Traktor
 9.4G	/Users/locohood/Music/Traktor/Stems
-216M	/Users/locohood/Music/MRS Projects/AWQQL5A0V0WGRCBYNBHNCS0WHQFC/stems
+215M	/Users/locohood/Music/MRS Projects/AWQQL5A0V0WGRCBYNBHNCS0WHQFC/stems
   0B	/Users/locohood/Music/_Serato_/Subcrates/Serato Stems
 
 ## Inside folders named *stem* or *cache* under Traktor: file types and counts
