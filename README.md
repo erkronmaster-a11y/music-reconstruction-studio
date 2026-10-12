@@ -10,7 +10,7 @@ uncertain, never passed off as exact, and missing notes are never invented.
 ## Status
 | Sprint | Contents | State |
 |---|---|---|
-| 0 | Environment check, Live API test, transcription probe | 🟡 waiting on Mac test results |
+| 0 | Environment check, Live API test, transcription probe | ✅ done — Live API create/save/reopen verified |
 | 1 | Audio to MIDI (bass, melody) | not started |
 
 ## Start here

@@ -28,13 +28,12 @@ Four independent parts, connected only through files:
 - **Always a fallback.** If Live automation fails, the exporter's MIDI + WAV +
   instructions package is enough to build the Set by hand.
 
-## Live Object Model calls in use (Sprint 0 — being verified on Live 12.0.15, see TEST_RESULTS.md)
+## Live Object Model calls in use (verified on Live 12.0.15 in Sprint 0 — see TEST_RESULTS.md)
 | Need | LOM call | Since |
 |---|---|---|
 | New tracks | `Song.create_midi_track(i)`, `Song.create_audio_track(i)` | — |
-| Arrangement MIDI clip | `Track.create_midi_clip(start_beats, length)` — **failed on Live 12.0.15** | later 12.x |
-| …fallback | `ClipSlot.create_clip` + `Track.duplicate_clip_to_arrangement` | testing |
-| Arrangement audio clip | `Track.create_audio_clip(path, position)` | Live 12 |
+| Arrangement MIDI clip | `Track.create_midi_clip` ❌ on 12.0.15 → **use** `ClipSlot.create_clip` + `add_new_notes` + `Track.duplicate_clip_to_arrangement` ✅ | — |
+| Arrangement audio clip | `Track.create_audio_clip(path, position)` ✅ | 12.0.15 |
 | Write notes | `Clip.add_new_notes({notes:[…]})` | Live 11 |
 | Read notes | `Clip.get_notes_extended(...)` | Live 11 |
 | Tempo | `Song.tempo` | — |

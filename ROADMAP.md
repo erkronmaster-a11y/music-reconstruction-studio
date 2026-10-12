@@ -5,7 +5,7 @@ to go over **10%** is split up, or confirmed with Erick before it starts.
 
 | Sprint | Contents | Estimate | State |
 |---|---|---|---|
-| 0 | Mac check, Live API test (create → save → reopen → verify), Basic Pitch vs alternative | 5–8% | 🟡 Mac results pending |
+| 0 | Mac check, Live API test (create → save → reopen → verify), Basic Pitch vs alternative | 5–8% | ✅ done |
 | 1a | Load WAV/AIFF/FLAC/MP3, inspect, sync stems, tempo + beats + first downbeat (user-correctable), manifest v1 | 8–10% | — |
 | 1b | Bass (pYIN-led) + melody (Basic Pitch-led) transcription, MIDI export, review + A/B render | 10–12% | — |
 | 2 | Drums: kick / snare / closed hat / open hat / unclassified, GM mapping, groove kept | 10–14% | — |

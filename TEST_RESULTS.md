@@ -33,8 +33,26 @@ Peak memory: about 0.9 GB (TensorFlow included).
    only from Python 3.12 → use **Python 3.11** on the Mac. *Not yet verified on
    the Mac.*
 
-## Sprint 0 — Ableton Live API test
-*Pending: Erick runs SETUP_MACOS.md steps 2–3.*
+## Sprint 0 — Ableton Live API test ✅ (2026-10-12)
+**Mac:** M1 Pro, 16 GB, macOS 13.6.1 · **Live 12.0.15 Suite** · bundled Max 8.6.2 ·
+raw data: `reports/sprint0/live-create.json`, `live-verify.json`, `mac-env.txt`.
+
+| Operation | Result |
+|---|---|
+| Create MIDI / audio track, set name and colour | ✅ |
+| Set tempo (117.5) | ✅, and it survives save/reopen |
+| `Track.create_midi_clip` (arrangement) | ❌ **not available on 12.0.15**: no clip is created and no error is raised |
+| Fallback: Session `create_clip` → `add_new_notes` → `duplicate_clip_to_arrangement` → delete the Session clip | ✅ clip at beat 4, length 4 |
+| `add_new_notes` with a JS object | ✅ |
+| 4 notes read back, including the off-grid note at 2.037 beats | ✅ 2.036999979 (float32; error ≈ 2×10⁻⁸ beats, inaudible) |
+| `Track.create_audio_clip` (arrangement, WAV path) | ✅ works on 12.0.15 |
+| Save → quit → reopen → read back | ✅ track, clip position, all 4 notes, audio clip and tempo |
+| Save the Set from the API | ⛔ not in the LOM; the user presses ⌘S |
+
+**Bugs found on the way (fixed):**
+- `File.isopen` was true while nothing was written. Saves are now read back to confirm them.
+- The device path was not `<repo>/live/<file>`. The repo is now found by
+  cutting the path at the `/live` folder.
 
 ## Sprint 0 — unit tests
 `pytest tests/` → 3 passed. Covers the .amxd container structure, that the
