@@ -1,0 +1,176 @@
+{
+	"phase" : "verify",
+	"time" : "Tue Oct 13 2026 00:42:05 GMT+0200 (CEST)",
+	"steps" : [ 		{
+			"step" : "read plan",
+			"ok" : 1,
+			"detail" : "/Users/locohood/Music/MRS Projects/_live/build.json"
+		}
+, 		{
+			"step" : "tempo",
+			"ok" : 1,
+			"detail" : 100
+		}
+, 		{
+			"step" : "present: Original mix",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Original mix",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "warp: Original mix",
+			"ok" : 0,
+			"detail" : 			{
+				"markers" : 2,
+				"wanted" : 258,
+				"mode" : 6
+			}
+
+		}
+, 		{
+			"step" : "present: Vocals (stem)",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Vocals (stem)",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "warp: Vocals (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"markers" : 2,
+				"wanted" : 258,
+				"mode" : 6
+			}
+
+		}
+, 		{
+			"step" : "present: Bass (stem)",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Bass (stem)",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "warp: Bass (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"markers" : 2,
+				"wanted" : 258,
+				"mode" : 6
+			}
+
+		}
+, 		{
+			"step" : "present: Bass MIDI",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Bass MIDI",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "notes: Bass MIDI",
+			"ok" : 1,
+			"detail" : 			{
+				"found" : 435,
+				"wanted" : 435,
+				"mismatched" : 0
+			}
+
+		}
+, 		{
+			"step" : "present: Melody MIDI",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Melody MIDI",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "notes: Melody MIDI",
+			"ok" : 1,
+			"detail" : 			{
+				"found" : 448,
+				"wanted" : 448,
+				"mismatched" : 0
+			}
+
+		}
+, 		{
+			"step" : "present: Drums (stem)",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Drums (stem)",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "warp: Drums (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"markers" : 2,
+				"wanted" : 258,
+				"mode" : 6
+			}
+
+		}
+, 		{
+			"step" : "present: Drums MIDI",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Drums MIDI",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "notes: Drums MIDI",
+			"ok" : 1,
+			"detail" : 			{
+				"found" : 754,
+				"wanted" : 754,
+				"mismatched" : 0
+			}
+
+		}
+, 		{
+			"step" : "present: Other (stem)",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "clip: Other (stem)",
+			"ok" : 1,
+			"detail" : 1
+		}
+, 		{
+			"step" : "warp: Other (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"markers" : 2,
+				"wanted" : 258,
+				"mode" : 6
+			}
+
+		}
+ ],
+	"summary" : "FAILED: warp: Original mix | warp: Vocals (stem) | warp: Bass (stem) | warp: Drums (stem) | warp: Other (stem)"
+}

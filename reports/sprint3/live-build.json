@@ -1,6 +1,6 @@
 {
 	"phase" : "build",
-	"time" : "Mon Oct 12 2026 23:07:59 GMT+0200 (CEST)",
+	"time" : "Tue Oct 13 2026 00:41:48 GMT+0200 (CEST)",
 	"live_version" : "12.0.15",
 	"steps" : [ 		{
 			"step" : "read plan",
@@ -25,22 +25,46 @@
 				"kind" : "audio",
 				"warp_mode" : 6,
 				"markers_before" : 2,
+				"live_markers_at_start" : [ 					{
+						"sample_time" : 0.043760092167977,
+						"beat_time" : 0
+					}
+, 					{
+						"sample_time" : 0.062510092167977,
+						"beat_time" : 0.03125
+					}
+ ],
+				"end_marker" : 				{
+					"asked" : 					{
+						"beat_time" : 263.951110000000028,
+						"sample_time" : 156.030669999999986
+					}
+,
+					"got" : 					{
+						"sample_time" : 0.062510092167977,
+						"beat_time" : 3.951829940892441
+					}
+
+				}
+,
+				"explicit_adds_refused" : 256,
+				"stray_markers_removed" : 0,
 				"markers_wanted" : 258,
 				"markers_now" : 2,
 				"first_marker" : 				{
-					"sample_time" : 0,
+					"sample_time" : 0.043760092167977,
 					"beat_time" : 3.920579940892441
 				}
 ,
 				"last_marker" : 				{
-					"sample_time" : 0.018749999579488,
+					"sample_time" : 0.062510092167977,
 					"beat_time" : 3.951829940892441
 				}
 ,
 				"clip_start" : 0,
 				"clip_end" : 263.951110087828852,
-				"markers_missing" : 257,
-				"error" : "257 of 258 warp markers did not land"
+				"markers_missing" : 258,
+				"error" : "258 of 258 warp markers did not land"
 			}
 
 		}
@@ -52,22 +76,46 @@
 				"kind" : "audio",
 				"warp_mode" : 6,
 				"markers_before" : 2,
+				"live_markers_at_start" : [ 					{
+						"sample_time" : 0.350521284508399,
+						"beat_time" : 0
+					}
+, 					{
+						"sample_time" : 0.369271284508399,
+						"beat_time" : 0.03125
+					}
+ ],
+				"end_marker" : 				{
+					"asked" : 					{
+						"beat_time" : 263.951110000000028,
+						"sample_time" : 156.030669999999986
+					}
+,
+					"got" : 					{
+						"sample_time" : 0.369271284508399,
+						"beat_time" : 3.951829940892441
+					}
+
+				}
+,
+				"explicit_adds_refused" : 256,
+				"stray_markers_removed" : 0,
 				"markers_wanted" : 258,
 				"markers_now" : 2,
 				"first_marker" : 				{
-					"sample_time" : 0,
+					"sample_time" : 0.350521284508399,
 					"beat_time" : 3.920579940892441
 				}
 ,
 				"last_marker" : 				{
-					"sample_time" : 0.018749999579488,
+					"sample_time" : 0.369271284508399,
 					"beat_time" : 3.951829940892441
 				}
 ,
 				"clip_start" : 0,
 				"clip_end" : 263.951110087828852,
-				"markers_missing" : 257,
-				"error" : "257 of 258 warp markers did not land"
+				"markers_missing" : 258,
+				"error" : "258 of 258 warp markers did not land"
 			}
 
 		}
@@ -79,22 +127,46 @@
 				"kind" : "audio",
 				"warp_mode" : 6,
 				"markers_before" : 2,
+				"live_markers_at_start" : [ 					{
+						"sample_time" : 0.061382833491188,
+						"beat_time" : 0
+					}
+, 					{
+						"sample_time" : 0.080132833491188,
+						"beat_time" : 0.03125
+					}
+ ],
+				"end_marker" : 				{
+					"asked" : 					{
+						"beat_time" : 263.951110000000028,
+						"sample_time" : 156.030669999999986
+					}
+,
+					"got" : 					{
+						"sample_time" : 0.080132833491188,
+						"beat_time" : 3.951829940892441
+					}
+
+				}
+,
+				"explicit_adds_refused" : 256,
+				"stray_markers_removed" : 0,
 				"markers_wanted" : 258,
 				"markers_now" : 2,
 				"first_marker" : 				{
-					"sample_time" : 0,
+					"sample_time" : 0.061382833491188,
 					"beat_time" : 3.920579940892441
 				}
 ,
 				"last_marker" : 				{
-					"sample_time" : 0.018749999579488,
+					"sample_time" : 0.080132833491188,
 					"beat_time" : 3.951829940892441
 				}
 ,
 				"clip_start" : 0,
 				"clip_end" : 263.951110087828852,
-				"markers_missing" : 257,
-				"error" : "257 of 258 warp markers did not land"
+				"markers_missing" : 258,
+				"error" : "258 of 258 warp markers did not land"
 			}
 
 		}
@@ -109,7 +181,12 @@
 				"notes_in_arrangement" : 435,
 				"instrument" : 				{
 					"loaded" : 0,
-					"note" : "none of Bass, Drift, Analog, Operator found in the browser"
+					"note" : "none of Bass, Drift, Analog, Operator found in the browser",
+					"browser" : 					{
+						"browser_id" : "0",
+						"instruments_children" : 0
+					}
+
 				}
 
 			}
@@ -126,7 +203,12 @@
 				"notes_in_arrangement" : 448,
 				"instrument" : 				{
 					"loaded" : 0,
-					"note" : "none of Drift, Wavetable, Analog, Operator found in the browser"
+					"note" : "none of Drift, Wavetable, Analog, Operator found in the browser",
+					"browser" : 					{
+						"browser_id" : "0",
+						"instruments_children" : 0
+					}
+
 				}
 
 			}
@@ -140,22 +222,46 @@
 				"kind" : "audio",
 				"warp_mode" : 6,
 				"markers_before" : 2,
+				"live_markers_at_start" : [ 					{
+						"sample_time" : 0.045989057076283,
+						"beat_time" : 0
+					}
+, 					{
+						"sample_time" : 0.064739057076283,
+						"beat_time" : 0.03125
+					}
+ ],
+				"end_marker" : 				{
+					"asked" : 					{
+						"beat_time" : 263.951110000000028,
+						"sample_time" : 156.030669999999986
+					}
+,
+					"got" : 					{
+						"sample_time" : 0.064739057076283,
+						"beat_time" : 3.951829940892441
+					}
+
+				}
+,
+				"explicit_adds_refused" : 256,
+				"stray_markers_removed" : 0,
 				"markers_wanted" : 258,
 				"markers_now" : 2,
 				"first_marker" : 				{
-					"sample_time" : 0,
+					"sample_time" : 0.045989057076283,
 					"beat_time" : 3.920579940892441
 				}
 ,
 				"last_marker" : 				{
-					"sample_time" : 0.018749999579488,
+					"sample_time" : 0.064739057076283,
 					"beat_time" : 3.951829940892441
 				}
 ,
 				"clip_start" : 0,
 				"clip_end" : 263.951110087828852,
-				"markers_missing" : 257,
-				"error" : "257 of 258 warp markers did not land"
+				"markers_missing" : 258,
+				"error" : "258 of 258 warp markers did not land"
 			}
 
 		}
@@ -170,7 +276,12 @@
 				"notes_in_arrangement" : 754,
 				"instrument" : 				{
 					"loaded" : 0,
-					"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser"
+					"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser",
+					"browser" : 					{
+						"browser_id" : "0",
+						"instruments_children" : 0
+					}
+
 				}
 
 			}
@@ -184,22 +295,46 @@
 				"kind" : "audio",
 				"warp_mode" : 6,
 				"markers_before" : 2,
+				"live_markers_at_start" : [ 					{
+						"sample_time" : 0.047882469989703,
+						"beat_time" : 0
+					}
+, 					{
+						"sample_time" : 0.066632469989703,
+						"beat_time" : 0.03125
+					}
+ ],
+				"end_marker" : 				{
+					"asked" : 					{
+						"beat_time" : 263.951110000000028,
+						"sample_time" : 156.030669999999986
+					}
+,
+					"got" : 					{
+						"sample_time" : 0.066632469989703,
+						"beat_time" : 3.951829940892441
+					}
+
+				}
+,
+				"explicit_adds_refused" : 256,
+				"stray_markers_removed" : 0,
 				"markers_wanted" : 258,
 				"markers_now" : 2,
 				"first_marker" : 				{
-					"sample_time" : 0,
+					"sample_time" : 0.047882469989703,
 					"beat_time" : 3.920579940892441
 				}
 ,
 				"last_marker" : 				{
-					"sample_time" : 0.018749999579488,
+					"sample_time" : 0.066632469989703,
 					"beat_time" : 3.951829940892441
 				}
 ,
 				"clip_start" : 0,
 				"clip_end" : 263.951110087828852,
-				"markers_missing" : 257,
-				"error" : "257 of 258 warp markers did not land"
+				"markers_missing" : 258,
+				"error" : "258 of 258 warp markers did not land"
 			}
 
 		}
@@ -209,66 +344,138 @@
 			"kind" : "audio",
 			"warp_mode" : 6,
 			"markers_before" : 2,
+			"live_markers_at_start" : [ 				{
+					"sample_time" : 0.043760092167977,
+					"beat_time" : 0
+				}
+, 				{
+					"sample_time" : 0.062510092167977,
+					"beat_time" : 0.03125
+				}
+ ],
+			"end_marker" : 			{
+				"asked" : 				{
+					"beat_time" : 263.951110000000028,
+					"sample_time" : 156.030669999999986
+				}
+,
+				"got" : 				{
+					"sample_time" : 0.062510092167977,
+					"beat_time" : 3.951829940892441
+				}
+
+			}
+,
+			"explicit_adds_refused" : 256,
+			"stray_markers_removed" : 0,
 			"markers_wanted" : 258,
 			"markers_now" : 2,
 			"first_marker" : 			{
-				"sample_time" : 0,
+				"sample_time" : 0.043760092167977,
 				"beat_time" : 3.920579940892441
 			}
 ,
 			"last_marker" : 			{
-				"sample_time" : 0.018749999579488,
+				"sample_time" : 0.062510092167977,
 				"beat_time" : 3.951829940892441
 			}
 ,
 			"clip_start" : 0,
 			"clip_end" : 263.951110087828852,
-			"markers_missing" : 257,
-			"error" : "257 of 258 warp markers did not land"
+			"markers_missing" : 258,
+			"error" : "258 of 258 warp markers did not land"
 		}
 , 		{
 			"name" : "Vocals (stem)",
 			"kind" : "audio",
 			"warp_mode" : 6,
 			"markers_before" : 2,
+			"live_markers_at_start" : [ 				{
+					"sample_time" : 0.350521284508399,
+					"beat_time" : 0
+				}
+, 				{
+					"sample_time" : 0.369271284508399,
+					"beat_time" : 0.03125
+				}
+ ],
+			"end_marker" : 			{
+				"asked" : 				{
+					"beat_time" : 263.951110000000028,
+					"sample_time" : 156.030669999999986
+				}
+,
+				"got" : 				{
+					"sample_time" : 0.369271284508399,
+					"beat_time" : 3.951829940892441
+				}
+
+			}
+,
+			"explicit_adds_refused" : 256,
+			"stray_markers_removed" : 0,
 			"markers_wanted" : 258,
 			"markers_now" : 2,
 			"first_marker" : 			{
-				"sample_time" : 0,
+				"sample_time" : 0.350521284508399,
 				"beat_time" : 3.920579940892441
 			}
 ,
 			"last_marker" : 			{
-				"sample_time" : 0.018749999579488,
+				"sample_time" : 0.369271284508399,
 				"beat_time" : 3.951829940892441
 			}
 ,
 			"clip_start" : 0,
 			"clip_end" : 263.951110087828852,
-			"markers_missing" : 257,
-			"error" : "257 of 258 warp markers did not land"
+			"markers_missing" : 258,
+			"error" : "258 of 258 warp markers did not land"
 		}
 , 		{
 			"name" : "Bass (stem)",
 			"kind" : "audio",
 			"warp_mode" : 6,
 			"markers_before" : 2,
+			"live_markers_at_start" : [ 				{
+					"sample_time" : 0.061382833491188,
+					"beat_time" : 0
+				}
+, 				{
+					"sample_time" : 0.080132833491188,
+					"beat_time" : 0.03125
+				}
+ ],
+			"end_marker" : 			{
+				"asked" : 				{
+					"beat_time" : 263.951110000000028,
+					"sample_time" : 156.030669999999986
+				}
+,
+				"got" : 				{
+					"sample_time" : 0.080132833491188,
+					"beat_time" : 3.951829940892441
+				}
+
+			}
+,
+			"explicit_adds_refused" : 256,
+			"stray_markers_removed" : 0,
 			"markers_wanted" : 258,
 			"markers_now" : 2,
 			"first_marker" : 			{
-				"sample_time" : 0,
+				"sample_time" : 0.061382833491188,
 				"beat_time" : 3.920579940892441
 			}
 ,
 			"last_marker" : 			{
-				"sample_time" : 0.018749999579488,
+				"sample_time" : 0.080132833491188,
 				"beat_time" : 3.951829940892441
 			}
 ,
 			"clip_start" : 0,
 			"clip_end" : 263.951110087828852,
-			"markers_missing" : 257,
-			"error" : "257 of 258 warp markers did not land"
+			"markers_missing" : 258,
+			"error" : "258 of 258 warp markers did not land"
 		}
 , 		{
 			"name" : "Bass MIDI",
@@ -278,7 +485,12 @@
 			"notes_in_arrangement" : 435,
 			"instrument" : 			{
 				"loaded" : 0,
-				"note" : "none of Bass, Drift, Analog, Operator found in the browser"
+				"note" : "none of Bass, Drift, Analog, Operator found in the browser",
+				"browser" : 				{
+					"browser_id" : "0",
+					"instruments_children" : 0
+				}
+
 			}
 
 		}
@@ -290,7 +502,12 @@
 			"notes_in_arrangement" : 448,
 			"instrument" : 			{
 				"loaded" : 0,
-				"note" : "none of Drift, Wavetable, Analog, Operator found in the browser"
+				"note" : "none of Drift, Wavetable, Analog, Operator found in the browser",
+				"browser" : 				{
+					"browser_id" : "0",
+					"instruments_children" : 0
+				}
+
 			}
 
 		}
@@ -299,22 +516,46 @@
 			"kind" : "audio",
 			"warp_mode" : 6,
 			"markers_before" : 2,
+			"live_markers_at_start" : [ 				{
+					"sample_time" : 0.045989057076283,
+					"beat_time" : 0
+				}
+, 				{
+					"sample_time" : 0.064739057076283,
+					"beat_time" : 0.03125
+				}
+ ],
+			"end_marker" : 			{
+				"asked" : 				{
+					"beat_time" : 263.951110000000028,
+					"sample_time" : 156.030669999999986
+				}
+,
+				"got" : 				{
+					"sample_time" : 0.064739057076283,
+					"beat_time" : 3.951829940892441
+				}
+
+			}
+,
+			"explicit_adds_refused" : 256,
+			"stray_markers_removed" : 0,
 			"markers_wanted" : 258,
 			"markers_now" : 2,
 			"first_marker" : 			{
-				"sample_time" : 0,
+				"sample_time" : 0.045989057076283,
 				"beat_time" : 3.920579940892441
 			}
 ,
 			"last_marker" : 			{
-				"sample_time" : 0.018749999579488,
+				"sample_time" : 0.064739057076283,
 				"beat_time" : 3.951829940892441
 			}
 ,
 			"clip_start" : 0,
 			"clip_end" : 263.951110087828852,
-			"markers_missing" : 257,
-			"error" : "257 of 258 warp markers did not land"
+			"markers_missing" : 258,
+			"error" : "258 of 258 warp markers did not land"
 		}
 , 		{
 			"name" : "Drums MIDI",
@@ -324,7 +565,12 @@
 			"notes_in_arrangement" : 754,
 			"instrument" : 			{
 				"loaded" : 0,
-				"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser"
+				"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser",
+				"browser" : 				{
+					"browser_id" : "0",
+					"instruments_children" : 0
+				}
+
 			}
 
 		}
@@ -333,22 +579,46 @@
 			"kind" : "audio",
 			"warp_mode" : 6,
 			"markers_before" : 2,
+			"live_markers_at_start" : [ 				{
+					"sample_time" : 0.047882469989703,
+					"beat_time" : 0
+				}
+, 				{
+					"sample_time" : 0.066632469989703,
+					"beat_time" : 0.03125
+				}
+ ],
+			"end_marker" : 			{
+				"asked" : 				{
+					"beat_time" : 263.951110000000028,
+					"sample_time" : 156.030669999999986
+				}
+,
+				"got" : 				{
+					"sample_time" : 0.066632469989703,
+					"beat_time" : 3.951829940892441
+				}
+
+			}
+,
+			"explicit_adds_refused" : 256,
+			"stray_markers_removed" : 0,
 			"markers_wanted" : 258,
 			"markers_now" : 2,
 			"first_marker" : 			{
-				"sample_time" : 0,
+				"sample_time" : 0.047882469989703,
 				"beat_time" : 3.920579940892441
 			}
 ,
 			"last_marker" : 			{
-				"sample_time" : 0.018749999579488,
+				"sample_time" : 0.066632469989703,
 				"beat_time" : 3.951829940892441
 			}
 ,
 			"clip_start" : 0,
 			"clip_end" : 263.951110087828852,
-			"markers_missing" : 257,
-			"error" : "257 of 258 warp markers did not land"
+			"markers_missing" : 258,
+			"error" : "258 of 258 warp markers did not land"
 		}
  ],
 	"project" : "HOJA DE COCA TECH HOUSE",
