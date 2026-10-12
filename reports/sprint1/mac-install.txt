@@ -1,15 +1,36 @@
 # MRS Sprint 1a — Mac install report
-date: 2026-10-12 15:38:58 +0200
+date: 2026-10-12 16:10:25 +0200
 python: Python 3.11.16
 ffmpeg: ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers  (/opt/homebrew/bin/ffmpeg)
 python_used_for_venv: python3.11
 
 ## Key packages
+basic-pitch==0.4.0
+coremltools==9.0
+librosa==0.11.0
+numpy==1.26.4
+scipy==1.17.1
+soundfile==0.14.0
+
+## pip install — errors and last lines
+Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+Installing collected packages: mpmath, urllib3, typing-extensions, tqdm, threadpoolctl, sympy, six, setuptools, PyYAML, pygments, pycparser, protobuf, pluggy, platformdirs, packaging, numpy, narwhals, msgpack, llvmlite, iniconfig, importlib_resources, idna, decorator, cloudpickle, charset_normalizer, certifi, audioread, attrs, soxr, scipy, requests, pytest, pyaml, numba, mido, lazy_loader, joblib, cffi, cattrs, soundfile, scikit-learn, resampy, pretty_midi, pooch, mir_eval, coremltools, librosa, basic-pitch
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 79.0.1
+    Uninstalling setuptools-79.0.1:
+      Successfully uninstalled setuptools-79.0.1
+
+Successfully installed PyYAML-6.0.3 attrs-26.1.0 audioread-3.1.0 basic-pitch-0.4.0 cattrs-26.2.1 certifi-2026.7.22 cffi-2.1.1 charset_normalizer-3.5.2 cloudpickle-3.1.2 coremltools-9.0 decorator-5.3.1 idna-3.20 importlib_resources-7.1.0 iniconfig-2.3.1 joblib-1.6.0 lazy_loader-0.6 librosa-0.11.0 llvmlite-0.50.0 mido-1.3.3 mir_eval-0.8.2 mpmath-1.3.0 msgpack-1.2.3 narwhals-2.27.1 numba-0.68.0 numpy-1.26.4 packaging-26.3 platformdirs-4.13.0 pluggy-1.6.0 pooch-1.9.0 pretty_midi-0.2.11.post0 protobuf-7.36.2 pyaml-26.7.0 pycparser-3.11 pygments-2.21.0 pytest-9.1.1 requests-2.34.2 resampy-0.4.2 scikit-learn-1.9.1 scipy-1.17.1 setuptools-80.10.2 six-1.17.0 soundfile-0.14.0 soxr-1.1.0 sympy-1.14.0 threadpoolctl-3.7.0 tqdm-4.70.1 typing-extensions-4.16.0 urllib3-2.8.0
 
 ## Unit + integration tests (pytest)
-/Users/locohood/Documents/GitHub/music-reconstruction-studio/.venv/bin/python: No module named pytest
+..................                                                       [100%]
+18 passed in 90.07s (0:01:30)
 
 ## Transcription probe
-ModuleNotFoundError: No module named 'numpy'
-        0.05 real         0.02 user         0.00 sys
-            16793600  maximum resident set size
+bass (E1-E3, warm) basic-pitch {'ref_notes': 40, 'est_notes': 72, 'onset_precision': 0.389, 'onset_recall': 0.7, 'onset_f1': 0.5, 'onset_offset_f1': 0.393, 'mean_onset_error_ms': 21.1, 'seconds': 7.68}
+bass (E1-E3, warm) pyin {'ref_notes': 40, 'est_notes': 44, 'onset_precision': 0.909, 'onset_recall': 1.0, 'onset_f1': 0.952, 'onset_offset_f1': 0.952, 'mean_onset_error_ms': 4.5, 'seconds': 24.78}
+melody (C4-C6, bright) basic-pitch {'ref_notes': 48, 'est_notes': 48, 'onset_precision': 1.0, 'onset_recall': 1.0, 'onset_f1': 1.0, 'onset_offset_f1': 0.875, 'mean_onset_error_ms': 5.3, 'seconds': 1.37}
+melody (C4-C6, bright) pyin {'ref_notes': 48, 'est_notes': 94, 'onset_precision': 0.511, 'onset_recall': 1.0, 'onset_f1': 0.676, 'onset_offset_f1': 0.676, 'mean_onset_error_ms': 4.0, 'seconds': 10.45}
+peak RSS MB 265024.0
+       54.25 real        16.20 user         6.35 sys
+           273760256  maximum resident set size
