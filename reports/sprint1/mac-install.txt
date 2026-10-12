@@ -1,0 +1,14 @@
+# MRS Sprint 1a — Mac install report
+date: 2026-10-12 15:31:35 +0200
+python: /Users/locohood/Documents/GitHub/music-reconstruction-studio/mac/3-install.command: line 29: .venv/bin/python: No such file or directory
+ffmpeg: ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers  (/opt/homebrew/bin/ffmpeg)
+uv: /Users/locohood/Documents/GitHub/music-reconstruction-studio/mac/3-install.command: line 31: uv: command not found
+
+## Key packages
+
+## Unit + integration tests (pytest)
+/Users/locohood/Documents/GitHub/music-reconstruction-studio/mac/3-install.command: line 40: .venv/bin/python: No such file or directory
+
+## Transcription probe
+        0.00 real         0.00 user         0.00 sys
+              950272  maximum resident set size
