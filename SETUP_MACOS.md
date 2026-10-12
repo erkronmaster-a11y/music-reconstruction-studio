@@ -64,6 +64,21 @@ few minutes, and nothing in it changes your system or your Ableton settings.
 4. Results go to `~/Music/MRS Projects/<song>/`. Only a short text summary is
    sent to GitHub, never your audio.
 
+## Loomback (the app) — easiest way to use everything
+
+1. In GitHub Desktop: **Fetch origin** → **Pull origin**.
+2. Double-click **`mac/Loomback.command`**. Your browser opens Loomback; keep
+   the Terminal window open while you use it.
+3. On the left, pick a song:
+   - **Projects** lists songs you have already analysed.
+   - **Traktor** lists Traktor's stem files with their titles.
+   - **Add song** takes a dropped file, or a folder path you paste.
+4. On the right, click **Transcribe + export MIDI**. Then use **Listen**:
+   switch on a stem together with its MIDI, or the click, and press Space to
+   play.
+
+The numbered scripts below still work. Loomback runs the same steps.
+
 ## 6. Song → MIDI (Sprint 1b, a few minutes per song)
 
 1. Double-click **`mac/6-transcribe-song.command`**.

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loomback — SMV</title>
+<link rel="icon" href="smv-logo.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark"><img src="smv-logo.png" alt=""></span>
+      <span class="brand-copy"><strong>SHAREDMINDVISUALS</strong><small>LOOMBACK</small></span>
+    </div>
+    <div class="project-title"><span id="projName">No project open</span><em id="projMeta"></em></div>
+    <div class="header-actions">
+      <span class="job-pill" id="jobPill" hidden><i></i><span id="jobText">working…</span></span>
+      <button id="btnFinder" title="Show project folder in Finder" disabled>Open folder</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel left-panel">
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="projects">Projects</button>
+        <button class="tab" data-tab="traktor">Traktor</button>
+        <button class="tab" data-tab="drop">Add song</button>
+      </nav>
+      <section class="tab-body" id="tab-projects"><ul class="list" id="projectList"></ul></section>
+      <section class="tab-body" id="tab-traktor" hidden>
+        <div class="row"><input id="traktorFilter" placeholder="Filter titles…"><button id="traktorRefresh" title="Re-read titles">↻</button></div>
+        <ul class="list" id="traktorList"><li class="empty">Loading Traktor stems… (first time ≈ 1 min)</li></ul>
+      </section>
+      <section class="tab-body" id="tab-drop" hidden>
+        <div class="drop" id="dropZone">
+          <strong>Drop a song here</strong>
+          <span>a Traktor <code>.stem.mp4</code>, or a full mix (WAV/AIFF/FLAC/MP3).<br>
+          For mix + stems, paste the folder path below.</span>
+        </div>
+        <div class="section-title"><h4>Or a path on this Mac</h4></div>
+        <div class="row"><input id="pathInput" placeholder="/Users/…/My Song folder or file.stem.mp4"><button id="pathGo">Analyse</button></div>
+      </section>
+    </aside>
+
+    <section class="stage">
+      <div class="stage-toolbar">
+        <div class="transport">
+          <button id="btnPlay" class="primary" disabled>▶ Play</button>
+          <button id="btnStop" disabled>■</button>
+          <output id="timeOut">0:00.0</output>
+          <output id="beatOut">bar – · beat –</output>
+        </div>
+        <label class="zoom">Zoom <input type="range" id="zoom" min="10" max="400" value="60"></label>
+      </div>
+      <div class="timeline-wrap" id="tlWrap">
+        <canvas id="timeline"></canvas>
+        <div class="empty-stage" id="emptyStage">
+          <strong>Open a project or add a song</strong>
+          <span>Left panel → Projects, Traktor, or Add song. Analysis finds tempo and beats; Transcribe makes bass + melody MIDI.</span>
+        </div>
+      </div>
+      <input type="range" id="scroll" min="0" max="1000" value="0" class="hscroll">
+      <div class="legend">
+        <span><i class="sw beat"></i>beat</span><span><i class="sw down"></i>bar start</span>
+        <span><i class="sw bass"></i>bass notes</span><span><i class="sw mel"></i>melody notes</span>
+        <span><i class="sw ghost"></i>flagged (left out of MIDI)</span><span>faint = low confidence</span>
+      </div>
+      <section class="log"><div class="section-title"><h4>Log</h4><button id="logClear" title="Clear">×</button></div><pre id="log"></pre></section>
+    </section>
+
+    <aside class="panel right-panel">
+      <section class="block">
+        <div class="section-title"><h4>Steps</h4><output id="stepState"></output></div>
+        <button class="step" id="btnTranscribe" disabled><b>1</b> Transcribe + export MIDI</button>
+        <button class="step" id="btnRedetect" disabled><b>↺</b> Re-detect timing</button>
+        <p class="hint">MIDI and review files are written to the project folder. Notes are raw detections — never verified originals.</p>
+      </section>
+      <section class="block">
+        <div class="section-title"><h4>Timing</h4><output id="modeOut"></output></div>
+        <dl class="kv" id="timingKv"></dl>
+        <div class="row tight">
+          <input id="bpmIn" type="number" step="0.001" placeholder="BPM">
+          <input id="downIn" type="number" step="0.001" placeholder="1st downbeat s">
+          <button id="btnTempo" disabled>Set</button>
+        </div>
+        <button class="link" id="btnClear" disabled>Clear my correction</button>
+      </section>
+      <section class="block">
+        <div class="section-title"><h4>Listen</h4><output>A/B</output></div>
+        <div id="mixer" class="mixer"></div>
+        <p class="hint">MIDI plays as a plain tone on the original timeline. Solo a stem against its MIDI to judge notes.</p>
+      </section>
+      <section class="block">
+        <div class="section-title"><h4>Parts</h4></div>
+        <dl class="kv" id="partsKv"></dl>
+      </section>
+    </aside>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

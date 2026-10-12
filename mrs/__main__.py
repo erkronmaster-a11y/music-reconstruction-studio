@@ -29,6 +29,7 @@ def main(argv=None):
     t.add_argument("--redetect", action="store_true", help="re-run tempo detection (keeps your correction)")
     c = sub.add_parser("click"); c.add_argument("project")
     tr = sub.add_parser("transcribe"); tr.add_argument("project"); tr.add_argument("--parts", default="bass,melody")
+    pl = sub.add_parser("pipeline", help="transcribe + export + click checks"); pl.add_argument("project")
     ex = sub.add_parser("export"); ex.add_argument("project"); ex.add_argument("--no-review", action="store_true")
     tl = sub.add_parser("traktor-list", help="list Traktor's cached stem files with song titles")
     tl.add_argument("--dir", default=str(Path.home() / "Music" / "Traktor" / "Stems"))
@@ -72,6 +73,10 @@ def main(argv=None):
             manifest.correct_timing(m, args.bpm, args.downbeat, args.bar, args.note)
         manifest.save(m, args.project)
         print(project.summary(m))
+    elif args.cmd == "pipeline":
+        for step in (["transcribe", args.project], ["export", args.project], ["click", args.project]):
+            print(f"== {step[0]}", flush=True)
+            main(step)
     elif args.cmd == "transcribe":
         m = manifest.load(args.project)
         for msg in project.transcribe(m, args.parts.split(",")):

@@ -84,6 +84,18 @@ timeline. Stem names come from the `moov/udta/stem` JSON box. `mrs/nistem.py`
 unpacks it to 24-bit WAV with ffmpeg, so the stems are sample-aligned by
 construction (measured: 0.0 ms).
 
+## Loomback GUI
+`mrs/gui/server.py` is a stdlib HTTP server on 127.0.0.1 with a JSON API.
+Every step runs as `python -m mrs …` in a subprocess, and its output is
+streamed to the page's log. `mrs/gui/static/` holds plain HTML/CSS/JS with no
+build step. The design tokens, header rule, section titles and Syncopate brand
+font (OFL) come from SMV Studio.
+
+Audio is played in the browser with WebAudio. MIDI is synthesised live from
+the notes on the original timeline, and the click comes from the
+beat map or grid. Files are served only from the projects folder, the Traktor
+stem cache, or exact source files that a project references (tested).
+
 ## Python modules
 | module | job |
 |---|---|

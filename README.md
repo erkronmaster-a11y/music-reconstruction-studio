@@ -1,4 +1,10 @@
-# AI Music Reconstruction Studio
+# Loomback — by SMV
+*(project codename: AI Music Reconstruction Studio)*
+
+![Loomback](docs/loomback.png)
+
+**Open it on the Mac:** double-click `mac/Loomback.command`. It opens in your
+browser, and nothing leaves the Mac.
 
 Turns your finished songs (the full mix plus whatever stems you have) back into
 editable **Ableton Live 12** projects: bass, melody and drum MIDI aligned to your
@@ -12,7 +18,9 @@ uncertain, never passed off as exact, and missing notes are never invented.
 |---|---|---|
 | 0 | Environment check, Live API test, transcription probe | ✅ done — Live API create/save/reopen verified |
 | 1a | Audio import, Traktor stems, stem sync, tempo/downbeat | 🟡 Mac run pending |
-| 1b | Bass + melody to MIDI, A/B review | 🟡 real song pending |
+| 1b | Bass + melody to MIDI, A/B review | ✅ ran on a real song (36 s, < 1 GB) |
+| 1c | Beat map for drifting songs | ✅ verified by ear |
+| GUI v1 | Loomback: projects, Traktor picker, timeline, piano roll, A/B mixer, timing fixes | 🟡 tested in cloud browser; Mac pending |
 
 ## Start here
 - **On the Mac:** [SETUP_MACOS.md](SETUP_MACOS.md)

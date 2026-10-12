@@ -9,6 +9,7 @@ to go over **10%** is split up, or confirmed with Erick before it starts.
 | 1a | Load WAV/AIFF/FLAC/MP3 + **Traktor/NI `.stem.mp4`**, inspect, sync stems, tempo + beats + first downbeat (user-correctable), click check, manifest v1 | 8–10% (actual ≈ 12%) | ✅ Mac install verified; real-song click check pending |
 | 1b | Bass (pYIN) + melody (Basic Pitch) transcription, octave-ghost flags, MIDI export aligned to bar lines, A/B review | 10–12% | 🟡 built + tested in cloud; real song pending |
 | 1c | Beat map (Beat This!): every beat + downbeat; Live tempo constant, audio warped at each beat, MIDI placed by the map | 8–10% | ✅ real song: beat-map click stays tight by ear; Live warping verified in Sprint 3 |
+| GUI v1 | **Loomback**: local web app in SMV Studio's design language — run steps, beat/bar timeline, piano roll, A/B mixer (stems ↔ MIDI ↔ click), timing correction | ≈9% | 🟡 built + browser-tested in cloud; Mac pending |
 | 2 | Drums: kick / snare / closed hat / open hat / unclassified, GM mapping, groove kept | 10–14% | — |
 | 3 | Live arrangement builder + fallback export package | 10–14% | — |
 | 4a | Editor: pitch / length / onset / delete / add, beat grid | 8–10% | — |
