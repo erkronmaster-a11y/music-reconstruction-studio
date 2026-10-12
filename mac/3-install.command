@@ -30,8 +30,15 @@ if [ -z "$PY" ]; then
 fi
 echo "  using $PY"
 [ -x .venv/bin/python ] || "$PY" -m venv .venv
-.venv/bin/python -m pip install -q --upgrade pip
-.venv/bin/python -m pip install -r requirements.txt
+PIPLOG="$(mktemp)"
+.venv/bin/python -m pip install -q --upgrade pip 2>&1 | tee "$PIPLOG"
+# Pinned set first; if one pin has no macOS 13 build, retry without pins so we learn which.
+if ! .venv/bin/python -m pip install -r requirements.txt 2>&1 | tee -a "$PIPLOG"; then :; fi
+if ! .venv/bin/python -c "import numpy, librosa, soundfile, pytest" 2>/dev/null; then
+  echo "  pinned install failed — retrying without version pins" | tee -a "$PIPLOG"
+  sed -E 's/[=<>].*//; s/;.*//; s/#.*//' requirements.txt | grep -v '^onnxruntime' | grep -v '^\s*$' > /tmp/mrs-req-unpinned.txt
+  .venv/bin/python -m pip install -r /tmp/mrs-req-unpinned.txt "numpy<2" "setuptools<81" 2>&1 | tee -a "$PIPLOG"
+fi
 
 {
 echo "# MRS Sprint 1a — Mac install report"
@@ -43,10 +50,17 @@ echo
 echo "## Key packages"
 .venv/bin/python -m pip freeze 2>/dev/null | grep -iE "^(basic-pitch|coremltools|tensorflow|numpy|librosa|soundfile|onnxruntime|scipy)="
 echo
+echo "## pip install — errors and last lines"
+grep -iE "error|could not|no matching|requires" "$PIPLOG" | head -20
+tail -8 "$PIPLOG"
+echo
 echo "## Unit + integration tests (pytest)"
 } > "$REPORT"
 
-[ -x .venv/bin/python ] || { echo "Python environment missing — stopping. Send Claude a screenshot."; read -r -p "Press Enter to close." _; exit 1; }
+if ! .venv/bin/python -c "import numpy, librosa, soundfile" 2>/dev/null; then
+  echo "Python packages did not install — sending the error report to Claude."
+  "$(dirname "$0")/_send-results.sh" "Sprint 1a: Mac install failed (pip log)"; exit 1
+fi
 echo "== 3/5 Running the tests on this Mac"
 .venv/bin/python -m pytest -q -W ignore tests 2>&1 | tail -15 | tee -a "$REPORT"
 
