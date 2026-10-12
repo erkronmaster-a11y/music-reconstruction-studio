@@ -52,6 +52,18 @@ echo "## .stem.mp4 / .stem.m4a files (first 40)"
 find "$HOME" -type f \( -iname "*.stem.mp4" -o -iname "*.stem.m4a" \) 2>/dev/null | head -40
 echo "total: $(find "$HOME" -type f \( -iname "*.stem.mp4" -o -iname "*.stem.m4a" \) 2>/dev/null | wc -l | tr -d ' ')"
 echo
+echo "## Traktor 4 stem cache (~/Music/Traktor/Stems): count, size, first 25 titles"
+TS="$HOME/Music/Traktor/Stems"
+if [ -d "$TS" ]; then
+  echo "files: $(find "$TS" -name '*.stem.mp4' | wc -l | tr -d ' ')   size: $(du -sh "$TS" | cut -f1)"
+  find "$TS" -name '*.stem.mp4' | head -25 | while read -r f; do
+    t="$(ffmpeg -hide_banner -i "$f" 2>&1 | grep -m2 -E '^\s+(title|artist)\s*:' | sed -E 's/^ +//' | tr '\n' ' ')"
+    echo "  $(basename "$f")  ->  $t"
+  done
+else
+  echo "not found"
+fi
+echo
 echo "## Traktor / Native Instruments folders and sizes"
 for base in "$HOME/Documents/Native Instruments" "$HOME/Library/Application Support/Native Instruments" \
             "$HOME/Library/Caches/Native Instruments" "$HOME/Library/Caches" "$HOME/Music"; do

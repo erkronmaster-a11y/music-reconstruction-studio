@@ -19,6 +19,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="mrs")
     sub = ap.add_subparsers(dest="cmd", required=True)
     a = sub.add_parser("analyze"); a.add_argument("folder"); a.add_argument("--out")
+    a.add_argument("--out-parent", help="put the project in <this>/<song title>/")
     i = sub.add_parser("info"); i.add_argument("project")
     t = sub.add_parser("tempo"); t.add_argument("project")
     t.add_argument("--bpm", type=float); t.add_argument("--downbeat", type=float)
@@ -30,14 +31,18 @@ def main(argv=None):
         folder = Path(args.folder)
         if nistem.is_stem_file(folder):  # Traktor / NI Stems: unpack first, perfectly aligned
             src = folder
-            title = re.sub(r"\.stem\.(mp4|m4a)$", "", src.name, flags=re.I)
+            title = nistem.display_title(src)
             out = Path(args.out) if args.out else src.with_name(title + " (MRS)")
+            if args.out_parent:
+                out = Path(args.out_parent) / title
             folder = out / "stems"
             name = title
             nistem.extract(src, folder)
             print(f"Unpacked {src.name} into {folder}")
         else:
             out = Path(args.out) if args.out else folder / "mrs-project"
+            if args.out_parent:
+                out = Path(args.out_parent) / folder.name
             name = folder.name
         out.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
@@ -47,6 +52,7 @@ def main(argv=None):
         (out / "summary.txt").write_text(project.summary(m) + "\n")
         print(project.summary(m))
         print(f"\nSaved {out / 'project.json'}  ({m['analysis_seconds']} s)")
+        print(f"PROJECT_DIR={out}")
     elif args.cmd == "info":
         print(project.summary(manifest.load(args.project)))
     elif args.cmd == "tempo":

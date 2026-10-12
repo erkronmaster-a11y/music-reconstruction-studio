@@ -80,6 +80,37 @@ def role_for(name: str) -> str:
     return "other"
 
 
+def tags(path: str | Path) -> dict:
+    """Title / artist etc. from the file's metadata (Traktor names stem files by a
+    code like AWQQL5A0V0WGRCBYNBHNCS0WHQFC, so the title must come from inside)."""
+    ff = ffmpeg_path()
+    if not ff:
+        return {}
+    err = subprocess.run([ff, "-hide_banner", "-i", str(path)], capture_output=True, text=True).stderr
+    out = {}
+    in_meta = False
+    for line in err.splitlines():
+        if line.strip() == "Metadata:" and not out:
+            in_meta = True
+            continue
+        if in_meta:
+            m = re.match(r"\s+(\w+)\s*:\s(.*)", line)
+            if not m or line.lstrip().startswith(("Duration", "Stream")):
+                break
+            out[m.group(1).lower()] = m.group(2).strip()
+    return out
+
+
+def display_title(path: str | Path) -> str:
+    """'Artist - Title' from tags when present, else the file name."""
+    stem = re.sub(r"\.stem\.(mp4|m4a)$", "", Path(path).name, flags=re.I)
+    t = tags(path)
+    if t.get("title"):
+        name = f"{t['artist']} - {t['title']}" if t.get("artist") else t["title"]
+        return re.sub(r'[/\\:*?"<>|]', "_", name).strip()
+    return stem
+
+
 def audio_stream_count(path: str | Path) -> int:
     ff = ffmpeg_path()
     if not ff:
@@ -96,7 +127,7 @@ def extract(path: str | Path, out_dir: str | Path) -> dict[str, Path]:
     n = audio_stream_count(path)
     if n != 5:
         raise ValueError(f"{path.name}: expected 5 audio streams (mix + 4 stems), found {n}")
-    title = re.sub(r"\.stem\.(mp4|m4a)$", "", path.name, flags=re.I)
+    title = display_title(path)
     names = stem_names(path)
     targets = [("mix", out_dir / f"{title} MIX.wav")]
     for i, name in enumerate(names):
@@ -108,5 +139,5 @@ def extract(path: str | Path, out_dir: str | Path) -> dict[str, Path]:
         cmd += ["-map", f"0:a:{idx}", "-c:a", "pcm_s24le", str(p)]
     subprocess.run(cmd, check=True)
     (out_dir / "stem-source.json").write_text(json.dumps(
-        {"from": str(path), "names_in_file": names, "metadata_found": read_metadata(path) is not None}, indent=1))
+        {"from": str(path), "tags": tags(path), "names_in_file": names, "metadata_found": read_metadata(path) is not None}, indent=1))
     return dict(targets)

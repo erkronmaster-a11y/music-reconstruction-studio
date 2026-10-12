@@ -17,17 +17,24 @@ SRC="${SRC%\"}"; SRC="${SRC#\"}"; SRC="${SRC%\'}"; SRC="${SRC#\'}"
 SRC="$(echo "$SRC" | sed 's/\\ / /g; s/[[:space:]]*$//')"   # undo Terminal's drag escaping
 [ -e "$SRC" ] || { echo "Not found: $SRC"; read -r -p "Press Enter to close." _; exit 1; }
 
-NAME="$(basename "$SRC")"; NAME="${NAME%.stem.mp4}"; NAME="${NAME%.stem.m4a}"
-OUT="$HOME/Music/MRS Projects/$NAME"
-mkdir -p "$OUT"
-if .venv/bin/python -m mrs analyze "$SRC" --out "$OUT" && .venv/bin/python -m mrs click "$OUT/project.json"; then
-  SAFE="$(echo "$NAME" | tr -c 'A-Za-z0-9._-' '_')"
+if [ ! -x .venv/bin/python ]; then
+  echo
+  echo "The analysis tools are not installed yet."
+  echo "First double-click mac/3-install.command (once, about 10 minutes), then try again."
+  read -r -p "Press Enter to close." _; exit 1
+fi
+
+LOG="$(mktemp)"
+if .venv/bin/python -W ignore -m mrs analyze "$SRC" --out-parent "$HOME/Music/MRS Projects" | tee "$LOG"; then
+  OUT="$(grep '^PROJECT_DIR=' "$LOG" | tail -1 | cut -d= -f2-)"
+  .venv/bin/python -m mrs click "$OUT/project.json"
+  SAFE="$(basename "$OUT" | tr -c 'A-Za-z0-9._-' '_')"
   cp "$OUT/summary.txt" "reports/sprint1/song-$SAFE.txt"
   echo
   echo "Opening the click check: high click = bar start, low click = beat."
   echo "Does the high click land on each bar's first beat? Tell Claude yes/no."
   open "$OUT/click-check.wav"
-  "$(dirname "$0")/_send-results.sh" "Sprint 1a: analysis summary for $NAME"
+  "$(dirname "$0")/_send-results.sh" "Sprint 1a: analysis summary for $(basename "$OUT")"
 else
   echo "Analysis failed — the message above says why. Send Claude a screenshot."
   read -r -p "Press Enter to close." _
