@@ -125,8 +125,22 @@ follow (a tempo map is on the roadmap).
 - the plan's MIDI notes match `midi/*.mid` within 0.01 beat;
 - the manual-import text is written.
 
-`pytest` → **48 passed**. **The device itself is only testable in Live on the
-Mac** (pending).
+`pytest` → **48 passed**.
+
+**On the Mac (Live 12.0.15, owner's song, 2026-10-12):**
+- The build runs and creates every track with names and colours: original
+  mix, vocals, bass/drums/other stems, and bass/melody/drums MIDI. Tempo is
+  set to 100.00.
+- The owner reports "looks like it worked".
+- **Instruments did not load:** the MIDI tracks showed "No Output".
+- The build report has not been pushed yet, so warp-marker and note-count
+  checks are unconfirmed.
+- Three bugs were found on the way and fixed:
+  - Max's file writer can't write non-ASCII text, so reports are now ASCII.
+  - Live loaded the device from outside `<repo>/live/`, so the plan and
+    reports now go through `~/Music/MRS Projects/_live/` (fallback
+    `/tmp/loomback`).
+  - A stuck Loomback server blocked relaunch; the launcher now frees the port.
 
 ## Sprint 2 — drums → GM MIDI (2026-10-12, Linux, synthetic ground truth)
 **Method:** band-wise SuperFlux onsets on the drums stem (DSP, no model) → kick
