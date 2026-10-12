@@ -1,6 +1,6 @@
 {
 	"phase" : "create",
-	"time" : "Mon Oct 12 2026 14:44:20 GMT+0200 (CEST)",
+	"time" : "Mon Oct 12 2026 21:54:26 GMT+0200 (CEST)",
 	"live_version" : "12.0.15",
 	"max_version" : "862",
 	"steps" : [ 		{
@@ -27,6 +27,11 @@
 		}
 , 		{
 			"step" : "removed previous MIDI test track",
+			"ok" : 1,
+			"detail" : null
+		}
+, 		{
+			"step" : "removed previous audio test track",
 			"ok" : 1,
 			"detail" : null
 		}
@@ -61,7 +66,7 @@
 			"step" : "route B: session clip_slot.create_clip",
 			"ok" : 1,
 			"detail" : 			{
-				"id" : "9"
+				"id" : "15"
 			}
 
 		}
@@ -74,7 +79,7 @@
 			"step" : "route B: duplicate_clip_to_arrangement",
 			"ok" : 1,
 			"detail" : 			{
-				"clip_ids" : [ 10 ]
+				"clip_ids" : [ 16 ]
 			}
 
 		}

@@ -1,0 +1,356 @@
+{
+	"phase" : "build",
+	"time" : "Mon Oct 12 2026 23:07:59 GMT+0200 (CEST)",
+	"live_version" : "12.0.15",
+	"steps" : [ 		{
+			"step" : "read plan",
+			"ok" : 1,
+			"detail" : 			{
+				"project" : "HOJA DE COCA TECH HOUSE",
+				"tracks" : 8,
+				"from" : "/Users/locohood/Music/MRS Projects/_live/build.json"
+			}
+
+		}
+, 		{
+			"step" : "tempo",
+			"ok" : 1,
+			"detail" : 100
+		}
+, 		{
+			"step" : "track: Original mix",
+			"ok" : 0,
+			"detail" : 			{
+				"name" : "Original mix",
+				"kind" : "audio",
+				"warp_mode" : 6,
+				"markers_before" : 2,
+				"markers_wanted" : 258,
+				"markers_now" : 2,
+				"first_marker" : 				{
+					"sample_time" : 0,
+					"beat_time" : 3.920579940892441
+				}
+,
+				"last_marker" : 				{
+					"sample_time" : 0.018749999579488,
+					"beat_time" : 3.951829940892441
+				}
+,
+				"clip_start" : 0,
+				"clip_end" : 263.951110087828852,
+				"markers_missing" : 257,
+				"error" : "257 of 258 warp markers did not land"
+			}
+
+		}
+, 		{
+			"step" : "track: Vocals (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"name" : "Vocals (stem)",
+				"kind" : "audio",
+				"warp_mode" : 6,
+				"markers_before" : 2,
+				"markers_wanted" : 258,
+				"markers_now" : 2,
+				"first_marker" : 				{
+					"sample_time" : 0,
+					"beat_time" : 3.920579940892441
+				}
+,
+				"last_marker" : 				{
+					"sample_time" : 0.018749999579488,
+					"beat_time" : 3.951829940892441
+				}
+,
+				"clip_start" : 0,
+				"clip_end" : 263.951110087828852,
+				"markers_missing" : 257,
+				"error" : "257 of 258 warp markers did not land"
+			}
+
+		}
+, 		{
+			"step" : "track: Bass (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"name" : "Bass (stem)",
+				"kind" : "audio",
+				"warp_mode" : 6,
+				"markers_before" : 2,
+				"markers_wanted" : 258,
+				"markers_now" : 2,
+				"first_marker" : 				{
+					"sample_time" : 0,
+					"beat_time" : 3.920579940892441
+				}
+,
+				"last_marker" : 				{
+					"sample_time" : 0.018749999579488,
+					"beat_time" : 3.951829940892441
+				}
+,
+				"clip_start" : 0,
+				"clip_end" : 263.951110087828852,
+				"markers_missing" : 257,
+				"error" : "257 of 258 warp markers did not land"
+			}
+
+		}
+, 		{
+			"step" : "track: Bass MIDI",
+			"ok" : 1,
+			"detail" : 			{
+				"name" : "Bass MIDI",
+				"kind" : "midi",
+				"notes_wanted" : 435,
+				"notes_in_clip" : 435,
+				"notes_in_arrangement" : 435,
+				"instrument" : 				{
+					"loaded" : 0,
+					"note" : "none of Bass, Drift, Analog, Operator found in the browser"
+				}
+
+			}
+
+		}
+, 		{
+			"step" : "track: Melody MIDI",
+			"ok" : 1,
+			"detail" : 			{
+				"name" : "Melody MIDI",
+				"kind" : "midi",
+				"notes_wanted" : 448,
+				"notes_in_clip" : 448,
+				"notes_in_arrangement" : 448,
+				"instrument" : 				{
+					"loaded" : 0,
+					"note" : "none of Drift, Wavetable, Analog, Operator found in the browser"
+				}
+
+			}
+
+		}
+, 		{
+			"step" : "track: Drums (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"name" : "Drums (stem)",
+				"kind" : "audio",
+				"warp_mode" : 6,
+				"markers_before" : 2,
+				"markers_wanted" : 258,
+				"markers_now" : 2,
+				"first_marker" : 				{
+					"sample_time" : 0,
+					"beat_time" : 3.920579940892441
+				}
+,
+				"last_marker" : 				{
+					"sample_time" : 0.018749999579488,
+					"beat_time" : 3.951829940892441
+				}
+,
+				"clip_start" : 0,
+				"clip_end" : 263.951110087828852,
+				"markers_missing" : 257,
+				"error" : "257 of 258 warp markers did not land"
+			}
+
+		}
+, 		{
+			"step" : "track: Drums MIDI",
+			"ok" : 1,
+			"detail" : 			{
+				"name" : "Drums MIDI",
+				"kind" : "midi",
+				"notes_wanted" : 754,
+				"notes_in_clip" : 754,
+				"notes_in_arrangement" : 754,
+				"instrument" : 				{
+					"loaded" : 0,
+					"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser"
+				}
+
+			}
+
+		}
+, 		{
+			"step" : "track: Other (stem)",
+			"ok" : 0,
+			"detail" : 			{
+				"name" : "Other (stem)",
+				"kind" : "audio",
+				"warp_mode" : 6,
+				"markers_before" : 2,
+				"markers_wanted" : 258,
+				"markers_now" : 2,
+				"first_marker" : 				{
+					"sample_time" : 0,
+					"beat_time" : 3.920579940892441
+				}
+,
+				"last_marker" : 				{
+					"sample_time" : 0.018749999579488,
+					"beat_time" : 3.951829940892441
+				}
+,
+				"clip_start" : 0,
+				"clip_end" : 263.951110087828852,
+				"markers_missing" : 257,
+				"error" : "257 of 258 warp markers did not land"
+			}
+
+		}
+ ],
+	"tracks" : [ 		{
+			"name" : "Original mix",
+			"kind" : "audio",
+			"warp_mode" : 6,
+			"markers_before" : 2,
+			"markers_wanted" : 258,
+			"markers_now" : 2,
+			"first_marker" : 			{
+				"sample_time" : 0,
+				"beat_time" : 3.920579940892441
+			}
+,
+			"last_marker" : 			{
+				"sample_time" : 0.018749999579488,
+				"beat_time" : 3.951829940892441
+			}
+,
+			"clip_start" : 0,
+			"clip_end" : 263.951110087828852,
+			"markers_missing" : 257,
+			"error" : "257 of 258 warp markers did not land"
+		}
+, 		{
+			"name" : "Vocals (stem)",
+			"kind" : "audio",
+			"warp_mode" : 6,
+			"markers_before" : 2,
+			"markers_wanted" : 258,
+			"markers_now" : 2,
+			"first_marker" : 			{
+				"sample_time" : 0,
+				"beat_time" : 3.920579940892441
+			}
+,
+			"last_marker" : 			{
+				"sample_time" : 0.018749999579488,
+				"beat_time" : 3.951829940892441
+			}
+,
+			"clip_start" : 0,
+			"clip_end" : 263.951110087828852,
+			"markers_missing" : 257,
+			"error" : "257 of 258 warp markers did not land"
+		}
+, 		{
+			"name" : "Bass (stem)",
+			"kind" : "audio",
+			"warp_mode" : 6,
+			"markers_before" : 2,
+			"markers_wanted" : 258,
+			"markers_now" : 2,
+			"first_marker" : 			{
+				"sample_time" : 0,
+				"beat_time" : 3.920579940892441
+			}
+,
+			"last_marker" : 			{
+				"sample_time" : 0.018749999579488,
+				"beat_time" : 3.951829940892441
+			}
+,
+			"clip_start" : 0,
+			"clip_end" : 263.951110087828852,
+			"markers_missing" : 257,
+			"error" : "257 of 258 warp markers did not land"
+		}
+, 		{
+			"name" : "Bass MIDI",
+			"kind" : "midi",
+			"notes_wanted" : 435,
+			"notes_in_clip" : 435,
+			"notes_in_arrangement" : 435,
+			"instrument" : 			{
+				"loaded" : 0,
+				"note" : "none of Bass, Drift, Analog, Operator found in the browser"
+			}
+
+		}
+, 		{
+			"name" : "Melody MIDI",
+			"kind" : "midi",
+			"notes_wanted" : 448,
+			"notes_in_clip" : 448,
+			"notes_in_arrangement" : 448,
+			"instrument" : 			{
+				"loaded" : 0,
+				"note" : "none of Drift, Wavetable, Analog, Operator found in the browser"
+			}
+
+		}
+, 		{
+			"name" : "Drums (stem)",
+			"kind" : "audio",
+			"warp_mode" : 6,
+			"markers_before" : 2,
+			"markers_wanted" : 258,
+			"markers_now" : 2,
+			"first_marker" : 			{
+				"sample_time" : 0,
+				"beat_time" : 3.920579940892441
+			}
+,
+			"last_marker" : 			{
+				"sample_time" : 0.018749999579488,
+				"beat_time" : 3.951829940892441
+			}
+,
+			"clip_start" : 0,
+			"clip_end" : 263.951110087828852,
+			"markers_missing" : 257,
+			"error" : "257 of 258 warp markers did not land"
+		}
+, 		{
+			"name" : "Drums MIDI",
+			"kind" : "midi",
+			"notes_wanted" : 754,
+			"notes_in_clip" : 754,
+			"notes_in_arrangement" : 754,
+			"instrument" : 			{
+				"loaded" : 0,
+				"note" : "none of 909 Core Kit, 808 Core Kit, Drum Rack found in the browser"
+			}
+
+		}
+, 		{
+			"name" : "Other (stem)",
+			"kind" : "audio",
+			"warp_mode" : 6,
+			"markers_before" : 2,
+			"markers_wanted" : 258,
+			"markers_now" : 2,
+			"first_marker" : 			{
+				"sample_time" : 0,
+				"beat_time" : 3.920579940892441
+			}
+,
+			"last_marker" : 			{
+				"sample_time" : 0.018749999579488,
+				"beat_time" : 3.951829940892441
+			}
+,
+			"clip_start" : 0,
+			"clip_end" : 263.951110087828852,
+			"markers_missing" : 257,
+			"error" : "257 of 258 warp markers did not land"
+		}
+ ],
+	"project" : "HOJA DE COCA TECH HOUSE",
+	"summary" : "FAILED: track: Original mix | track: Vocals (stem) | track: Bass (stem) | track: Drums (stem) | track: Other (stem)"
+}

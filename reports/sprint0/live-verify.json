@@ -1,6 +1,6 @@
 {
 	"phase" : "verify_after_reopen",
-	"time" : "Mon Oct 12 2026 14:50:20 GMT+0200 (CEST)",
+	"time" : "Mon Oct 12 2026 21:54:32 GMT+0200 (CEST)",
 	"live_version" : "12.0.15",
 	"max_version" : "862",
 	"steps" : [ 		{
@@ -16,7 +16,7 @@
 , 		{
 			"step" : "arrangement clip present",
 			"ok" : 1,
-			"detail" : [ 10 ]
+			"detail" : [ 16 ]
 		}
 , 		{
 			"step" : "clip still at beat 4",
