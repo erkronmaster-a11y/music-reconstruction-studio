@@ -1,0 +1,52 @@
+{
+  "platform": "Linux x86_64 py3.11.17",
+  "note": "Synthetic additive-synth audio; real mixes will score lower.",
+  "cases": {
+    "bass (E1-E3, warm)": {
+      "basic-pitch": {
+        "ref_notes": 40,
+        "est_notes": 72,
+        "onset_precision": 0.389,
+        "onset_recall": 0.7,
+        "onset_f1": 0.5,
+        "onset_offset_f1": 0.393,
+        "mean_onset_error_ms": 21.1,
+        "seconds": 4.07
+      },
+      "pyin": {
+        "ref_notes": 40,
+        "est_notes": 44,
+        "onset_precision": 0.909,
+        "onset_recall": 1.0,
+        "onset_f1": 0.952,
+        "onset_offset_f1": 0.952,
+        "mean_onset_error_ms": 4.5,
+        "seconds": 3.04
+      }
+    },
+    "melody (C4-C6, bright)": {
+      "basic-pitch": {
+        "ref_notes": 48,
+        "est_notes": 48,
+        "onset_precision": 1.0,
+        "onset_recall": 1.0,
+        "onset_f1": 1.0,
+        "onset_offset_f1": 0.875,
+        "mean_onset_error_ms": 5.3,
+        "seconds": 1.58
+      },
+      "pyin": {
+        "ref_notes": 48,
+        "est_notes": 94,
+        "onset_precision": 0.511,
+        "onset_recall": 1.0,
+        "onset_f1": 0.676,
+        "onset_offset_f1": 0.676,
+        "mean_onset_error_ms": 4.0,
+        "seconds": 3.25
+      }
+    }
+  },
+  "basic_pitch_version": "unknown",
+  "peak_rss_mb": 884.0
+}
