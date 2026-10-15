@@ -97,7 +97,8 @@ The numbered scripts below still work. Loomback runs the same steps.
    - your mix and stems on audio tracks, placed exactly on the song's
      tempo (Warp is off on purpose: the audio plays at its true speed);
    - bass, melody and drums on MIDI tracks;
-   - basic Ableton instruments where it could load them.
+   - Ableton instruments: Drift on bass and melody, and a Drum Rack on drums.
+     The Drum Rack starts empty: drag any kit (e.g. 909 Core Kit) onto it.
 5. Click **`verify`**. The status line should read `verify — ALL OK`.
 6. Double-click **`mac/7-send-ableton-results.command`** and tell Claude
    **"pushed"**.

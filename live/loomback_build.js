@@ -315,11 +315,23 @@ function buildUnwarped(tr, t, res) {
     if (cids.length !== 1) throw "create_audio_clip made no clip for " + t.file;
     var clip = new LiveAPI("id " + cids[0]);
     clip.set("warping", 0);
+    // Live puts a new clip's start marker on the file's first sound, not 0:00
+    // (Mac run 4: every stem played early by its own quiet lead-in, ~45 ms on
+    // the drums). The sample must start playing from its very first frame.
+    res.markers_before = { start_marker: Number(clip.get("start_marker")), loop_start: Number(clip.get("loop_start")),
+                           end_marker: Number(clip.get("end_marker")) };
+    clip.set("looping", 0);
+    clip.set("start_marker", 0);
+    if (Number(clip.get("start_marker")) !== 0) clip.set("loop_start", 0);
+    res.markers_after = { start_marker: Number(clip.get("start_marker")), loop_start: Number(clip.get("loop_start")),
+                          end_marker: Number(clip.get("end_marker")), end_time: Number(clip.get("end_time")) };
     res.warp_method = "warp off, placed at beat " + t.position_beats;
     res.warping = Number(clip.get("warping"));
     res.clip_start = Number(clip.get("start_time"));
     res.check = { start_error_beats: Math.round((res.clip_start - t.position_beats) * 10000) / 10000 };
+    res.check.sample_start = res.markers_after.start_marker;
     if (Math.abs(res.check.start_error_beats) > 0.001) res.error = "clip start " + res.clip_start + " instead of " + t.position_beats;
+    else if (Math.abs(res.markers_after.start_marker) > 1e-6) res.error = "clip plays from " + res.markers_after.start_marker + " into the file, not from its start";
 }
 
 // Instruments: if the Set has a template track "LB Bass" / "LB Melody" /
@@ -386,9 +398,32 @@ function insertNative(tr, role) {
     if (!name) return null;
     var before = ids(tr.api, "devices").length;
     try { tr.api.call("insert_device", name); } catch (e) { return { loaded: false, tried: "insert_device " + name, error: String(e) }; }
-    var after = ids(tr.api, "devices").length;
-    return { loaded: after > before, device: name, via: "insert_device",
-             note: after > before ? null : "not available (needs Live 12.3 or later)" };
+    var devs = ids(tr.api, "devices"), after = devs.length;
+    var out = { loaded: after > before, device: name, via: "insert_device",
+                note: after > before ? null : "not available (needs Live 12.3 or later)" };
+    if (out.loaded && name === "Drift") out.sustain = holdNotes(devs[after - 1]);
+    return out;
+}
+
+// Drift's default patch fades out while a key is held, so long notes from the
+// song sounded like short plucks (Mac run 4). Turn the amp envelope's sustain
+// fully up so a note lasts exactly as long as the MIDI note. Parameters are
+// found by name (DeviceParameter.name / value / max, documented in the LOM).
+function holdNotes(devId) {
+    var pids = ids(new LiveAPI("id " + devId), "parameters"), names = [], pick = null, fallback = null;
+    for (var i = 0; i < pids.length; i++) {
+        var p = new LiveAPI("id " + pids[i]), n = String(p.get("name"));
+        names.push(n);
+        if (/sustain/i.test(n)) {
+            if (!fallback) fallback = p;
+            if (!pick && /(env ?1|amp)/i.test(n)) pick = p;
+        }
+    }
+    pick = pick || fallback;
+    if (!pick) return { set: null, parameters: names };
+    var before = Number(pick.get("value"));
+    pick.set("value", Number(pick.get("max")));
+    return { set: String(pick.get("name")), from: before, to: Number(pick.get("value")), parameters: names };
 }
 
 // Best effort: Live's browser, documented in the LOM. Selects the track, then
@@ -454,8 +489,9 @@ function verify() {
         } else {
             if (t.warp === false) {
                 var st = Number(clip.get("start_time"));
-                step("placed: " + t.name, Math.abs(st - t.position_beats) < 0.001,
-                     { start: st, wanted: t.position_beats, warping: Number(clip.get("warping")) });
+                var sm = Number(clip.get("start_marker"));
+                step("placed: " + t.name, Math.abs(st - t.position_beats) < 0.001 && Math.abs(sm) < 1e-6,
+                     { start: st, wanted: t.position_beats, plays_from: sm, warping: Number(clip.get("warping")) });
                 continue;
             }
             var mk = markers(clip), w = t.warp_markers, lastW = w[w.length - 1];

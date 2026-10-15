@@ -177,6 +177,24 @@ follow (a tempo map is on the roadmap).
     Checked in pytest: position + duration × tempo / 60 equals the plan's end
     beat. Verify now checks each clip's start (`placed: …`).
   - `pytest` → **52 passed**.
+- **Run 4 (Live 12.3.7, owner's screenshot at bar 41):** the build was ALL OK
+  and Drift + Drum Rack loaded via `insert_device`. But the drum stem's kicks
+  sat about 45 ms **before** the kick MIDI, and the MIDI was on the grid.
+  - Cause: Live puts a new clip's **start marker on the file's first sound**
+    (the same spot as its first warp marker in run 2). With Warp off, the
+    clip then plays from there, so each stem starts early by its own lead-in.
+    Verify only checked the clip's position, so it passed.
+  - **Fix:** `start_marker` is set to 0 after Warp off, and verify now checks
+    it (`plays_from`). Reproduced in the simulation: the old builder leaves
+    0.045, the new one 0.
+  - **Long notes sounded short:** the MIDI notes are long, but Drift's default
+    patch fades while a key is held. The builder now sets the amp envelope's
+    sustain to maximum and reports Drift's parameter names.
+  - **Loomback:** a stem still loading when Play was pressed started late
+    against the MIDI. Play now waits for every stem first.
+  - Transcription was re-checked for drift on a 4-minute song at 100.075 BPM,
+    44.1 and 48 kHz: onsets within 6 ms at the start and at the end, so it
+    does not drift.
 - Three bugs were found on the way and fixed:
   - Max's file writer can't write non-ASCII text, so reports are now ASCII.
   - Live loaded the device from outside `<repo>/live/`, so the plan and

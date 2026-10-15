@@ -100,3 +100,23 @@ def test_constant_mode_places_unwarped_audio_exactly(built):
             first, last = t["warp_markers"][0], t["warp_markers"][-1]
             assert t["position_beats"] == first["beat_time"] >= 0
             assert last["beat_time"] == pytest.approx(t["position_beats"] + last["sample_time"] * plan["tempo_bpm"] / 60, abs=0.001)
+
+
+def test_unwarped_clip_plays_from_file_start_in_simulated_live(built, tmp_path):
+    """Live puts a new clip's start marker on the first sound; warp-off placement
+    must move it back to 0:00 or the stem plays early by its lead-in (Mac run 4)."""
+    import os, shutil, subprocess
+    if not shutil.which("node"):
+        pytest.skip("node not installed")
+    m, mode, out = built
+    plan = liveplan.build(m)
+    if mode != "constant":
+        pytest.skip("warp-off placement is the constant-tempo path")
+    p = tmp_path / "plan.json"
+    p.write_text(json.dumps(plan))
+    r = subprocess.run(["node", "tools/mock_live_warp.js", "live/loomback_build.js", str(p), "0.045"],
+                       capture_output=True, text=True, check=True, env={**os.environ, "UNWARPED": "1"})
+    res = json.loads(r.stdout.strip().splitlines()[-1])
+    assert res["error"] is None, res
+    assert res["props"]["start_marker"] == 0 and res["props"]["warping"] == 0, res
+    assert res["check"]["start_error_beats"] == 0, res

@@ -273,6 +273,9 @@ function peaks(buf, hop = 256) {
 const now = () => S.playing ? S.offset + (audioCtx().currentTime - S.t0) : S.offset;
 async function play(from) {
   const ctx = audioCtx(); await ctx.resume();
+  // load every stem first: a buffer that arrives after the start time would
+  // start late, out of step with the MIDI scheduled against the same clock
+  await Promise.all(S.channels.filter((c) => c.on && c.kind === "audio").map((c) => ensureBuffer(c.id)));
   S.offset = Math.max(0, Math.min(from ?? S.offset, S.duration)); S.t0 = ctx.currentTime + 0.05; S.playing = true; S.sched = new Set();
   for (const ch of S.channels) {
     if (!ch.on) continue;
