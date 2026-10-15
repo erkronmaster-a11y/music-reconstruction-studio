@@ -1,6 +1,6 @@
 {
 	"phase" : "verify",
-	"time" : "Tue Oct 13 2026 00:50:26 GMT+0200 (CEST)",
+	"time" : "Thu Oct 15 2026 23:55:05 GMT+0200 (CEST)",
 	"steps" : [ 		{
 			"step" : "read plan",
 			"ok" : 1,
@@ -22,13 +22,12 @@
 			"detail" : 1
 		}
 , 		{
-			"step" : "warp: Original mix",
-			"ok" : 0,
+			"step" : "placed: Original mix",
+			"ok" : 1,
 			"detail" : 			{
-				"markers" : 2,
-				"per_beat" : 1,
-				"start_error_beats" : 0,
-				"end_error_beats" : -0.195
+				"start" : 3.818360025391276,
+				"wanted" : 3.81836,
+				"warping" : 0
 			}
 
 		}
@@ -43,13 +42,12 @@
 			"detail" : 1
 		}
 , 		{
-			"step" : "warp: Vocals (stem)",
-			"ok" : 0,
+			"step" : "placed: Vocals (stem)",
+			"ok" : 1,
 			"detail" : 			{
-				"markers" : 2,
-				"per_beat" : 1,
-				"start_error_beats" : 0,
-				"end_error_beats" : -0.195
+				"start" : 3.818360025391276,
+				"wanted" : 3.81836,
+				"warping" : 0
 			}
 
 		}
@@ -64,13 +62,12 @@
 			"detail" : 1
 		}
 , 		{
-			"step" : "warp: Bass (stem)",
-			"ok" : 0,
+			"step" : "placed: Bass (stem)",
+			"ok" : 1,
 			"detail" : 			{
-				"markers" : 2,
-				"per_beat" : 1,
-				"start_error_beats" : 0,
-				"end_error_beats" : -0.195
+				"start" : 3.818360025391276,
+				"wanted" : 3.81836,
+				"warping" : 0
 			}
 
 		}
@@ -125,13 +122,12 @@
 			"detail" : 1
 		}
 , 		{
-			"step" : "warp: Drums (stem)",
-			"ok" : 0,
+			"step" : "placed: Drums (stem)",
+			"ok" : 1,
 			"detail" : 			{
-				"markers" : 2,
-				"per_beat" : 1,
-				"start_error_beats" : 0,
-				"end_error_beats" : -0.195
+				"start" : 3.818360025391276,
+				"wanted" : 3.81836,
+				"warping" : 0
 			}
 
 		}
@@ -166,16 +162,15 @@
 			"detail" : 1
 		}
 , 		{
-			"step" : "warp: Other (stem)",
-			"ok" : 0,
+			"step" : "placed: Other (stem)",
+			"ok" : 1,
 			"detail" : 			{
-				"markers" : 2,
-				"per_beat" : 1,
-				"start_error_beats" : 0,
-				"end_error_beats" : -0.195
+				"start" : 3.818360025391276,
+				"wanted" : 3.81836,
+				"warping" : 0
 			}
 
 		}
  ],
-	"summary" : "FAILED: warp: Original mix | warp: Vocals (stem) | warp: Bass (stem) | warp: Drums (stem) | warp: Other (stem)"
+	"summary" : "ALL OK"
 }
