@@ -40,6 +40,14 @@ steps, don't assume.
 - Keep existing working code, especially the verified Ableton Live 12 / Max for Live bridge. Audit and test before replacing it. Make invasive changes on separate branches, preserving original audio, raw transcriptions, and reproducible A/B references.
 - For each checkpoint, report what changed, what was actually tested, what remains unverified, and the next smallest user-testable step.
 
+## Product language — English only
+
+- All user-facing Loomback software text must be in English: UI labels, buttons, menus, tooltips, errors, onboarding, reports, documentation, test descriptions, and code comments.
+- Use consistent English identifiers and technical terminology in code and APIs.
+- The owner may discuss development and give feedback in Spanish; conversation language does not change the product language.
+- Do not restrict imported music, vocals, lyrics, filenames, or metadata to English. Preserve original languages and Unicode text.
+- Do not translate existing song titles, lyrics, or artist names without an explicit user request.
+
 ## Environment
 - Python **3.11** in a project-local `.venv`. Versions are pinned in
   `requirements.txt`:
