@@ -30,6 +30,16 @@ steps, don't assume.
   it. If it is likely to exceed **10% of the usage ceiling**, ask first.
   Progress reports stay short and easy to scan.
 
+## Usage protection — mandatory for every agent
+
+- Work in small, independently testable checkpoints. Reserve capacity for Erick to run Mac/Ableton tests, listen, report findings, and request fixes within the same rolling five-hour window.
+- Before substantial work, report the smallest useful deliverable and a **Low / Medium / High** usage estimate. Provide a numerical weekly percentage **only** if actual remaining usage information is available; never invent a quota estimate or claim access to account usage meters.
+- **Ask for explicit approval before starting any task estimated to exceed 10% of the remaining weekly allowance.** If the remaining weekly allowance is unknown and the task could plausibly exceed that threshold, ask before undertaking the larger scope.
+- Stop at the end of the approved checkpoint. Do not silently roll into another major phase, long autonomous run, or expensive test suite.
+- If the five-hour usage window appears close to its limit, pause and provide a concise checkpoint summary rather than exhausting capacity.
+- Keep existing working code, especially the verified Ableton Live 12 / Max for Live bridge. Audit and test before replacing it. Make invasive changes on separate branches, preserving original audio, raw transcriptions, and reproducible A/B references.
+- For each checkpoint, report what changed, what was actually tested, what remains unverified, and the next smallest user-testable step.
+
 ## Environment
 - Python **3.11** in a project-local `.venv`. Versions are pinned in
   `requirements.txt`:
